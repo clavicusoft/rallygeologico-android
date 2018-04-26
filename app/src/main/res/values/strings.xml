@@ -1,3 +1,18 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">RallyGeologico</string>
+    <string name="facebook_app_id">325467311315442</string>
+    <string name="fb_login_protocol_scheme">fb325467311315442</string>
+    <string name="fb_log_in">INGRESAR CON FACEBOOK</string>
+    <string name="fb_log_out">SALIR</string>
+    <string name="error">Error</string>
+    <string name="success">Inicio de sesion exitoso</string>
+    <string name="successfully_posted_post">Post ID: %1$s</string>
+    <string name="cancelled">Cancelado</string>
+    <string name="permission_not_granted">No se ha podido iniciar sesion</string>
+    <string name="ok">Ok</string>
+    <string name="hello_user">Conectado como %1$s</string>
+    <string name="bg_inicio">Fondo de pantalla inicio</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
