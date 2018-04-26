@@ -38,13 +38,17 @@ import static android.view.View.GONE;
 public class FacebookFragment extends Fragment{
 
     private LoginButton loginButton;
-    private ImageView profilePicImageView;
-    private TextView greeting;
-    private TextView welcome;
-    private Button continuar_login;
+    private ImageView ivFotoPerfil;
+    private TextView tvSaludo;
+    private TextView tvBienvenido;
+    private Button btnContinuar;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
 
+    /**
+     * Constructor donde se inicializa el SDK de Facebook
+     * @param savedInstanceState Estado de la instancia
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,48 +56,74 @@ public class FacebookFragment extends Fragment{
         // Other app specific specialization
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Se crea la vista del fragmento de Facebook
+     * @param inflater
+     * @param parent
+     * @param savedInstanceState
+     * @return Devuelve la vista creada
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_facebook, parent, false);
-        welcome = v.findViewById(R.id.tv_welcome);
+        tvBienvenido = v.findViewById(R.id.tv_welcome);
         loginButton = v.findViewById(R.id.loginButton);
-        // If using in a fragment
         loginButton.setFragment(this);
-        profilePicImageView = v.findViewById(R.id.profilePicture);
-        greeting = v.findViewById(R.id.greeting);
-        continuar_login = v.findViewById(R.id.btn_cont_login);
-        continuar_login.setVisibility(GONE);
-        profilePicImageView = v.findViewById(R.id.profilePicture);
-        profilePicImageView.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
+        ivFotoPerfil = v.findViewById(R.id.profilePicture);
+        tvSaludo = v.findViewById(R.id.greeting);
+        btnContinuar = v.findViewById(R.id.btn_cont_login);
+        btnContinuar.setVisibility(GONE);
+        ivFotoPerfil = v.findViewById(R.id.profilePicture);
+        ivFotoPerfil.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
         callbackManager = CallbackManager.Factory.create();
-        // Callback registration
+        // Se registra la llamada del login para ver si la conexion fue exitosa
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            /**
+             * Muestra un mensaje Toast si se hace login exitosamente
+             * @param resultadoLogin
+             */
             @Override
-            public void onSuccess(LoginResult loginResult) {
+            public void onSuccess(LoginResult resultadoLogin) {
                 Toast toast = Toast.makeText(getActivity(), "Conectado", Toast.LENGTH_SHORT);
                 toast.show();
-                updateUI();
+                actulizarPantalla();
             }
 
+            /**
+             * Envia una alerta al usuario si se cancela el login
+             */
             @Override
             public void onCancel() {
                 showAlert();
-                updateUI();
+                actulizarPantalla();
             }
 
+            /**
+             * Envia una alerta al usuario si hay un error en el login
+             * @param excepcion Excepcion que envia el error
+             */
             @Override
-            public void onError(FacebookException exception) {
+            public void onError(FacebookException excepcion) {
                 showAlert();
-                updateUI();
+                actulizarPantalla();
             }
 
+            /**
+             * Crea una alerta con un mensaje de error
+             */
             private void showAlert() {
                 new AlertDialog.Builder(getActivity())
                         .setTitle(R.string.cancelled)
@@ -104,53 +134,68 @@ public class FacebookFragment extends Fragment{
         });
 
         profileTracker = new ProfileTracker() {
+            /**
+             * Actualiza la interfaz si detecta un cambio en el usuario
+             * @param perfilViejo Perfil antiguo a cambiar
+             * @param perfilActual Perfil actual que sera el nuevo
+             */
             @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                updateUI();
+            protected void onCurrentProfileChanged(Profile perfilViejo, Profile perfilActual) {
+                actulizarPantalla();
             }
         };
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(AccessToken.getCurrentAccessToken() != null){
-                    continuar_login.setVisibility(v.GONE);
-                }
             }
         });
         return v;
     }
 
+    /**
+     * Actualiza la interfaz si se retoma la activity
+     */
     @Override
     public void onResume() {
         super.onResume();
         AppEventsLogger.activateApp(getActivity());
-        updateUI();
+        actulizarPantalla();
     }
 
+    /**
+     *
+     */
     @Override
     public void onPause() {
         super.onPause();
         AppEventsLogger.deactivateApp(getActivity());
     }
 
+    /**
+     * Se deja de rastrear el perfil si se destruye el fragmento
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
         profileTracker.stopTracking();
     }
 
-    private void updateUI() {
+    /**
+     * Actualiza la interfaz del fragmento con la informacion del perfil del usuario si esta conectado
+     */
+    private void actulizarPantalla() {
         boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
 
         Profile profile = Profile.getCurrentProfile();
         if (enableButtons && profile != null) {
-            new LoadProfileImage(profilePicImageView).execute(profile.getProfilePictureUri(200, 200).toString());
-            greeting.setText(String.format(getString(R.string.hello_user), profile.getFirstName()) );
-            continuar_login.setVisibility(View.VISIBLE);
+            new LoadProfileImage(ivFotoPerfil).execute(profile.getProfilePictureUri(200, 200).toString());
+            tvSaludo.setText(String.format(getString(R.string.hello_user), profile.getFirstName()) );
+            btnContinuar.setVisibility(View.VISIBLE);
         } else {
-            greeting.setText(null);
-            profilePicImageView.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
+            tvSaludo.setText(null);
+            btnContinuar.setVisibility(View.GONE);
+            ivFotoPerfil.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
         }
     }
 
@@ -159,13 +204,8 @@ public class FacebookFragment extends Fragment{
         super.onSaveInstanceState(outState);
     }
 
-    /*private boolean hasPublishPermission() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken != null && accessToken.getPermissions().contains("publish_actions");
-    }*/
-
     /**
-     * Background Async task to load user profile picture from url
+     * Tarea asíncrona que se corre en el fondo para cargar la imangen de perfil de Facebook del url
      * */
     private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;

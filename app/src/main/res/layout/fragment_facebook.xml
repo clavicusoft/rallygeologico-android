@@ -41,7 +41,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:src="@drawable/com_facebook_profile_picture_blank_square"
-                android:background="@drawable/border_fb_login"
+                android:background="@drawable/border_fb_profile_pic"
                 />
             <TextView
                 android:id="@+id/greeting"
@@ -70,14 +70,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/btn_cont_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_inicio_shape"
                 android:text="CONTINUAR"
                 android:textColor="#FFFFFF"
