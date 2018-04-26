@@ -6,9 +6,16 @@
 
     <style name="LoginTheme" parent="Theme.AppCompat.Light">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>-->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:navigationBarColor">?android:attr/colorPrimaryDark</item>
+        <item name="android:colorForeground">@color/Gris_5</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/Gris_5</item>
+    </style>
+
+    <style name="UCR" parent="@android:style/Theme.Holo">
+
     </style>
 
 </resources>
