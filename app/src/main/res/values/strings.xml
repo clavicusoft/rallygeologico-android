@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">RallyGeologico</string>
-    <string name="facebook_app_id">325467311315442</string>
-    <string name="fb_login_protocol_scheme">fb325467311315442</string>
+    <string name="facebook_app_id">1417631371676772</string>
+    <string name="fb_login_protocol_scheme">fb1417631371676772</string>
     <string name="fb_log_in">INGRESAR CON FACEBOOK</string>
     <string name="fb_log_out">SALIR</string>
     <string name="error">Error</string>
