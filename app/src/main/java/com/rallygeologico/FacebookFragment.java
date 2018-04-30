@@ -3,7 +3,6 @@ package com.rallygeologico;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,13 +24,12 @@ import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.facebook.share.widget.ShareDialog;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 
 import static android.view.View.GONE;
 
@@ -49,7 +47,6 @@ public class FacebookFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getActivity());
-        // Other app specific specialization
     }
 
     @Override
@@ -63,9 +60,13 @@ public class FacebookFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_facebook, parent, false);
         welcome = v.findViewById(R.id.tv_welcome);
+
         loginButton = v.findViewById(R.id.loginButton);
         // If using in a fragment
         loginButton.setFragment(this);
+        List<String> listPermission = Arrays.asList("email", "public_profile", "user_hometown");
+        loginButton.setReadPermissions(listPermission);
+
         profilePicImageView = v.findViewById(R.id.profilePicture);
         greeting = v.findViewById(R.id.greeting);
         continuar_login = v.findViewById(R.id.btn_cont_login);
@@ -118,6 +119,13 @@ public class FacebookFragment extends Fragment{
                 }
             }
         });
+
+        continuar_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setProfileScreen(view);
+            }
+        });
         return v;
     }
 
@@ -142,8 +150,8 @@ public class FacebookFragment extends Fragment{
 
     private void updateUI() {
         boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
-
         Profile profile = Profile.getCurrentProfile();
+
         if (enableButtons && profile != null) {
             new LoadProfileImage(profilePicImageView).execute(profile.getProfilePictureUri(200, 200).toString());
             greeting.setText(String.format(getString(R.string.hello_user), profile.getFirstName()) );
@@ -154,20 +162,20 @@ public class FacebookFragment extends Fragment{
         }
     }
 
+    public void setProfileScreen(View view) {
+        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
 
-    /*private boolean hasPublishPermission() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken != null && accessToken.getPermissions().contains("publish_actions");
-    }*/
-
     /**
      * Background Async task to load user profile picture from url
      * */
-    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
+    public static class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
         public LoadProfileImage(ImageView bmImage) {
