@@ -28,10 +28,10 @@ public class JSONParser {
         return s1;
     }
 
-    public static String getLocation(JSONObject obj) {
+    public static String getHometown(JSONObject obj) {
         String s1 = "";
         try {
-            JSONObject ubicacion = (JSONObject) obj.get("locale");
+            JSONObject ubicacion = (JSONObject) obj.get("hometown");
             s1 = ubicacion.getString("name");
         } catch (JSONException e) {
             e.printStackTrace();

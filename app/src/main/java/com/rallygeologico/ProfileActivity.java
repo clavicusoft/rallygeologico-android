@@ -56,13 +56,13 @@ public class ProfileActivity extends AppCompatActivity {
                                 Log.d("Request", object.toString());
                                 String name = JSONParser.getName(object);
                                 nombreUsuario.setText(name);
-                                String locale = JSONParser.getLocation(object);
-                                lugar.setText(locale);
+                                String home = JSONParser.getHometown(object);
+                                lugar.setText(home);
                             }
                         }
                     });
             Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,link,locale");
+            parameters.putString("fields", "id,name,link,hometown");
             request.setParameters(parameters);
             request.executeAsync();
         }

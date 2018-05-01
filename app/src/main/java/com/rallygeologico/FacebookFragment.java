@@ -28,6 +28,8 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import static android.view.View.GONE;
 
@@ -58,13 +60,17 @@ public class FacebookFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_facebook, parent, false);
         welcome = v.findViewById(R.id.tv_welcome);
+
         loginButton = v.findViewById(R.id.loginButton);
         // If using in a fragment
         loginButton.setFragment(this);
+        List<String> listPermission = Arrays.asList("email", "public_profile", "user_hometown");
+        loginButton.setReadPermissions(listPermission);
+
         profilePicImageView = v.findViewById(R.id.profilePicture);
         greeting = v.findViewById(R.id.greeting);
         continuar_login = v.findViewById(R.id.btn_cont_login);
-        //continuar_login.setVisibility(GONE);
+        continuar_login.setVisibility(GONE);
         profilePicImageView = v.findViewById(R.id.profilePicture);
         profilePicImageView.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
         callbackManager = CallbackManager.Factory.create();
