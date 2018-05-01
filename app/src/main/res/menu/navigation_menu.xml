@@ -5,24 +5,30 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/menu_seccion_1"
+            android:icon="@drawable/ic_profile"
             android:title="Perfil"/>
         <item
             android:id="@+id/menu_seccion_2"
+            android:icon="@drawable/ic_rally"
             android:title="Lista de Rallies"/>
         <item
             android:id="@+id/menu_seccion_3"
+            android:icon="@drawable/ic_score"
             android:title="Puntuaciones"/>
     </group>
 
     <item
         android:id="@+id/navigation_subheader"
+
         android:title="Otras opciones">
         <menu>
             <item
                 android:id="@+id/menu_opcion_1"
+                android:icon="@drawable/ic_adjust"
                 android:title="Ajustes"/>
             <item
                 android:id="@+id/menu_opcion_2"
+                android:icon="@drawable/ic_about"
                 android:title="Sobre nosotros"/>
         </menu>
     </item>

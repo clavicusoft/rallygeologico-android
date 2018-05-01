@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="20dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:background="@drawable/border_fb_login">
@@ -40,7 +40,7 @@
                 android:id="@+id/profilePicture"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginTop="10dp"
                 android:padding="20dp"
                 android:scaleType="centerCrop"
@@ -50,7 +50,6 @@
                 android:id="@+id/greeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"/>
@@ -59,14 +58,13 @@
                 android:id="@+id/loginButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="10dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
                 facebook:com_facebook_confirm_logout="true"
                 facebook:com_facebook_login_text="@string/fb_log_in"
                 facebook:com_facebook_logout_text="@string/fb_log_out"
-                facebook:com_facebook_tooltip_mode="never_display"
-                />
+                facebook:com_facebook_tooltip_mode="never_display" />
 
         </LinearLayout>
 
