@@ -114,9 +114,6 @@ public class FacebookFragment extends Fragment{
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(AccessToken.getCurrentAccessToken() != null){
-                    continuar_login.setVisibility(v.GONE);
-                }
             }
         });
 
@@ -159,11 +156,12 @@ public class FacebookFragment extends Fragment{
         } else {
             greeting.setText(null);
             profilePicImageView.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
+            continuar_login.setVisibility(View.GONE);
         }
     }
 
     public void setProfileScreen(View view) {
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        Intent intent = new Intent(getActivity(), GameActivity.class);
         startActivity(intent);
     }
 
