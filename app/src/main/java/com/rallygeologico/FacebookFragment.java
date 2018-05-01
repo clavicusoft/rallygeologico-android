@@ -64,7 +64,7 @@ public class FacebookFragment extends Fragment{
         profilePicImageView = v.findViewById(R.id.profilePicture);
         greeting = v.findViewById(R.id.greeting);
         continuar_login = v.findViewById(R.id.btn_cont_login);
-        continuar_login.setVisibility(GONE);
+        //continuar_login.setVisibility(GONE);
         profilePicImageView = v.findViewById(R.id.profilePicture);
         profilePicImageView.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
         callbackManager = CallbackManager.Factory.create();

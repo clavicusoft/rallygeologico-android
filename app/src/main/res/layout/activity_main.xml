@@ -15,7 +15,7 @@
         android:layout_height="200dp"
         android:layout_marginBottom="20dp"
         android:gravity="center"
-        android:layout_alignParentBottom="true">
+        >
 
     <Button
         android:id="@+id/btn_inicio"
