@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background_inicio"
+    tools:context=".MainActivity">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+
+    <Button
+        android:id="@+id/btn_inicio"
+        android:onClick="setLoginScreen"
+        android:text="INICIAR"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/btn_inicio_shape"/>
+
+        <ImageView
+            android:id="@+id/iv_inicio"
+            android:layout_width="206dp"
+            android:layout_height="102dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/firma_ucr" />
+
+    </LinearLayout>
+
+</RelativeLayout>

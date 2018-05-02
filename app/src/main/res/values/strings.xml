@@ -1,5 +1,4 @@
-<resources>
-    <string name="app_name">Rally Geologico</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="rally_list1">Rallies Descargados</string>
     <string name="rally_list2">Otros Rallies</string>
     <string name="boton_descargar">Descargar</string>
@@ -31,6 +30,18 @@
     <string name="title_activity_error_no_registro_rallies">ErrorNoRegistroRallies</string>
     <string name="title_activity_informacion_rally">InformacionRally</string>
 
+
+    <string name="app_name">Rally Geológico</string>
+    <string name="facebook_app_id">1417631371676772</string>
+    <string name="fb_login_protocol_scheme">fb1417631371676772</string>
+    <string name="fb_log_in">INGRESAR CON FACEBOOK</string>
+    <string name="fb_log_out">SALIR</string>
+    <string name="error">Error</string>
+    <string name="success">Inicio de sesión exitoso</string>
+    <string name="cancelled">Cancelado inicio de sesión</string>
+    <string name="permission_not_granted">No se ha podido iniciar sesión</string>
+    <string name="ok">OK</string>
+    <string name="hello_user">Conectado como %1$s</string>
+    <string name="bg_inicio">Fondo de pantalla inicio</string>
+
 </resources>
-
-
