@@ -3,6 +3,9 @@
     <string name="rally_list1">Rallies Descargados</string>
     <string name="rally_list2">Otros Rallies</string>
     <string name="boton_descargar">Descargar</string>
+    <string name="menu_rally_jugar">Jugar</string>
+    <string name="menu_rally_eliminar">Eliminar</string>
+    <string name="menu_rally_subir_resultados">Subir Resultados</string>
 
     <array name="rally_images">
         <item>@drawable/img_rally_predet</item>
@@ -25,6 +28,8 @@
         <item>Descripcion 2</item>
         <item>Descripcion 3</item>
     </string-array>
+    <string name="title_activity_error_no_registro_rallies">ErrorNoRegistroRallies</string>
+    <string name="title_activity_informacion_rally">InformacionRally</string>
 
 </resources>
 

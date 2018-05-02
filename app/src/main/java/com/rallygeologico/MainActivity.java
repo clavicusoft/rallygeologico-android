@@ -1,13 +1,24 @@
+//https://stackoverflow.com/questions/32473804/how-to-get-the-position-of-cardview-item-in-recyclerview/33027953#33027953
 package com.rallygeologico;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     private DynamicListAdapter mDynamicListAdapter;
 
+    private ImageButton boton_menu;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,10 +53,16 @@ public class MainActivity extends AppCompatActivity {
         //Get the data
         initializeData();
 
-        mDynamicListAdapter = new DynamicListAdapter();
+        mDynamicListAdapter = new DynamicListAdapter(MainActivity.this);
         mLayoutManager = new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mDynamicListAdapter);
+
+        //Obtenemos la referencia a los controles
+        //boton_menu = (ImageButton) findViewById(R.id.boton_menu);
+
+        //Asociamos los menús contextuales a los controles
+        //registerForContextMenu(boton_menu);
 
     }
 
@@ -59,12 +79,12 @@ public class MainActivity extends AppCompatActivity {
         //Create the ArrayList of Sports objects with the titles and information about each rally
         for(int i=0;i<lista_rallies_descargados.length;i++){
             int memoria = 10 + (int)(Math.random() * 50);
-            rallies_descargados.add(new Rally(i,lista_rallies_descargados[i],rallyInfo[i],i,"hola", "Este rally utiliza:"+memoria+"Mb",false));
+            rallies_descargados.add(new Rally(i+0,lista_rallies_descargados[i],rallyInfo[i],i,"hola", "Este rally utiliza:"+memoria+"Mb",false));
         }
 
         for(int i=0;i<lista_rallies_sin_descargar.length;i++){
             int memoria = 10 + (int)(Math.random() * 50);
-            rallies_sin_descargar.add(new Rally(i,lista_rallies_sin_descargar[i],rallyInfo[i],i,"hola", "Este rally pesa :"+memoria+"Mb",false));
+            rallies_sin_descargar.add(new Rally(i+10,lista_rallies_sin_descargar[i],rallyInfo[i],i,"hola", "Este rally pesa :"+memoria+"Mb",false));
         }
     }
 
@@ -76,10 +96,17 @@ public class MainActivity extends AppCompatActivity {
         private static final int SECOND_LIST_ITEM_VIEW = 4;
         private static final int SECOND_LIST_HEADER_VIEW = 5;
 
-        public DynamicListAdapter() {
+        private Context context;
+
+        public DynamicListAdapter(Context context) {
+            this.context = context;
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder{
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            //Items invisibles
+            private TextView id_rally_descargado;
+            private TextView id_rally_sin_descargar;
+
             //Items de la primera lista
             private TextView nombre_rally_descargado;
             private TextView memoria_rally_descargado;
@@ -90,20 +117,29 @@ public class MainActivity extends AppCompatActivity {
             // Element of footer view
             private TextView footerTextView;
 
+            //Boton del menu
+            private ImageButton boton_menu_rally;
+
+
             public ViewHolder(View itemView) {
                 super(itemView);
 
                 //Obtiene la vista de elementos de la primera lista
-                nombre_rally_descargado = (TextView)itemView.findViewById(R.id.nombre_rally_descargado);
+                id_rally_descargado = (TextView) itemView.findViewById(R.id.id_rally_descargado);
+                nombre_rally_descargado = (TextView) itemView.findViewById(R.id.nombre_rally_descargado);
                 memoria_rally_descargado = (TextView) itemView.findViewById(R.id.memoria_rally_descargado);
 
                 //Obtiene la vista de elementos de la segunda lista
-                nombre_rally_sin_descargar = (TextView)itemView.findViewById(R.id.nombre_rally_sin_descargar);
+                id_rally_sin_descargar = (TextView) itemView.findViewById(R.id.id_rally_no_descargado);
+                nombre_rally_sin_descargar = (TextView) itemView.findViewById(R.id.nombre_rally_sin_descargar);
 
                 footerTextView = (TextView) itemView.findViewById(R.id.footer);
+
+                //Boton de menu para los rallies descargados
+                boton_menu_rally = (ImageButton) itemView.findViewById(R.id.boton_menu);
             }
 
-            public void bindViewSecondList(int pos){
+            public void bindViewSecondList(int pos) {
 
                 if (rallies_descargados == null) pos = pos - 1;
                 else {
@@ -112,8 +148,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 final String nombre_rally = rallies_sin_descargar.get(pos).getName();
+                final String id_rally = "" + rallies_sin_descargar.get(pos).getRallyId();
 
                 nombre_rally_sin_descargar.setText(nombre_rally);
+                id_rally_sin_descargar.setText(id_rally);
             }
 
             public void bindViewFirstList(int pos) {
@@ -122,14 +160,30 @@ public class MainActivity extends AppCompatActivity {
 
                 final String nombre_rally = rallies_descargados.get(pos).getName();
                 final String memoria_rally = rallies_descargados.get(pos).getMemoryUsage();
+                final String id_rally = "" + rallies_descargados.get(pos).getRallyId();
 
                 nombre_rally_descargado.setText(nombre_rally);
                 memoria_rally_descargado.setText(memoria_rally);
+                id_rally_sin_descargar.setText(id_rally);
+
+                boton_menu_rally.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        PopupMenu popup = new PopupMenu(view.getContext(), view);
+                        popup.inflate(R.menu.menu_rally_descargado);
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                Toast.makeText(boton_menu_rally.getContext(), "DO SOME STUFF HERE", Toast.LENGTH_LONG).show();
+                                return true;
+                            }
+                        });
+                        popup.show();
+                    }
+                });
+
             }
 
-            public void bindViewFooter(int pos) {
-                footerTextView.setText("This is footer");
-            }
         }
 
         public class FooterViewHolder extends ViewHolder {
@@ -138,25 +192,28 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        private class RallyDescargadoViewHolder extends ViewHolder{
+        private class RallyDescargadoViewHolder extends ViewHolder {
+            private ImageButton boton_menu_rally2;
+
             public RallyDescargadoViewHolder(View itemView) {
                 super(itemView);
+                boton_menu_rally2 = (ImageButton) itemView.findViewById(R.id.boton_menu);
             }
         }
 
-        private class RallySinDescargarViewHolder extends ViewHolder{
+        private class RallySinDescargarViewHolder extends ViewHolder {
             public RallySinDescargarViewHolder(View itemView) {
                 super(itemView);
             }
         }
 
-        private class TituloLista1 extends ViewHolder{
+        private class TituloLista1 extends ViewHolder {
             public TituloLista1(View itemView) {
                 super(itemView);
             }
         }
 
-        private class TituloLista2 extends ViewHolder{
+        private class TituloLista2 extends ViewHolder {
             public TituloLista2(View itemView) {
                 super(itemView);
             }
@@ -172,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (viewType == FIRST_LIST_ITEM_VIEW) {
                 v = LayoutInflater.from(parent.getContext()).inflate(R.layout.rallies_descargados, parent, false);
                 RallyDescargadoViewHolder vh = new RallyDescargadoViewHolder(v);
+
                 return vh;
 
             } else if (viewType == FIRST_LIST_HEADER_VIEW) {
@@ -194,20 +252,49 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
             try{
-                if (holder instanceof FooterViewHolder) {
-                    FooterViewHolder vh = (FooterViewHolder) holder;
-                    vh.bindViewFooter(position);
-                } else if(holder instanceof TituloLista1){
+                 if(holder instanceof TituloLista1){
                     TituloLista1 vh = (TituloLista1) holder;
                 } else if(holder instanceof TituloLista2){
                     TituloLista2 vh = (TituloLista2) holder;
                 } else if(holder instanceof RallyDescargadoViewHolder){
-                    RallyDescargadoViewHolder vh = (RallyDescargadoViewHolder) holder;
+                    final RallyDescargadoViewHolder vh = (RallyDescargadoViewHolder) holder;
                     vh.bindViewFirstList(position);
+                    vh.boton_menu_rally2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //creating a popup menu
+                            PopupMenu popup = new PopupMenu(context, vh.boton_menu_rally2);
+                            //inflating menu from xml resource
+                            popup.inflate(R.menu.menu_rally_descargado);
+                            //adding click listener
+                            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    switch (item.getItemId()) {
+                                        case R.id.jugar:
+                                            //handle menu1 click
+                                            break;
+                                        case R.id.eliminar:
+                                            //handle menu2 click
+                                            break;
+                                        case R.id.subir_resultados:
+                                            //handle menu3 click
+                                            break;
+                                    }
+                                    return false;
+                                }
+                            });
+                            //displaying the popup
+                            popup.show();
+                        }
+                    });
+                    //holder.itemView.setTag(1,position);
                 }else if(holder instanceof RallySinDescargarViewHolder){
                     RallySinDescargarViewHolder vh = (RallySinDescargarViewHolder) holder;
                     vh.bindViewSecondList(position);
+                    //holder.itemView.setTag(1,position);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -268,5 +355,81 @@ public class MainActivity extends AppCompatActivity {
 
             return super.getItemViewType(position);
         }
+    }
+
+    public void onDeleteClick(View v) {
+
+        AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
+        alert_builder.setMessage("¿Seguro que quiere eliminar el rally?").setTitle("Eliminar Rally");
+        alert_builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            }
+        });
+        alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        AlertDialog alert = alert_builder.create();
+        alert.show();
+    }
+
+    public void downloadClick(View v) {
+        AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
+        alert_builder.setMessage("¿Seguro que quiere desargar el rally?").setTitle("¿Desea descargar el rally con id: "+" ?");
+        alert_builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            }
+        });
+        alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        AlertDialog alert = alert_builder.create();
+        alert.show();
+    }
+
+    public void menuClick(final View v){
+        //creating a popup menu
+        PopupMenu popup = new PopupMenu(v.getContext(), v);
+        //inflating menu from xml resource
+        popup.inflate(R.menu.menu_rally_descargado);
+        //adding click listener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.jugar:
+                        //handle menu1 click
+                        break;
+                    case R.id.eliminar:
+                        AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
+                        alert_builder.setMessage("¿Seguro que quiere eliminar el rally?").setTitle("¿Desea eliminar el rally con id: "+" ?");
+                        alert_builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User clicked OK button
+                            }
+                        });
+                        alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                        AlertDialog alert = alert_builder.create();
+                        alert.show();
+                        break;
+                    case R.id.subir_resultados:
+                        Intent intent = new Intent(v.getContext(),InformacionRally.class);
+                        startActivity(intent);
+                        break;
+                }
+                return false;
+            }
+        });
+        //displaying the popup
+        popup.show();
     }
 }
