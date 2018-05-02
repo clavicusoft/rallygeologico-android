@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_rally_no_descargado"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
+
+    <TextView
+        android:id="@+id/id_rally_no_descargado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,12 +28,14 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="@color/Azul_oscuro_1"
+            android:onClick="downloadClick"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
             android:text="@string/boton_descargar"
-            android:textColor="@color/Blanco" />
+            android:textColor="@color/Blanco"
+            android:textSize="10sp" />
 
     </LinearLayout>
 
