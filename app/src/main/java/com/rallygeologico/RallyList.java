@@ -4,14 +4,11 @@ package com.rallygeologico;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +20,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import MenuRallies.Rally;
-import MenuRallies.RallyAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class RallyList extends AppCompatActivity {
 
     //Variables
     private ArrayList<Rally> rallies_descargados = new ArrayList<Rally>();
@@ -42,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_rallylist);
 
         //Initialize the RecyclerView
         recyclerView = (RecyclerView)findViewById(R.id.mi_lista);
@@ -53,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         //Get the data
         initializeData();
 
-        mDynamicListAdapter = new DynamicListAdapter(MainActivity.this);
-        mLayoutManager = new LinearLayoutManager(MainActivity.this);
+        mDynamicListAdapter = new DynamicListAdapter(RallyList.this);
+        mLayoutManager = new LinearLayoutManager(RallyList.this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mDynamicListAdapter);
 
@@ -422,8 +418,8 @@ public class MainActivity extends AppCompatActivity {
                         alert.show();
                         break;
                     case R.id.subir_resultados:
-                        Intent intent = new Intent(v.getContext(),InformacionRally.class);
-                        startActivity(intent);
+                        //Intent intent = new Intent(v.getContext(),InformacionRally.class);
+                        //startActivity(intent);
                         break;
                 }
                 return false;
