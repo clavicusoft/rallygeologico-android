@@ -11,12 +11,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 public class GameActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     NavigationView navView;
     Toolbar appbar;
+    EditText equipo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,7 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         appbar = (Toolbar) findViewById(R.id.appbar);
+        equipo = (EditText)findViewById(R.id.equipo);
         setSupportActionBar(appbar);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
@@ -55,6 +59,13 @@ public class GameActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+    }
+
+    public void OnQuery(View view) {
+        String username = equipo.getText().toString();
+        String type = "Consultar";
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        backgroundWorker.execute(type, username);
     }
 
     @Override
