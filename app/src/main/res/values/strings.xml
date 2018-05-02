@@ -1,4 +1,36 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="rally_list1">Rallies Descargados</string>
+    <string name="rally_list2">Otros Rallies</string>
+    <string name="boton_descargar">Descargar</string>
+    <string name="menu_rally_jugar">Jugar</string>
+    <string name="menu_rally_eliminar">Eliminar</string>
+    <string name="menu_rally_subir_resultados">Subir Resultados</string>
+
+    <array name="rally_images">
+        <item>@drawable/img_rally_predet</item>
+    </array>
+
+    <string-array name="rally_titles_Descargados">
+        <item>Rally 1</item>
+        <item>Rally 2</item>
+        <item>Rally 3</item>>
+    </string-array>
+
+    <string-array name="rally_titles_NoDescargados">
+        <item>Rally 4</item>
+        <item>Rally 5</item>
+        <item>Rally 6</item>>
+    </string-array>
+
+    <string-array name="rally_info">
+        <item>Descripcion 1</item>
+        <item>Descripcion 2</item>
+        <item>Descripcion 3</item>
+    </string-array>
+    <string name="title_activity_error_no_registro_rallies">ErrorNoRegistroRallies</string>
+    <string name="title_activity_informacion_rally">InformacionRally</string>
+
+
     <string name="app_name">Rally Geológico</string>
     <string name="facebook_app_id">1417631371676772</string>
     <string name="fb_login_protocol_scheme">fb1417631371676772</string>
@@ -12,11 +44,4 @@
     <string name="hello_user">Conectado como %1$s</string>
     <string name="bg_inicio">Fondo de pantalla inicio</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_user_info">UserInfoActivity</string>
 </resources>
-
-
-
-
