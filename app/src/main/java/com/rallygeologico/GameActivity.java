@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -22,6 +23,9 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        //View myLayout = findViewById( R.id.content);
+        //Button botonMapa= myLayout.findViewById( R.id.btnMap);
 
         appbar = (Toolbar) findViewById(R.id.appbar);
         setSupportActionBar(appbar);

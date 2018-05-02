@@ -33,7 +33,7 @@ import java.util.List;
 
 import static android.view.View.GONE;
 
-public class FacebookFragment extends Fragment{
+public class FacebookFragment extends Fragment {
 
     private LoginButton loginButton;
     private ImageView profilePicImageView;
