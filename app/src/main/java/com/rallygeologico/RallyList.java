@@ -4,6 +4,8 @@ package com.rallygeologico;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Environment;
+import android.os.StatFs;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -372,8 +374,18 @@ public class RallyList extends AppCompatActivity {
     }
 
     public void downloadClick(View v) {
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        long bytesAvailable;
+        if (android.os.Build.VERSION.SDK_INT >=
+                android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            bytesAvailable = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
+        }
+        else {
+            bytesAvailable = (long)stat.getBlockSize() * (long)stat.getAvailableBlocks();
+        }
+        long megAvailable = bytesAvailable / (1024 * 1024);
         AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
-        alert_builder.setMessage("¿Seguro que quiere desargar el rally?").setTitle("¿Desea descargar el rally con id: "+" ?");
+        alert_builder.setMessage("¿Seguro que quiere desargar el rally? Usted cuenta con "+megAvailable+" MB disponibles.").setTitle("¿Desea descargar el rally con id: "+" ?");
         alert_builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
