@@ -45,6 +45,7 @@ public class GameActivity extends AppCompatActivity {
                                 setProfileScreen();
                                 break;
                             case R.id.menu_seccion_2:
+                                setRallyListScreen();
                                 break;
                             case R.id.menu_seccion_3:
                                 break;
@@ -83,6 +84,11 @@ public class GameActivity extends AppCompatActivity {
 
     public void setProfileScreen() {
         Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+    }
+
+    public void setRallyListScreen() {
+        Intent intent = new Intent(this, RallyList.class);
         startActivity(intent);
     }
 }

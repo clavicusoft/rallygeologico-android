@@ -38,7 +38,6 @@ public class FacebookFragment extends Fragment{
     private LoginButton loginButton;
     private ImageView profilePicImageView;
     private TextView greeting;
-    private TextView welcome;
     private Button continuar_login;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
@@ -59,8 +58,6 @@ public class FacebookFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_facebook, parent, false);
-        welcome = v.findViewById(R.id.tv_welcome);
-
         loginButton = v.findViewById(R.id.loginButton);
         // If using in a fragment
         loginButton.setFragment(this);
