@@ -21,6 +21,12 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <!-- Resto de la interfaz de usuario -->
+    <Button
+        android:id="@+id/btnMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
+
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
