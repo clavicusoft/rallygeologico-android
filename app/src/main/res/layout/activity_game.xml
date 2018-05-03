@@ -9,7 +9,8 @@
     tools:context=".GameActivity">
 
     <!-- Layout real de la actividad -->
-    <include layout="@layout/content" />
+    <include layout="@layout/content"
+        android:id="@+id/content"/>
 
     <!-- Layout del menú lateral (Navigation View) -->
     <android.support.design.widget.NavigationView

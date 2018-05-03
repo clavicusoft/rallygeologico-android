@@ -1,5 +1,6 @@
 package com.rallygeologico;
 
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +27,8 @@ public class ProfileActivity extends AppCompatActivity {
     TextView recorridosTotal;
     TextView puntos;
     TextView puntosTotal;
-    TextView prueba;
+    PagerAdapter pagerAdapter;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,10 @@ public class ProfileActivity extends AppCompatActivity {
         puntos = findViewById(R.id.points);
         recorridosTotal = findViewById(R.id.rallyCounter);
         puntosTotal = findViewById(R.id.pointsCounter);
-        prueba = findViewById(R.id.prueba);
+
+        pagerAdapter = new PagerAdapter(getSupportFragmentManager(), this);
+        viewPager = findViewById(R.id.pagerProfile);
+        viewPager.setAdapter(pagerAdapter);
 
         boolean conectado = AccessToken.getCurrentAccessToken() != null;
 
