@@ -23,12 +23,12 @@ class PagerAdapter extends FragmentPagerAdapter {
         Bundle args;
         switch (position) {
             case 0:
-                fragment = new ProfileFragment();
+                fragment = new RallyListFragment();
                 args = new Bundle();
                 fragment.setArguments(args);
                 return fragment;
             case 1:
-                fragment = new ProfileFragment();
+                fragment = new AchievementListFragment();
                 args = new Bundle();
                 fragment.setArguments(args);
                 return fragment;
