@@ -55,8 +55,10 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         try{
-            Location ultimo=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            center = new GeoPoint(ultimo.getLatitude(),ultimo.getLongitude());
+            Location ultimo = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(ultimo != null){
+                center = new GeoPoint(ultimo.getLatitude(),ultimo.getLongitude());
+            }
         }
         catch(SecurityException e){
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_LONG).show();
@@ -88,7 +90,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     public void addMarker(GeoPoint loc,int ite,String titulo)
     {
-
         Marker marker=new Marker(mapView);
         marker.setPosition(loc);
         marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
