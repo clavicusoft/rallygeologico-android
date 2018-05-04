@@ -5,6 +5,8 @@
 
     <TextView
         android:id="@+id/tv_datos"
+        android:textColor="#666666"
+        android:textSize="18dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No hay datos" />

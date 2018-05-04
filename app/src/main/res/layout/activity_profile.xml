@@ -37,7 +37,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
                 android:clickable="true"
-                android:src="@drawable/ic_edit"/>
+                android:src="@drawable/ic_edit" />
 
             <TextView
                 android:id="@+id/nombre"
@@ -63,8 +63,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/ubicacion">
+                android:layout_below="@+id/ubicacion"
+                android:layout_centerHorizontal="true">
 
                 <TextView
                     android:id="@+id/rallies"
@@ -74,15 +74,17 @@
                     android:text="Recorridos: "
                     android:textColor="#fff"
                     android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/rallyCounter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    app:layout_constraintLeft_toRightOf="@+id/rallies"
                     android:text="0"
                     android:textColor="#ccc"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toRightOf="@+id/rallies" />
+
                 <TextView
                     android:id="@+id/separator"
                     android:layout_width="wrap_content"
@@ -91,6 +93,7 @@
                     android:text=" | "
                     android:textColor="#fff"
                     android:textSize="18sp" />
+
                 <TextView
                     android:id="@+id/points"
                     android:layout_width="wrap_content"
@@ -101,16 +104,17 @@
                     android:text="Puntos: "
                     android:textColor="#fff"
                     android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/pointsCounter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
-                    app:layout_constraintLeft_toRightOf="@+id/points"
                     android:text="0"
                     android:textColor="#ccc"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toRightOf="@+id/points" />
             </LinearLayout>
 
         </RelativeLayout>
