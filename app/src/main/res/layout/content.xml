@@ -24,7 +24,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:background="@drawable/fondo_inicio">
+
 
 
         <Button
@@ -35,7 +37,7 @@
             android:layout_gravity="center"
             android:background="@drawable/btn_inicio_shape"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="30dp"
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
 
