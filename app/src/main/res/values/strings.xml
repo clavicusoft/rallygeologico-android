@@ -1,4 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <string name="rally_list1">Rallies Descargados</string>
     <string name="rally_list2">Otros Rallies</string>
     <string name="boton_descargar">Descargar</string>

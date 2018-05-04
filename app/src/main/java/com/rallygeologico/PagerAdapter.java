@@ -12,7 +12,6 @@ class PagerAdapter extends FragmentPagerAdapter {
     private static int NUM_PAGES = 2;
 
     Context mContext;
-
     public PagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         mContext = context;

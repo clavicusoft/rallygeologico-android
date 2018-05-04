@@ -54,7 +54,6 @@
                 facebook:com_facebook_login_text="@string/fb_log_in"
                 facebook:com_facebook_logout_text="@string/fb_log_out"
                 facebook:com_facebook_tooltip_mode="never_display" />
-
         </LinearLayout>
 
         <LinearLayout

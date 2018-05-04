@@ -34,6 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
         fotoFondo = findViewById(R.id.header_cover_image);
         fotoPerfil = findViewById(R.id.profile);
         editar = findViewById(R.id.edit);
