@@ -23,14 +23,29 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     LocationManager locationManager;
 
     GeoPoint center;
+    GeoPoint arribaIzquierda;
+    GeoPoint arribaDerecha;
+    GeoPoint abajoIzquierda;
     int numberMarker; //El 0 siempre es para el actual
+    boolean lastKnown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        //Actualiza el cuadrado
+
+        arribaIzquierda=new GeoPoint(10.0804,-84.3530);
+        arribaDerecha=new GeoPoint(10.0804, -83.7028);
+        abajoIzquierda=new GeoPoint(  9.912, -84.3530);
+
+
+
+
+
         numberMarker=1; //El 0 siempre es la ubicacion real
+        lastKnown=false;
 
         mapView = (MapView) findViewById(R.id.mapview);
 
@@ -56,18 +71,20 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
         try{
             Location ultimo = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if(ultimo != null){
+            if(ultimo != null)
+            {if ((arribaIzquierda.getLongitude()<ultimo.getLongitude()  && ultimo.getLongitude()<arribaDerecha.getLongitude()) && (arribaIzquierda.getLatitude()>ultimo.getLatitude()  && ultimo.getLatitude()>abajoIzquierda.getLatitude())  ){
                 center = new GeoPoint(ultimo.getLatitude(),ultimo.getLongitude());
+                mc.animateTo(center);
+                addMarker(center,0,"Ultima Ubicacion Registrada");
+                lastKnown=true;
             }
+            }
+
         }
         catch(SecurityException e){
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_LONG).show();
         }
 
-        if (center!=null) {
-            mc.animateTo(center);
-            addMarker(center,0,"Ultima Ubicacion Registrada");
-        }
 
         //Pruebas
         addMarker(new GeoPoint(9.93409, -84.05638),1,"1"); //No visitado
@@ -147,9 +164,18 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        GeoPoint newLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
-        removeMarker(0);
-        addMarker(newLocation,0,"Aca estoy");
+
+        if (location != null)
+        {
+            if((arribaIzquierda.getLongitude()<location.getLongitude()  && location.getLongitude()<arribaDerecha.getLongitude()) && (arribaIzquierda.getLatitude()>location.getLatitude()  && location.getLatitude()>abajoIzquierda.getLatitude()))
+                {
+                GeoPoint newLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
+                if (lastKnown) {
+                    removeMarker(0);
+                }
+                addMarker(newLocation, 0, "Aca estoy");
+            }
+        }
     }
 
     @Override
