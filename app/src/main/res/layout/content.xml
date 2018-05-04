@@ -21,15 +21,24 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <!-- Resto de la interfaz de usuario -->
-    <Button
-        android:id="@+id/btnMap"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
 
-    <FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btnMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ir a mapa"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_inicio_shape"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp" />
+
+    </RelativeLayout>
 
 </LinearLayout>

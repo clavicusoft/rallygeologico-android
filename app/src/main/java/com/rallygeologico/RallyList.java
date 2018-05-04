@@ -33,7 +33,6 @@ public class RallyList extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private DynamicListAdapter mDynamicListAdapter;
-
     private ImageButton boton_menu;
 
 
