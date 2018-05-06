@@ -79,10 +79,10 @@ public class GameActivity extends AppCompatActivity {
                             case R.id.menu_puntuacion:
                                 break;
                             case R.id.menu_ajustes:
-                                Log.i("NavigationView", "Pulsada opción 1");
+                                Log.i("NavigationView", "Pulsada opcion 1");
                                 break;
                             case R.id.menu_info:
-                                Log.i("NavigationView", "Pulsada opción 2");
+                                Log.i("NavigationView", "Pulsada opcion 2");
                                 break;
                         }
                         drawerLayout.closeDrawers();

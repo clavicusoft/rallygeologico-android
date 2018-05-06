@@ -84,11 +84,11 @@ public class VisitasActivity extends AppCompatActivity {
 
             if (tipo.equals("Visitado")) //Ya lo visite pero no es especial
             {
-                secretoNoVisitado.setText("¡Ya lo visitaste!");
+                secretoNoVisitado.setText("Ya lo visitaste");
             }
             else //Es especial
             {
-                secretoNoVisitado.setText("¡Has encontrado un secreto!");
+                secretoNoVisitado.setText("Has encontrado un secreto");
             }
         }
 

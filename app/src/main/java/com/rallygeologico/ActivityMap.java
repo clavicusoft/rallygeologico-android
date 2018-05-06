@@ -16,8 +16,8 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
 /**
- * Clase que se encarga de desplegar el mapa y mostrar la ubicación en tiempo real.
- * Así como los puntos a donde se tiene que dirigir y las distincion de estas entre visitados, no visitados y especiales
+ * Clase que se encarga de desplegar el mapa y mostrar la ubicacion en tiempo real.
+ * Asi como los puntos a donde se tiene que dirigir y las distincion de estas entre visitados, no visitados y especiales
  */
 
 public class ActivityMap extends AppCompatActivity implements LocationListener {
@@ -31,7 +31,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     GeoPoint arribaDerecha; //Ubicacion del vertice superior derecho del mapa
     GeoPoint abajoIzquierda;  //Ubicacion del vertice inferior izquierdo del mapa
     int numberMarker; //El 0 siempre es para el actual
-    boolean lastKnown; //Almacena si se pudo conseguir la ultima ubiación registrada con GPS antes de usar la aplicacion
+    boolean lastKnown; //Almacena si se pudo conseguir la ultima ubiacion registrada con GPS antes de usar la aplicacion
 
     /**
      * Se ejecuta cuando se crea la vista
@@ -251,7 +251,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 i.putExtra("Numero","Punto #2");
                 i.putExtra("Distancia",String.format("%.1f",center.distanceToAsDouble(punto))+" metros de distancia");
                 i.putExtra("Geopuntos","Valor: 50 Geopuntos");
-                i.putExtra("Informacion","Carrillo esta repleta de palmeras y arena blanca. La costa por lo general nunca está muy concurrida, lo que la convierte en un lugar perfecto para relajarse y escapar de los días estresantes en el trabajo. Al tiempo que usted se relaja, puede disfrutar de impresionantes paisajes de las exuberantes montañas que se dibujan en la distancia y que hacen las veces de un hermoso marco para la playa.");
+                i.putExtra("Informacion","Carrillo esta repleta de palmeras y arena blanca. La costa por lo general nunca esta muy concurrida, lo que la convierte en un lugar perfecto para relajarse y escapar de los dias estresantes en el trabajo. Al tiempo que usted se relaja, puede disfrutar de impresionantes paisajes de las exuberantes montanas que se dibujan en la distancia y que hacen las veces de un hermoso marco para la playa.");
                 break;
             case 3:
                 i.putExtra("Tipo","Especial");
@@ -260,7 +260,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 i.putExtra("Numero","Punto Extra");
                 i.putExtra("Distancia",String.format("%.1f",center.distanceToAsDouble(punto))+" metros de distancia");
                 i.putExtra("Geopuntos","Valor: 100 Geopuntos");
-                i.putExtra("Informacion","Catarata Río Agrio y las Pozas Celestes se han convertido en uno de los principales atractivos turísticos del cantón de Sarchí, ya no solo es conocido por la artesanía sino también por la majestuosa naturaleza en esta zona del país");
+                i.putExtra("Informacion","Catarata Rio Agrio y las Pozas Celestes se han convertido en uno de los principales atractivos turisticos del canton de Sarchi, ya no solo es conocido por la artesania sino tambien por la majestuosa naturaleza en esta zona del pais");
                 break;
         }
 
