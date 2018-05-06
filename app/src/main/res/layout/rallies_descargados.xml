@@ -20,7 +20,7 @@
     <TextView
         android:id="@+id/nombre_rally_descargado"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1" />
 
     <LinearLayout
@@ -41,9 +41,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/ic_menu"
+            android:backgroundTint="@color/Gris_5"
+            android:onClick="menuClick"
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
-            android:textSize="10sp"/>
+            android:textSize="10sp" />
     </LinearLayout>
 
 </LinearLayout>
