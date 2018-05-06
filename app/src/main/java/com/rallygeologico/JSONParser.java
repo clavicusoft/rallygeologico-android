@@ -4,10 +4,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 
+/**
+ * Clase para parsear los datos obtenidos del grafo de Facebook
+ */
 public class JSONParser {
-    public static ArrayList<String> favAthletes = new ArrayList<>();
-    public static ArrayList<String> favTeams = new ArrayList<>();
 
+    /**
+     *  Parsea el nombre del usuario de Facebook
+     * @param obj Objeto en formato JSON
+     * @return String con el nombre de usuario
+     */
     public static String getName(JSONObject obj) {
         String s1 = "";
         try {
@@ -18,6 +24,11 @@ public class JSONParser {
         return s1;
     }
 
+    /**
+     * Parsea el id de Facebook del usuario
+     * @param obj Objeto en formato JSON
+     * @return String con el id
+     */
     public static String getId(JSONObject obj) {
         String s1 = "";
         try {
@@ -28,6 +39,11 @@ public class JSONParser {
         return s1;
     }
 
+    /**
+     * Parsea la ciudad de origen de Facebook del usuario
+     * @param obj Objeto en formato JSON
+     * @return String con la ciudad de origen
+     */
     public static String getHometown(JSONObject obj) {
         String s1 = "";
         try {

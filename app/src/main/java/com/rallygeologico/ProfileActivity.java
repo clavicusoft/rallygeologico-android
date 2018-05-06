@@ -16,6 +16,9 @@ import com.facebook.Profile;
 
 import org.json.JSONObject;
 
+/**
+ * Clase para manejar la pantalla del perfil del usuario
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     ImageView fotoPerfil;
@@ -30,6 +33,11 @@ public class ProfileActivity extends AppCompatActivity {
     PagerAdapter pagerAdapter;
     ViewPager viewPager;
 
+    /**
+     * Cuando se crea la vista se carga la foto del usuario, su informacion personal
+     * y se carga en un paginador sus logros obtenidos en el juego y rallies hechos
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,12 +53,13 @@ public class ProfileActivity extends AppCompatActivity {
         recorridosTotal = findViewById(R.id.rallyCounter);
         puntosTotal = findViewById(R.id.pointsCounter);
 
+        // Se inicializa el paginador
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), this);
         viewPager = findViewById(R.id.pagerProfile);
         viewPager.setAdapter(pagerAdapter);
 
+        // Si se esta conectado a Facebook se carga la informacion obtenida en login
         boolean conectado = AccessToken.getCurrentAccessToken() != null;
-
         Profile perfil = Profile.getCurrentProfile();
         if (conectado && perfil != null) {
             new FacebookFragment.LoadProfileImage(fotoPerfil).execute(perfil.getProfilePictureUri(200, 200).toString());

@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+/**
+ * Fragmento para almacenar la lista de logros obtenidos por un usuario
+ */
 public class AchievementListFragment extends Fragment {
 
     View view;
