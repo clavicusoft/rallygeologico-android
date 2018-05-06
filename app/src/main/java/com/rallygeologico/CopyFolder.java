@@ -15,7 +15,6 @@ import static android.content.ContentValues.TAG;
 /**
  * Clase responsable de copiar el mapa de assets a almacenamiento externo si es posible.
  *
- * @author  EniacsTeam
  */
 public class CopyFolder {
     /**

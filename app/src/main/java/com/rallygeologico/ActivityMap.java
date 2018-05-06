@@ -15,34 +15,44 @@ import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+/**
+ * Clase que se encarga de desplegar el mapa y mostrar la ubicación en tiempo real.
+ * Así como los puntos a donde se tiene que dirigir y las distincion de estas entre visitados, no visitados y especiales
+ */
 
 public class ActivityMap extends AppCompatActivity implements LocationListener {
 
-    MapView mapView;
-    MapController mc;
-    LocationManager locationManager;
+    MapView mapView; //Mapa en el que trabajamos
+    MapController mc; //Controlador del mapa
+    LocationManager locationManager; //Escuchador de la ubicacion actual
 
-    GeoPoint center;
-    GeoPoint arribaIzquierda;
-    GeoPoint arribaDerecha;
-    GeoPoint abajoIzquierda;
+    GeoPoint center; //Almacena la ubicacion del GPS
+    GeoPoint arribaIzquierda; //Ubicacion del vertice superior izquierdo del mapa
+    GeoPoint arribaDerecha; //Ubicacion del vertice superior derecho del mapa
+    GeoPoint abajoIzquierda;  //Ubicacion del vertice inferior izquierdo del mapa
     int numberMarker; //El 0 siempre es para el actual
-    boolean lastKnown;
+    boolean lastKnown; //Almacena si se pudo conseguir la ultima ubiación registrada con GPS antes de usar la aplicacion
+
+    /**
+     * Se ejecuta cuando se crea la vista
+     * Se establece el rango de las coordenadas posibles dentro el mapa
+     * Almacena los mapas en memoria externa del celular
+     * Muestra el mapa con los distintos niveles de zoom
+     * Si se tiene registrada la ultima ubicacion que ha tenido por GPS la muestra en el mapa
+     * Inicializa el escuchador
+     * @param savedInstanceState Estado actual de la aplicacion
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        //Actualiza el cuadrado
+        //Actualiza el cuadrado del mapa para generar un rango de validas
 
         arribaIzquierda=new GeoPoint(10.0804,-84.3530);
         arribaDerecha=new GeoPoint(10.0804, -83.7028);
         abajoIzquierda=new GeoPoint(  9.912, -84.3530);
-
-
-
-
 
         numberMarker=1; //El 0 siempre es la ubicacion real
         lastKnown=false;
@@ -65,7 +75,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         //Carga los tiles
         mapView.setTileSource(new XYTileSource("tiles", 10, 18, 256, ".png", new String[0]));
 
-       // obtenerDistancia(9.93407, -84.05657);
+        // obtenerDistancia(9.93407, -84.05657);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -100,10 +110,13 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     }
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-    }
+    /**
+     * Pone un marcador en el mapa con su debido titulo, dependiendo del numero del iterador de cluster
+     * se identifica que tipo es y con esto se le asigna un icono diferente y que al tocarlo genere una accion
+     * @param loc Localizacion donde se desea poner el marcador
+     * @param ite Numero de cluster que se le da al marcador
+     * @param titulo Titulo que se le asocia al marcador
+     */
 
     public void addMarker(GeoPoint loc,int ite,String titulo)
     {
@@ -125,19 +138,30 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 marker.setIcon(getResources().getDrawable(R.drawable.dorado));
             }
             marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+
+                /**
+                 * Metodo que se dispara al tocar un marcador
+                 * Llama a un metodo que despliega la informacion
+                 * @param marker marcador que fue tocado
+                 * @param mapView mapa donde se encuentra el marcador
+                 * */
+
                 @Override
                 public boolean onMarkerClick(Marker marker, MapView mapView) {
-                    informacionMarcador(marker.getPosition(),marker.getTitle()); //Cambiar getTittle para manejar con Base de datos
+                    informacionMarcador(marker.getPosition(),marker.getTitle());
                     return true;
                 }
             });
 
         }
-
-       // mapView.getOverlays().clear();
         mapView.getOverlays().add(ite,marker);
         mapView.invalidate();
     }
+
+    /**
+     * Elimina los marcadores asociados a un numero de iterador
+     * @param ite numero de iterador
+     * */
 
     public void removeMarker(int ite)
     {
@@ -146,21 +170,12 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         mapView.invalidate();
     }
 
-    public void visiteElMarker(GeoPoint loc)
-    {
-        Marker marker=new Marker(mapView);
-        marker.setPosition(loc);
-      //  marker.setIcon(Drawable.createFromPath("@drawable/visitadoMarker"));
-    }
 
-    public void obtenerDistancia(double lat, double lon)
-    {
-        GeoPoint nuevoPunto = new GeoPoint(lat,lon);
-        //addMarker(nuevoPunto);
-        Toast.makeText(this,"Distancia al punto: "+Double.toString(center.distanceToAsDouble(nuevoPunto)),Toast.LENGTH_LONG).show();
-    }
-
-    /*Metodos del location listener*/
+    /**
+     * Meotodo que se dispara cuando hay una nueva localizacion
+     * Si la nueva actualizacion se encuentra dentro del rango elimina la anterior y agrega la nueva al mapa
+     * @param location localizacion nueva
+     * */
 
     @Override
     public void onLocationChanged(Location location) {
@@ -168,7 +183,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         if (location != null)
         {
             if((arribaIzquierda.getLongitude()<location.getLongitude()  && location.getLongitude()<arribaDerecha.getLongitude()) && (arribaIzquierda.getLatitude()>location.getLatitude()  && location.getLatitude()>abajoIzquierda.getLatitude()))
-                {
+            {
                 GeoPoint newLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
                 if (lastKnown) {
                     removeMarker(0);
@@ -177,33 +192,43 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             }
         }
     }
+    /**
+     * Se dispara cuando hay un cambio de estado del proveedor
+     * @param s Proveedor
+     * @param i Estado en el que se encuentra
+     * @param bundle Estado de la aplicacion
+     * */
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
 
     }
-
+    /**
+     * Se dispara cuando se activa el proveedor
+     * @param s Proveedor
+     * */
     @Override
     public void onProviderEnabled(String s) {
 
+
     }
 
+    /**
+     * Se dispara cuando se desactiva el proveedor
+     * @param s Proveedor
+     * */
     @Override
     public void onProviderDisabled(String s) {
 
     }
-/*
-    //Ahorro de energía
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-        if (locationManager!=null)
-        {
-            locationManager.removeUpdates(this);
-        }
-    }
-    */
+
+    /**
+     * Se dispara cuando se toca un marcador
+     * Agarra datos de la base de datos local asociadas al punto y se las pasa a otro activity (VisitasActivity) para mostrar la pantalla informativa sobre el punto.
+     * Como aun no esta implementada la base, se tuvo que inventar los datos
+     * @param punto Punto del cual deseo informacion
+     * @param tipo Estado del punto, si es visitado, no visitado o especial
+     * */
 
     public void informacionMarcador(GeoPoint punto, String tipo)
     {
@@ -239,8 +264,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 break;
         }
 
-        startActivity(i);
+        startActivity(i);//Inicia la actividad
 
-    } //Inicia la actividad
+    }
 
 }
