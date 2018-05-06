@@ -12,7 +12,8 @@ import com.rallygeologico.R;
 import java.util.ArrayList;
 
 /**
- * Created by pjmq2 on 25/04/2018.
+ * Clase para manejar los el adaptador de un Rally
+ * Created by Pablo Madrigal on 20/04/2018.
  */
 
 public class RallyAdapter extends RecyclerView.Adapter<RallyAdapter.ViewHolder> {
@@ -87,6 +88,10 @@ public class RallyAdapter extends RecyclerView.Adapter<RallyAdapter.ViewHolder> 
             mMemoryUsageRally = (TextView)itemView.findViewById(R.id.memoryUsage);
         }
 
+        /**
+         * Mete los datos del rally en los ViewText correspondientes
+         * @param currentRally Rally que actualmente esta recibiendo la información
+         */
         public void bindTo(Rally currentRally) {
             //Populate the textviews with data
             mNameRally.setText(currentRally.getName());

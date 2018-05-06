@@ -7,6 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * Esta clase se encarga de mostrar la informacion asociada a un punto que ha sido tocado en el mapa
+ * */
+
 public class VisitasActivity extends AppCompatActivity {
 
     String nombreImagen;
@@ -14,10 +18,17 @@ public class VisitasActivity extends AppCompatActivity {
     String nombre;
     String numero;
     String distancia;
-     String geopuntos;
-     String informacion;
+    String geopuntos;
+    String informacion;
 
 
+    /**
+     * Se ejecuta cuando se crea la vista
+     * Despliega la informacion sobre el punto.
+     * El layout que despliega la informacion es dinamico y depende de lo que recibamos en el intent.
+     * @param savedInstanceState Estado actual de la aplicacion
+     *
+     * */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,13 +39,13 @@ public class VisitasActivity extends AppCompatActivity {
         tipo= myIntent.getStringExtra("Tipo");
         nombreImagen= myIntent.getStringExtra("Imagen");
         nombre = myIntent.getStringExtra("Nombre");
-         numero = myIntent.getStringExtra("Numero");
-         distancia = myIntent.getStringExtra("Distancia");
+        numero = myIntent.getStringExtra("Numero");
+        distancia = myIntent.getStringExtra("Distancia");
 
-         if (!tipo.equals("No Visitado")) {
-             geopuntos = myIntent.getStringExtra("Geopuntos");
-             informacion = myIntent.getStringExtra("Informacion");
-         }
+        if (!tipo.equals("No Visitado")) {
+            geopuntos = myIntent.getStringExtra("Geopuntos");
+            informacion = myIntent.getStringExtra("Informacion");
+        }
 
         ImageView imagenNoVisitado= (ImageView) findViewById(R.id.imagenPunto);
 
@@ -76,10 +87,10 @@ public class VisitasActivity extends AppCompatActivity {
                 secretoNoVisitado.setText("¡Ya lo visitaste!");
             }
             else //Es especial
-    {
-        secretoNoVisitado.setText("¡Has encontrado un secreto!");
+            {
+                secretoNoVisitado.setText("¡Has encontrado un secreto!");
 
-    }
+            }
         }
 
     }

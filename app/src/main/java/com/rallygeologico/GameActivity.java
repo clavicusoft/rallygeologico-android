@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.Button;
 
 /**
- * Clase para manejar la pantalla principal del juego
+ * Clase para manejar la pantalla principal del juego y solicitar los permisos de memoria externa y uso del GPS
  */
 public class GameActivity extends AppCompatActivity {
 
@@ -28,6 +28,8 @@ public class GameActivity extends AppCompatActivity {
 
     /**
      * Se ejecuta cuando se crea la vista
+     * Verifica si se tienen los permisos y si no los tiene los solicita
+     * Habilita el boton hasta que haya chequeado los permisos
      * @param savedInstanceState Estado actual de la aplicacion
      */
     @Override
@@ -122,7 +124,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * Se ejecuta despues de solicitar los permisos al usuario
+     * Se dispara al solicitar los permisos al usuario
+     * Si este aun no los tiene se los solicita
      * @param requestCode Codigo de solicitud
      * @param permissions Permisos solicitados
      * @param grantResults Permisos asignados
