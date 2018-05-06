@@ -25,6 +25,12 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
     BackgroundWorker (Context ctx) {
         context = ctx;
     }
+
+    /**
+     * Clase que se encarga de comunicarse con el webservice.
+     * @param params lista de paramtros necesarios para comunicarse y hacer las consultas al webservice.
+     * @return
+     */
     @Override
     protected String doInBackground(String... params) {
         String type = params[0];
@@ -69,7 +75,7 @@ public class BackgroundWorker extends AsyncTask<String,Void,String> {
     @Override
     protected void onPreExecute() {
         alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle("Descripción del Equipo");
+        alertDialog.setTitle("Descripcion del Equipo");
     }
 
     @Override
