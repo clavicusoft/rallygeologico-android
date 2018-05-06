@@ -23,6 +23,10 @@ import java.util.ArrayList;
 
 import MenuRallies.Rally;
 
+/**
+ * Clase para manejar la pantalla con una lista de rallies
+ * Created by Pablo Madrigal on 20/04/2018.
+ */
 public class RallyList extends AppCompatActivity {
 
     //Variables
@@ -34,7 +38,10 @@ public class RallyList extends AppCompatActivity {
 
     private DynamicListAdapter mDynamicListAdapter;
 
-
+    /**
+     *
+     * @param savedInstanceState Estado del programa
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +64,9 @@ public class RallyList extends AppCompatActivity {
 
     }
 
+    /**
+     * Permite inicializar la información de los rallies
+     */
     private void initializeData() {
         //Get the resources from the XML file
         String[] lista_rallies_descargados = getResources().getStringArray(R.array.rally_titles_Descargados);
@@ -79,6 +89,9 @@ public class RallyList extends AppCompatActivity {
         }
     }
 
+    /**
+     * Crea la clase para el adaptador dinamico basandose en un RecyclerView
+     */
     private class DynamicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
 
         private static final int FOOTER_VIEW = 1;
@@ -87,15 +100,24 @@ public class RallyList extends AppCompatActivity {
         private static final int SECOND_LIST_ITEM_VIEW = 4;
         private static final int SECOND_LIST_HEADER_VIEW = 5;
 
-
+        /**
+         * Constructor del adaptador
+         */
         public DynamicListAdapter() {
         }
 
+        /**
+         * Administra lo que sucede cuando se le da click a una vista dada
+         * @param view vista a la cual se le presiono
+         */
         @Override
         public void onClick(View view) {
 
         }
 
+        /**
+         * Crea la clase que se va a encargar de "sostener" los elementos que vamos a ver
+         */
         public class ViewHolder extends RecyclerView.ViewHolder {
             //Items invisibles
             private TextView id_rally_descargado;
@@ -115,7 +137,10 @@ public class RallyList extends AppCompatActivity {
             private Button boton_menu_rally;
             private Button boton_descargar;
 
-
+            /**
+             * Constructor del ViewHolder
+             * @param itemView Vista con la que se esta trabajando actualmente
+             */
             public ViewHolder(View itemView) {
                 super(itemView);
 
@@ -136,6 +161,10 @@ public class RallyList extends AppCompatActivity {
 
             }
 
+            /**
+             * Llenamos las vistas correspondientes a la lista de rallies descargados
+             * @param pos posicion de la vista con la que estamos trabajando
+             */
             public void bindViewFirstList(int pos) {
                 // Decrease pos by 1 as there is a header view now.
                 pos = pos - 1;
@@ -148,6 +177,10 @@ public class RallyList extends AppCompatActivity {
                 memoria_rally_descargado.setText(memoria_rally);
                 id_rally_sin_descargar.setText(id_rally);
                 boton_menu_rally.setOnClickListener(new View.OnClickListener() {
+                    /**
+                     * Administra lo que sucede cuando se le da click al boton del menu
+                     * @param view La vista a la cual se le acaba de dar un click
+                     */
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
@@ -156,6 +189,10 @@ public class RallyList extends AppCompatActivity {
                 });
             }
 
+            /**
+             * Llenamos las vistas correspondientes a la lista de rallies sin descargar
+             * @param pos posicion de la vista con la que estamos trabajando
+             */
             public void bindViewSecondList(int pos) {
 
                 if (rallies_descargados == null) pos = pos - 1;
@@ -170,6 +207,10 @@ public class RallyList extends AppCompatActivity {
                 nombre_rally_sin_descargar.setText(nombre_rally);
                 id_rally_sin_descargar.setText(id_rally);
                 boton_descargar.setOnClickListener(new View.OnClickListener() {
+                    /**
+                     * Administra lo que sucede cuando se le da click al boton de descargar un rally
+                     * @param view La vista a la cual se le acaba de dar un click
+                     */
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
@@ -177,41 +218,60 @@ public class RallyList extends AppCompatActivity {
                     }
                 });
             }
-
-
-
         }
 
+        /**
+         * Crea la clase que se va a encargar de "sostener" los elementos del pie de pagina
+         */
         public class FooterViewHolder extends ViewHolder {
             public FooterViewHolder(View itemView) {
                 super(itemView);
             }
         }
 
+        /**
+         * * Crea la clase que se va a encargar de "sostener" los elementos de la lista con rallies descargados
+         */
         private class RallyDescargadoViewHolder extends ViewHolder {
             public RallyDescargadoViewHolder(View itemView) {
                 super(itemView);
             }
         }
 
+        /**
+         * * * Crea la clase que se va a encargar de "sostener" los elementos de la lista con rallies sin descargar
+         */
         private class RallySinDescargarViewHolder extends ViewHolder {
             public RallySinDescargarViewHolder(View itemView) {
                 super(itemView);
             }
         }
 
+        /**
+         * * * Crea la clase que se va a encargar de "sostener" los elementos del titulo de la lista 1
+         */
         private class TituloLista1 extends ViewHolder {
             public TituloLista1(View itemView) {
                 super(itemView);
             }
         }
 
+        /**
+         * * * * Crea la clase que se va a encargar de "sostener" los elementos del titulo de la lista 2
+         */
         private class TituloLista2 extends ViewHolder {
             public TituloLista2(View itemView) {
                 super(itemView);
             }
         }
 
+        /**
+         * Lo que sucede cuando se crea el RecyclerView encargado de "colocar" cada elemento en su posicion especifica de esa manera podemos ordenar las 2 listas
+         * Dependiendo del tipo de vista llama al ViewHolder correspondiente, ya sea para titulos de listas o elementos de las listas en si
+         * @param parent referecia a la vista que "almacena" el recyclerview
+         * @param viewType tipo de vista con la que estamos trabajando
+         * @return devuelve el Recyclerview con la vista que estabamos trabajando
+         */
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v;
 
@@ -243,6 +303,12 @@ public class RallyList extends AppCompatActivity {
             }
         }
 
+        /**
+         * Es el metodo encargado de "llenar" el RecyclerView con la informacion
+         * Como tenemos un metodo que hace eso para cada tipo de vista, entonces este metodo llama al metodo correspondiente dependiendo del tipo
+         * @param holder El holder con el que estamos trabajando actualmente
+         * @param position Posicion a la que pertenece ese holder
+         */
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
@@ -265,6 +331,10 @@ public class RallyList extends AppCompatActivity {
             }
         }
 
+        /**
+         * Obtiene el numero total de elementos en el RecyclerView incluyendo los titulos de las listas
+         * @return
+         */
         @Override
         public int getItemCount() {
             int cantidad_rallies_descargados = 0;
@@ -286,6 +356,11 @@ public class RallyList extends AppCompatActivity {
             return total;
         }
 
+        /**
+         * Devuelve el tipo de vista de acuerdo con la posicion
+         * @param position posicion de la vista que queremos analizar
+         * @return el tipo de vista
+         */
         @Override
         public int getItemViewType(int position) {
 
@@ -321,8 +396,11 @@ public class RallyList extends AppCompatActivity {
         }
     }
 
-
-
+    /**
+     * Maneja lo que sucede cuando presionamos el boton de descargar
+     * @param v La vista que acabamos de presionar
+     * @param position Posicion de la vista en el recycler view
+     */
     public void downloadClick(View v, int position) {
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
         long bytesAvailable;
@@ -337,11 +415,21 @@ public class RallyList extends AppCompatActivity {
         AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
         alert_builder.setMessage("¿Seguro que quiere desargar el rally? Usted cuenta con "+megAvailable+" MB disponibles.").setTitle("¿Desea descargar el rally con id: "+" ?");
         alert_builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
+            /**
+             * maneja que sucede cuando se presiona el boton de "ok" en el cuadro de dialogo
+             * @param dialog Cuadro de dialogo
+             * @param id identificador unico
+             */
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
             }
         });
         alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            /**
+             * maneja que sucede cuando se presiona el boton de "ok" en el cuadro de dialogo
+             * @param dialog Cuadro de dialogo
+             * @param id identificador unico
+             */
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
             }
@@ -350,6 +438,10 @@ public class RallyList extends AppCompatActivity {
         alert.show();
     }
 
+    /**
+     * Maneja lo que sucede cuando presionamos el menu
+     * @param v La vista que acabamos de presionar
+     */
     public void menuClick(final View v){
         //creating a popup menu
         PopupMenu popup = new PopupMenu(v.getContext(), v);
@@ -357,6 +449,11 @@ public class RallyList extends AppCompatActivity {
         popup.inflate(R.menu.menu_rally_descargado);
         //adding click listener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            /**
+             * Maneja todo lo interno a las opciones del menu
+             * @param item perteneciente al menu
+             * @return si se logro el correcto funcionamiento del menu
+             */
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
@@ -367,11 +464,21 @@ public class RallyList extends AppCompatActivity {
                         AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
                         alert_builder.setMessage("¿Seguro que quiere eliminar el rally?").setTitle("¿Desea eliminar el rally con id: "+" ?");
                         alert_builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                            /**
+                             * Maneja lo que sucede cuando se presiona la opcion de eliminar en el menu
+                             * @param dialog interfaz de dialogo que se esta utilizando
+                             * @param id id unico para identificar el item del menu
+                             */
                             public void onClick(DialogInterface dialog, int id) {
                                 // User clicked OK button
                             }
                         });
                         alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            /**
+                             * Maneja lo que sucede cuando se presiona la opcion de Cancelar en el menu
+                             * @param dialog interfaz de dialogo que se esta utilizando
+                             * @param id id unico para identificar el item del menu
+                             */
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
                             }
