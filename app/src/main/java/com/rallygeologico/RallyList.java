@@ -10,10 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -50,16 +52,11 @@ public class RallyList extends AppCompatActivity {
         //Get the data
         initializeData();
 
-        mDynamicListAdapter = new DynamicListAdapter(RallyList.this);
+        mDynamicListAdapter = new DynamicListAdapter();
         mLayoutManager = new LinearLayoutManager(RallyList.this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mDynamicListAdapter);
 
-        //Obtenemos la referencia a los controles
-        //boton_menu = (ImageButton) findViewById(R.id.boton_menu);
-
-        //Asociamos los menús contextuales a los controles
-        //registerForContextMenu(boton_menu);
 
     }
 
@@ -85,7 +82,7 @@ public class RallyList extends AppCompatActivity {
         }
     }
 
-    private class DynamicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private class DynamicListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
 
         private static final int FOOTER_VIEW = 1;
         private static final int FIRST_LIST_ITEM_VIEW = 2;
@@ -93,10 +90,13 @@ public class RallyList extends AppCompatActivity {
         private static final int SECOND_LIST_ITEM_VIEW = 4;
         private static final int SECOND_LIST_HEADER_VIEW = 5;
 
-        private Context context;
 
-        public DynamicListAdapter(Context context) {
-            this.context = context;
+        public DynamicListAdapter() {
+        }
+
+        @Override
+        public void onClick(View view) {
+
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
@@ -116,6 +116,7 @@ public class RallyList extends AppCompatActivity {
 
             //Boton del menu
             private ImageButton boton_menu_rally;
+            private Button boton_descargar;
 
 
             public ViewHolder(View itemView) {
@@ -134,6 +135,8 @@ public class RallyList extends AppCompatActivity {
 
                 //Boton de menu para los rallies descargados
                 boton_menu_rally = (ImageButton) itemView.findViewById(R.id.boton_menu);
+                boton_descargar = (Button) itemView.findViewById(R.id.boton_descargar);
+
             }
 
             public void bindViewSecondList(int pos) {
@@ -149,6 +152,12 @@ public class RallyList extends AppCompatActivity {
 
                 nombre_rally_sin_descargar.setText(nombre_rally);
                 id_rally_sin_descargar.setText(id_rally);
+                boton_descargar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             public void bindViewFirstList(int pos) {
@@ -162,23 +171,12 @@ public class RallyList extends AppCompatActivity {
                 nombre_rally_descargado.setText(nombre_rally);
                 memoria_rally_descargado.setText(memoria_rally);
                 id_rally_sin_descargar.setText(id_rally);
-
                 boton_menu_rally.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        PopupMenu popup = new PopupMenu(view.getContext(), view);
-                        popup.inflate(R.menu.menu_rally_descargado);
-                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                            @Override
-                            public boolean onMenuItemClick(MenuItem item) {
-                                Toast.makeText(boton_menu_rally.getContext(), "DO SOME STUFF HERE", Toast.LENGTH_LONG).show();
-                                return true;
-                            }
-                        });
-                        popup.show();
+                        Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
 
         }
@@ -258,35 +256,6 @@ public class RallyList extends AppCompatActivity {
                 } else if(holder instanceof RallyDescargadoViewHolder){
                     final RallyDescargadoViewHolder vh = (RallyDescargadoViewHolder) holder;
                     vh.bindViewFirstList(position);
-                    vh.boton_menu_rally2.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            //creating a popup menu
-                            PopupMenu popup = new PopupMenu(context, vh.boton_menu_rally2);
-                            //inflating menu from xml resource
-                            popup.inflate(R.menu.menu_rally_descargado);
-                            //adding click listener
-                            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                                @Override
-                                public boolean onMenuItemClick(MenuItem item) {
-                                    switch (item.getItemId()) {
-                                        case R.id.jugar:
-                                            //handle menu1 click
-                                            break;
-                                        case R.id.eliminar:
-                                            //handle menu2 click
-                                            break;
-                                        case R.id.subir_resultados:
-                                            //handle menu3 click
-                                            break;
-                                    }
-                                    return false;
-                                }
-                            });
-                            //displaying the popup
-                            popup.show();
-                        }
-                    });
                     //holder.itemView.setTag(1,position);
                 }else if(holder instanceof RallySinDescargarViewHolder){
                     RallySinDescargarViewHolder vh = (RallySinDescargarViewHolder) holder;
@@ -372,7 +341,7 @@ public class RallyList extends AppCompatActivity {
         alert.show();
     }
 
-    public void downloadClick(View v) {
+    public void downloadClick(View v, int position) {
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
         long bytesAvailable;
         if (android.os.Build.VERSION.SDK_INT >=
