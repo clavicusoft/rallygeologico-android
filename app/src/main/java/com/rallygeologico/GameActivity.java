@@ -16,6 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * Clase para manejar la pantalla principal del juego
+ */
 public class GameActivity extends AppCompatActivity {
 
     private static final int SOLICITUD_TODOS=100;
@@ -23,11 +26,17 @@ public class GameActivity extends AppCompatActivity {
     NavigationView navView;
     Toolbar appbar;
 
+    /**
+     * Se ejecuta cuando se crea la vista
+     * @param savedInstanceState Estado actual de la aplicacion
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        //Busca el boton de jugar en la vista y le asigna una funcion
+        // de click para cambiar a la actividad del mapa
         View myLayout = findViewById( R.id.content);
         Button botonMapa= myLayout.findViewById( R.id.btnMap);
         botonMapa.setOnClickListener(new View.OnClickListener() {
@@ -38,17 +47,24 @@ public class GameActivity extends AppCompatActivity {
         });
         botonMapa.setEnabled(solicitarPermisos());
 
+        //Crea la barra superior de herramientas con una opcion para las opciones
         appbar = (Toolbar) findViewById(R.id.appbar);
         setSupportActionBar(appbar);
-
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //Vista para poder desplegar el menu de opciones de manera lateral
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         navView = (NavigationView) findViewById(R.id.navview);
         navView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
+                    /**
+                     * Indica la instruccion a ejecutar despues de dar click en
+                     * alguna de las opciones del menu
+                     * @param menuItem Item del menu seleccionado
+                     * @return verdadero siempre que no haya error y luego cierra
+                     * el menu desplegable
+                     */
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
@@ -73,9 +89,14 @@ public class GameActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Controla que se abra el menu de navegacion lateral cuando se oprime
+     * el boton de opciones en la barra superior de herramientas
+     * @param item Opcion seleccionada en el menu
+     * @return booleano cuando se completa la operacion super
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch(item.getItemId()) {
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
@@ -84,6 +105,10 @@ public class GameActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Solicita permisos al usuario si la version de android es superior a 6
+     * @return Booleano despues de solicitar los permisos
+     */
     private boolean solicitarPermisos()
     {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M){
@@ -96,6 +121,12 @@ public class GameActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Se ejecuta despues de solicitar los permisos al usuario
+     * @param requestCode Codigo de solicitud
+     * @param permissions Permisos solicitados
+     * @param grantResults Permisos asignados
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -109,16 +140,25 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Comienza la actividad del perfil del usuario
+     */
     public void setProfileScreen() {
         Intent intent = new Intent(this, ProfileActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Comienza la actividad de la lista de rallies
+     */
     public void setRallyListScreen() {
         Intent intent = new Intent(this, RallyList.class);
         startActivity(intent);
     }
 
+    /**
+     * Comienza la actividad del mapa del juego
+     */
     public void setMapScreen() {
         Intent intent = new Intent(this, ActivityMap.class);
         startActivity(intent);
