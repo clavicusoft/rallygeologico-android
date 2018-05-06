@@ -10,13 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +33,6 @@ public class RallyList extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private DynamicListAdapter mDynamicListAdapter;
-    private ImageButton boton_menu;
 
 
     @Override
@@ -115,7 +112,7 @@ public class RallyList extends AppCompatActivity {
             private TextView footerTextView;
 
             //Boton del menu
-            private ImageButton boton_menu_rally;
+            private Button boton_menu_rally;
             private Button boton_descargar;
 
 
@@ -134,9 +131,29 @@ public class RallyList extends AppCompatActivity {
                 footerTextView = (TextView) itemView.findViewById(R.id.footer);
 
                 //Boton de menu para los rallies descargados
-                boton_menu_rally = (ImageButton) itemView.findViewById(R.id.boton_menu);
+                boton_menu_rally = (Button) itemView.findViewById(R.id.boton_menu);
                 boton_descargar = (Button) itemView.findViewById(R.id.boton_descargar);
 
+            }
+
+            public void bindViewFirstList(int pos) {
+                // Decrease pos by 1 as there is a header view now.
+                pos = pos - 1;
+
+                final String nombre_rally = rallies_descargados.get(pos).getName();
+                final String memoria_rally = rallies_descargados.get(pos).getMemoryUsage();
+                final String id_rally = "" + rallies_descargados.get(pos).getRallyId();
+
+                nombre_rally_descargado.setText(nombre_rally);
+                memoria_rally_descargado.setText(memoria_rally);
+                id_rally_sin_descargar.setText(id_rally);
+                boton_menu_rally.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
+                        downloadClick(view,getLayoutPosition());
+                    }
+                });
             }
 
             public void bindViewSecondList(int pos) {
@@ -156,28 +173,12 @@ public class RallyList extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
+                        downloadClick(view,getLayoutPosition());
                     }
                 });
             }
 
-            public void bindViewFirstList(int pos) {
-                // Decrease pos by 1 as there is a header view now.
-                pos = pos - 1;
 
-                final String nombre_rally = rallies_descargados.get(pos).getName();
-                final String memoria_rally = rallies_descargados.get(pos).getMemoryUsage();
-                final String id_rally = "" + rallies_descargados.get(pos).getRallyId();
-
-                nombre_rally_descargado.setText(nombre_rally);
-                memoria_rally_descargado.setText(memoria_rally);
-                id_rally_sin_descargar.setText(id_rally);
-                boton_menu_rally.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
 
         }
 
@@ -188,11 +189,8 @@ public class RallyList extends AppCompatActivity {
         }
 
         private class RallyDescargadoViewHolder extends ViewHolder {
-            private ImageButton boton_menu_rally2;
-
             public RallyDescargadoViewHolder(View itemView) {
                 super(itemView);
-                boton_menu_rally2 = (ImageButton) itemView.findViewById(R.id.boton_menu);
             }
         }
 
@@ -323,23 +321,7 @@ public class RallyList extends AppCompatActivity {
         }
     }
 
-    public void onDeleteClick(View v) {
 
-        AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
-        alert_builder.setMessage("¿Seguro que quiere eliminar el rally?").setTitle("Eliminar Rally");
-        alert_builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
-            }
-        });
-        alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
-            }
-        });
-        AlertDialog alert = alert_builder.create();
-        alert.show();
-    }
 
     public void downloadClick(View v, int position) {
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
