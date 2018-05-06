@@ -90,7 +90,7 @@ public class RallyAdapter extends RecyclerView.Adapter<RallyAdapter.ViewHolder> 
 
         /**
          * Mete los datos del rally en los ViewText correspondientes
-         * @param currentRally Rally que actualmente esta recibiendo la información
+         * @param currentRally Rally que actualmente esta recibiendo la informacion
          */
         public void bindTo(Rally currentRally) {
             //Populate the textviews with data
