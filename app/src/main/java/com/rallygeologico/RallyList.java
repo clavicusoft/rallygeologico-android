@@ -4,6 +4,7 @@ package com.rallygeologico;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v7.app.AppCompatActivity;
@@ -449,6 +450,7 @@ public class RallyList extends AppCompatActivity {
         popup.inflate(R.menu.menu_rally_descargado);
         //adding click listener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
             /**
              * Maneja todo lo interno a las opciones del menu
              * @param item perteneciente al menu
@@ -458,7 +460,8 @@ public class RallyList extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.jugar:
-                        //handle menu1 click
+                        /*Intent intent = new Intent(v.getContext(), ActivityMap.class);
+                        startActivity(intent);*/
                         break;
                     case R.id.eliminar:
                         AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
@@ -470,7 +473,7 @@ public class RallyList extends AppCompatActivity {
                              * @param id id unico para identificar el item del menu
                              */
                             public void onClick(DialogInterface dialog, int id) {
-                                // User clicked OK button
+                                // Se elimina el Rally
                             }
                         });
                         alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -480,7 +483,7 @@ public class RallyList extends AppCompatActivity {
                              * @param id id unico para identificar el item del menu
                              */
                             public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
+                                // No hace nada por que el usuario cancelo la instruccion
                             }
                         });
                         AlertDialog alert = alert_builder.create();
