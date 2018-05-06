@@ -89,7 +89,6 @@ public class VisitasActivity extends AppCompatActivity {
             else //Es especial
             {
                 secretoNoVisitado.setText("¡Has encontrado un secreto!");
-
             }
         }
 
