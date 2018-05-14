@@ -2,9 +2,7 @@
 package com.rallygeologico;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +20,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import MenuRallies.Rally;
+import SqlEntities.Rally;
 
 /**
  * Clase para manejar la pantalla con una lista de rallies
