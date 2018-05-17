@@ -25,8 +25,8 @@
         <menu>
             <item
                 android:id="@+id/menu_ajustes"
-                android:icon="@drawable/ic_adjust"
-                android:title="Ajustes"/>
+                android:icon="@drawable/ic_help"
+                android:title="Cómo jugar"/>
             <item
                 android:id="@+id/menu_info"
                 android:icon="@drawable/ic_about"

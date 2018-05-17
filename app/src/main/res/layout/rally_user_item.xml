@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/nombre_rally_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre:"/>
+
+    <TextView
+        android:id="@+id/estado_rally_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Estado:"/>
+
+    <TextView
+        android:id="@+id/puntos_rally_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Puntos Obtenidos:"/>
+
+    <TextView
+        android:id="@+id/sitios_rally_usuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sitios descubiertos:"/>
+
+</LinearLayout>

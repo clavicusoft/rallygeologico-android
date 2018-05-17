@@ -1,10 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".LoginActivity">
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.5"
+        android:scaleType="fitXY"
+        android:src="@drawable/blurry_bg" />
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal">
+
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:text="RG"
+                android:textColor="@color/Gris_5"
+                android:textSize="80dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Una aventura educativa"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_fb"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/Facebook"
+                android:layout_marginBottom="20dp"
+                android:drawableLeft="@drawable/fb_icon"
+                android:text="Conectar con Facebook"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:textColor="@color/Blanco"
+                android:paddingLeft="26dp"
+                android:paddingRight="26dp"/>
+
+            <Button
+                android:id="@+id/btn_google"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/Google"
+                android:drawableLeft="@drawable/common_google_signin_btn_icon_light"
+                android:text="Conectar con Google"
+                android:textSize="20sp"
+                android:layout_marginBottom="20dp"
+                android:textAllCaps="false"
+                android:textColor="@color/Blanco"
+                android:paddingLeft="36dp"
+                android:paddingRight="36dp" />
+
+            <Button
+                android:id="@+id/btn_continuar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Continuar"
+                android:textAllCaps="false"
+                android:background="@color/Gris_5"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
