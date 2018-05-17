@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Clase para manejar la pantalla principal del juego y solicitar los permisos de memoria externa y uso del GPS
@@ -25,6 +27,8 @@ public class GameActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     NavigationView navView;
     Toolbar appbar;
+    EditText idconsulta, filtro1;
+
 
     /**
      * Se ejecuta cuando se crea la vista
@@ -51,6 +55,10 @@ public class GameActivity extends AppCompatActivity {
 
         //Crea la barra superior de herramientas con una opcion para las opciones
         appbar = (Toolbar) findViewById(R.id.appbar);
+        idconsulta = (EditText)findViewById(R.id.idconsulta);
+        filtro1 = (EditText)findViewById(R.id.filtro1);
+
+
         setSupportActionBar(appbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -89,6 +97,21 @@ public class GameActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+    }
+
+    public void OnQuery(View view) {
+        String idConsultaValor = idconsulta.getText().toString();
+        if(idConsultaValor.equals("0")){
+            BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+            backgroundWorker.execute(idConsultaValor);
+        } else if(idConsultaValor.equals("1")){
+            String filtroConsulta1 = filtro1.getText().toString();
+            BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+            backgroundWorker.execute(idConsultaValor, filtroConsulta1);
+        }else{
+            Toast.makeText(GameActivity.this,
+                    "La consulta no existe", Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
