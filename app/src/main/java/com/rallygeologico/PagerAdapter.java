@@ -66,7 +66,7 @@ class PagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Rallies";
+                return "Recorridos";
             case 1:
                 return "Logros";
         }
