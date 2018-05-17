@@ -296,14 +296,6 @@ public class LocalDB{
             String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + tableName;
         }
 
-        /*
-         SELECT `rally`.*, `users`.`id`
-         FROM `users`
-            LEFT JOIN `invitation` ON `invitation`.`user_id_send` = `users`.`id` or `invitation`.`user_id_receive` = `users`.`id`
-            LEFT JOIN `competition` ON `invitation`.`competition_id` = `competition`.`id`
-            LEFT JOIN `rally` ON `competition`.`rally_id` = `rally`.`id`
-        WHERE (`users`.`api_id`=16)
-         */
     }
 
 }
