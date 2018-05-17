@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LocalDB localDB = new LocalDB(getApplicationContext());
+        //LocalDB localDB = new LocalDB(getApplicationContext());
         setContentView(R.layout.activity_main);
         start = findViewById(R.id.btn_inicio);
         logo = findViewById(R.id.iv_inicio);
