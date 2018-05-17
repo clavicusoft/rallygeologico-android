@@ -32,6 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView puntosTotal;
     PagerAdapter pagerAdapter;
     ViewPager viewPager;
+    SlidingTabLayout tabs;
 
     /**
      * Cuando se crea la vista se carga la foto del usuario, su informacion personal
@@ -54,9 +55,14 @@ public class ProfileActivity extends AppCompatActivity {
         puntosTotal = findViewById(R.id.pointsCounter);
 
         // Se inicializa el paginador
+
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), this);
         viewPager = findViewById(R.id.pagerProfile);
         viewPager.setAdapter(pagerAdapter);
+
+        tabs = (SlidingTabLayout) findViewById(R.id.tabs);
+        tabs.setDistributeEvenly(true);
+        tabs.setViewPager(viewPager);
 
         // Si se esta conectado a Facebook se carga la informacion obtenida en login
         boolean conectado = AccessToken.getCurrentAccessToken() != null;

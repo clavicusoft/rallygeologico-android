@@ -24,18 +24,17 @@
         android:gravity="center"
         android:layout_alignParentBottom="true">
 
-    <Button
-        android:id="@+id/btn_inicio"
-        android:onClick="setLoginScreen"
-        android:text="INICIAR"
-        android:textColor="#FFFFFF"
-        android:textSize="20dp"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/btn_inicio_shape"/>
+        <Button
+            android:id="@+id/btn_inicio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/btn_inicio_shape"
+            android:gravity="center"
+            android:text="INICIAR"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp" />
 
         <ImageView
             android:id="@+id/iv_inicio"
