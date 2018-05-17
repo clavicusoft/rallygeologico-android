@@ -1,7 +1,4 @@
-package SqlEntities;
-
-import java.util.ArrayList;
-import java.util.List;
+package MenuRallies;
 
 /**
  * Clase para manejar los datos de un Rally
@@ -18,6 +15,25 @@ public class Rally {
     private boolean isDownloaded;
     private List<Site> sites;
 
+    /**
+     * Constructor that passes in the sports data and the context
+     * @param rallyId Codigo que identifica ese rally especifico
+     * @param name Nombre que tiene el Rally
+     * @param description Descripcion basica del rally y en que consiste
+     * @param pointsAwarded Puntos que se pueden obtener con el rally
+     * @param imageURL URL que direcciona a donde esta guardada la imagen de portada del rally
+     * @param isDownloaded Nos dice si el rally se encuentra descargado en el dispositivo
+     * @param memoryUsage Tamano total que ocupa el rally descargado
+     */
+    public Rally(int rallyId, String name, String description, int pointsAwarded, String imageURL, String memoryUsage, boolean isDownloaded) {
+        this.rallyId = rallyId;
+        this.name = name;
+        this.description = description;
+        this.pointsAwarded = pointsAwarded;
+        this.imageURL = imageURL;
+        this.memoryUsage = memoryUsage;
+        this.isDownloaded = isDownloaded;
+    }
 
     /**
      *

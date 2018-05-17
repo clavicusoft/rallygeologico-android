@@ -64,7 +64,7 @@ public class RallyList extends AppCompatActivity {
     }
 
     /**
-     * Permite inicializar la información de los rallies
+     * Permite inicializar la informacion de los rallies
      */
     private void initializeData() {
         //Get the resources from the XML file
@@ -412,7 +412,7 @@ public class RallyList extends AppCompatActivity {
         }
         long megAvailable = bytesAvailable / (1024 * 1024);
         AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
-        alert_builder.setMessage("¿Seguro que quiere desargar el rally? Usted cuenta con "+megAvailable+" MB disponibles.").setTitle("¿Desea descargar el rally con id: "+" ?");
+        alert_builder.setMessage("Seguro que quiere desargar el rally, Usted cuenta con "+megAvailable+" MB disponibles.").setTitle("Desea descargar el rally con id: "+" ");
         alert_builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
             /**
              * maneja que sucede cuando se presiona el boton de "ok" en el cuadro de dialogo
@@ -463,7 +463,7 @@ public class RallyList extends AppCompatActivity {
                         break;
                     case R.id.eliminar:
                         AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
-                        alert_builder.setMessage("¿Seguro que quiere eliminar el rally?").setTitle("¿Desea eliminar el rally con id: "+" ?");
+                        alert_builder.setMessage("Seguro que quiere eliminar el rally").setTitle("Desea eliminar el rally con id: "+" ");
                         alert_builder.setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
                             /**
                              * Maneja lo que sucede cuando se presiona la opcion de eliminar en el menu
