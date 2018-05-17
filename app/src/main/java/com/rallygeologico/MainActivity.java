@@ -12,6 +12,9 @@ import com.facebook.Profile;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import SqlDatabase.LocalDB;
+
+
 /**
  * Clase para controlar la pantalla de inicio del juego
  */
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //LocalDB localDB = new LocalDB(getApplicationContext());
         setContentView(R.layout.activity_main);
         start = findViewById(R.id.btn_inicio);
         logo = findViewById(R.id.iv_inicio);
