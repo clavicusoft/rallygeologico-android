@@ -18,7 +18,6 @@ public class Rally {
     private boolean isDownloaded;
     private List<Site> sites;
 
-
     /**
      *
      * @return Codigo que identifica ese rally especifico
