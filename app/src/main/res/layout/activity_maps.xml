@@ -11,6 +11,69 @@
         android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true" />
+        android:clickable="true"
+        tools:layout_editor_absoluteX="78dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:ignore="MissingConstraints">
+    </org.osmdroid.views.MapView>
+
+<android.support.v7.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/zoom_in"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/zoom_in"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="310dp"
+        android:layout_marginBottom="5dp">
+    </Button>
+
+
+    <Button
+        android:id="@+id/zoom_out"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/zoom_out"
+        android:layout_marginLeft="310dp"
+        android:layout_marginBottom="280dp"
+        >
+
+    </Button>
+
+    <Button
+    android:id="@+id/mylocation"
+    android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:background="@drawable/mylocation"
+        android:layout_marginLeft="300dp"
+        android:layout_marginBottom="10dp"
+    >
+</Button>
+
+    <Button
+        android:id="@+id/botonCamara"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/camara"
+        android:layout_marginLeft="300dp"
+        android:layout_marginBottom="10dp">
+        >
+    </Button>
+
+    <Button
+        android:id="@+id/botonqr"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/qr"
+        android:layout_marginLeft="300dp">
+        >
+    </Button>
+
+
+</android.support.v7.widget.LinearLayoutCompat>
 
 </android.support.constraint.ConstraintLayout>

@@ -11,6 +11,8 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:alpha="0.5"
         android:scaleType="centerCrop"
         android:src="@drawable/fondo_inicio" />
@@ -37,12 +39,28 @@
         android:layout_marginBottom="5dp"
         android:background="@drawable/btn_inicio_shape"/>
 
-        <ImageView
-            android:id="@+id/iv_inicio"
-            android:layout_width="206dp"
-            android:layout_height="102dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/firma_ucr" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_logoci"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:scaleType="fitXY"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/logoci" />
+
+            <ImageView
+                android:id="@+id/iv_logoucr"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:scaleType="fitXY"
+                android:layout_weight="1"
+                android:src="@drawable/firma_ucr" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
