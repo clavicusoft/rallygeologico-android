@@ -1,8 +1,10 @@
 package com.rallygeologico;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 /**
  * Clase para manejar la pantalla principal del juego y solicitar los permisos de memoria externa y uso del GPS
@@ -25,6 +28,7 @@ public class GameActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     NavigationView navView;
     Toolbar appbar;
+
 
     /**
      * Se ejecuta cuando se crea la vista
@@ -163,7 +167,14 @@ public class GameActivity extends AppCompatActivity {
      * Comienza la actividad del mapa del juego
      */
     public void setMapScreen() {
-        Intent intent = new Intent(this, ActivityMap.class);
-        startActivity(intent);
+        LocationManager locationManager= (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if ((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)))
+        {
+            Intent intent = new Intent(this, ActivityMap.class);
+            startActivity(intent);
+        }
+
+        else {Toast.makeText(this,"Active el GPS",Toast.LENGTH_SHORT).show();}
+
     }
 }
