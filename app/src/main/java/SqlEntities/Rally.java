@@ -3,6 +3,8 @@ package SqlEntities;
 import java.util.ArrayList;
 import java.util.List;
 
+import SqlEntities.Site;
+
 /**
  * Clase para manejar los datos de un Rally
  * Created by Pablo Madrigal on 20/04/2018.
