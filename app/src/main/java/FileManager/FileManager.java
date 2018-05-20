@@ -1,15 +1,11 @@
 package FileManager;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-
-import com.rallygeologico.R;
 
 import java.io.File;
 import java.io.FileInputStream;

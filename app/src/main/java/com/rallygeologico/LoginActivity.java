@@ -46,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean googleSignIn;
     private Button loginFacebookButton;
     private Button loginGoogleButton;
+    private Button continuar;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
     private LoginManager fbLoginManager;
@@ -65,7 +66,21 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this);
         context = this;
 
+        continuar = findViewById(R.id.btn_continuar);
+        continuar.setVisibility(GONE);
+        continuar.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Continuar a la pantalla principal del juego
+             * @param v Vista del activity
+             */
+            @Override
+            public void onClick(View v) {
+                setGameScreen();
+            }
+        });
+
         loginFacebookButton = findViewById(R.id.btn_fb);
+        loginFacebookButton.setVisibility(View.VISIBLE);
         final List<String> listPermission = Arrays.asList("email", "public_profile", "user_hometown");
         fbLoginManager = LoginManager.getInstance();
         callbackManager = CallbackManager.Factory.create();
@@ -81,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                 toast.show();
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
                 updateUI(account);
+                setGameScreen();
             }
 
             /**
@@ -139,7 +155,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!fbSignIn){
                     fbLoginManager.logInWithReadPermissions(LoginActivity.this,listPermission);
-                    setGameScreen(v);
                 } else {
                     fbLoginManager.logOut();
                 }
@@ -149,6 +164,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         loginGoogleButton = findViewById(R.id.btn_google);
+        loginGoogleButton.setVisibility(View.VISIBLE);
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         loginGoogleButton.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +177,6 @@ public class LoginActivity extends AppCompatActivity {
                 if(!googleSignIn){
                     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                     startActivityForResult(signInIntent, RC_SIGN_IN);
-                    setGameScreen(v);
                 }else{
                     googleSignOut();
                 }
@@ -211,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
             toast.show();
             updateUI(account);
+            setGameScreen();
         } catch (ApiException e) {
             Log.w("Error", "handleSignInResult:error ", e);
             Toast toast = Toast.makeText(context, "No se pudo conectar", Toast.LENGTH_SHORT);
@@ -272,31 +288,32 @@ public class LoginActivity extends AppCompatActivity {
         if (fbSignIn || googleSignIn) {
             if(fbSignIn){
                 loginFacebookButton.setText("Salir de Facebook");
-                loginGoogleButton.setVisibility(View.GONE);
+                //loginGoogleButton.setVisibility(View.GONE);
             } else if(!fbSignIn) {
                 loginFacebookButton.setVisibility(View.VISIBLE);
                 loginFacebookButton.setText("Conectar con Facebook");
             }
             if(googleSignIn){
                 loginGoogleButton.setText("Salir de Google");
-                loginFacebookButton.setVisibility(View.GONE);
+                //loginFacebookButton.setVisibility(View.GONE);
             } else if(!googleSignIn){
                 loginGoogleButton.setVisibility(View.VISIBLE);
                 loginGoogleButton.setText("Conectar con Google");
             }
+            continuar.setVisibility(View.VISIBLE);
         } else {
             loginFacebookButton.setVisibility(View.VISIBLE);
             loginGoogleButton.setVisibility(View.VISIBLE);
             loginFacebookButton.setText("Conectar con Facebook");
             loginGoogleButton.setText("Conectar con Google");
+            continuar.setVisibility(View.GONE);
         }
     }
 
     /**
      * Cambia a la actividad principal del juego
-     * @param view Vista del activity
      */
-    public void setGameScreen(View view) {
+    public void setGameScreen() {
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
