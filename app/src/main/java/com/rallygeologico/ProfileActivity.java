@@ -68,7 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
         boolean conectado = AccessToken.getCurrentAccessToken() != null;
         Profile perfil = Profile.getCurrentProfile();
         if (conectado && perfil != null) {
-            new FacebookFragment.LoadProfileImage(fotoPerfil).execute(perfil.getProfilePictureUri(200, 200).toString());
+            new ImageLoader(fotoPerfil).execute(perfil.getProfilePictureUri(200, 200).toString());
             GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
