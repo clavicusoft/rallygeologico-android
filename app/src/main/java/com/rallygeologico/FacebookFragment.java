@@ -215,7 +215,7 @@ public class FacebookFragment extends Fragment {
         // Si el usuario esta conectado y se puede obtener su perfil se actualiza
         // la foto de perfil y el nombre y se activa el boton de continuar
         if (enableButtons && profile != null) {
-            new LoadProfileImage(profilePicImageView).execute(profile.getProfilePictureUri(200, 200).toString());
+            new ImageLoader(profilePicImageView).execute(profile.getProfilePictureUri(200, 200).toString());
             greeting.setText(String.format(getString(R.string.hello_user), profile.getFirstName()) );
             continuar_login.setVisibility(View.VISIBLE);
         } else {
@@ -237,49 +237,6 @@ public class FacebookFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
-
-    /**
-     * Clase para cargar la imagen de perfil de Facebook del usuario
-     * */
-    public static class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        /**
-         * Constructor que inicializa la imagen
-         * @param bmImage
-         */
-        public LoadProfileImage(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        /**
-         * Tarea asincrona para cargar la imagen de perfil de facebook desde url
-         * */
-        protected Bitmap doInBackground(String... uri) {
-            String url = uri[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(url).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        /**
-         * Carga la imagen despues de obtenerla en el metodo anterior
-         * @param result resultado obtenido de la url
-         */
-        protected void onPostExecute(Bitmap result) {
-            if (result != null) {
-                Bitmap resized = Bitmap.createScaledBitmap(result,200,200, true);
-                bmImage.setImageBitmap(resized);
-
-            }
-        }
     }
 
 }
