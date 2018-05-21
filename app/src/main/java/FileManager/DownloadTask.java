@@ -64,21 +64,33 @@ public class DownloadTask {
                         //Texto
                         case 0:
                             directorio = new File(Environment.getExternalStorageDirectory() + "/" + folderPrincipal, "textos");
+                            if (!directorio.exists()) {
+                                directorio.mkdirs();
+                            }
                             archivo = new File(directorio, fileName + ".txt");
                             break;
                         //Imagen
                         case 1:
                             directorio = new File(Environment.getExternalStorageDirectory() + "/" + folderPrincipal, "imagenes");
+                            if (!directorio.exists()) {
+                                directorio.mkdirs();
+                            }
                             archivo = new File(directorio, fileName + ".png");
                             break;
                         //Audio
                         case 2:
                             directorio = new File(Environment.getExternalStorageDirectory() + "/" + folderPrincipal, "audios");
+                            if (!directorio.exists()) {
+                                directorio.mkdirs();
+                            }
                             archivo = new File(directorio, fileName + ".mp3");
                             break;
                         //Video
                         case 3:
                             directorio = new File(Environment.getExternalStorageDirectory() + "/" + folderPrincipal, "videos");
+                            if (!directorio.exists()) {
+                                directorio.mkdirs();
+                            }
                             archivo = new File(directorio, fileName + ".mp4");
                             break;
                     }

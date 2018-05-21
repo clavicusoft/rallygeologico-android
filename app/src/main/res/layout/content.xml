@@ -34,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ir a mapa"
+            android:elevation="2dp"
             android:layout_gravity="center"
             android:background="@drawable/btn_inicio_shape"
             android:layout_alignParentBottom="true"

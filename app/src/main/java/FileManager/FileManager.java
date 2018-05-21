@@ -1,5 +1,6 @@
 package FileManager;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -14,6 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileManager {
+
+    private final String folderPrincipal = "RallyGeologico";
 
     public FileManager(){
     }
@@ -42,5 +45,18 @@ public class FileManager {
     }
 
     /*************** Cargar archivos de almacenamiento externo ***************/
+
+    public void cargarImagenAlmacenamientoExterno(String nombre, ImageView iv) {
+        try {
+            File dir = new File(Environment.getExternalStorageDirectory() + "/" + folderPrincipal, "imagenes");
+            File f = new File(dir, nombre + ".png");
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            ImageView img = iv;
+            img.setImageBitmap(b);
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

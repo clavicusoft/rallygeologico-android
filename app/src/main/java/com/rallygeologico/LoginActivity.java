@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.Arrays;
 import java.util.List;
 
+import FileManager.DownloadTask;
+
 import static android.view.View.GONE;
 
 /**
@@ -94,6 +96,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
                 toast.show();
+                Profile profile = Profile.getCurrentProfile();
+                String uri = profile.getProfilePictureUri(200, 200).toString();
+                new DownloadTask(context, 1, "fotoPerfil", uri);
                 GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
                 updateUI(account);
                 setGameScreen();

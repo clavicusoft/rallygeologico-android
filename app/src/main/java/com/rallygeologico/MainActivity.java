@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         //LocalDB localDB = new LocalDB(getApplicationContext());
         setContentView(R.layout.activity_main);
         start = findViewById(R.id.btn_inicio);
-        logo = findViewById(R.id.iv_inicio);
 
         account = GoogleSignIn.getLastSignedInAccount(this);
         enableButtons = AccessToken.getCurrentAccessToken() != null;
