@@ -19,7 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import SqlDatabase.LocalDB;
 import SqlEntities.Rally;
 
 /**
@@ -67,24 +69,16 @@ public class RallyList extends AppCompatActivity {
      * Permite inicializar la informacion de los rallies
      */
     private void initializeData() {
-        //Get the resources from the XML file
-        String[] lista_rallies_descargados = getResources().getStringArray(R.array.rally_titles_Descargados);
-        String[] lista_rallies_sin_descargar = getResources().getStringArray(R.array.rally_titles_NoDescargados);
-        String[] rallyInfo = getResources().getStringArray(R.array.rally_info);
-
-        //Clear the existing data (to avoid duplication)
-        rallies_descargados.clear();
-        rallies_sin_descargar.clear();
-
-        //Create the ArrayList of Sports objects with the titles and information about each rally
-        for(int i=0;i<lista_rallies_descargados.length;i++){
-            int memoria = 10 + (int)(Math.random() * 50);
-            rallies_descargados.add(new Rally(i+0,lista_rallies_descargados[i],rallyInfo[i],i,"hola", "Este rally utiliza:"+memoria+"Mb",false));
-        }
-
-        for(int i=0;i<lista_rallies_sin_descargar.length;i++){
-            int memoria = 10 + (int)(Math.random() * 50);
-            rallies_sin_descargar.add(new Rally(i+10,lista_rallies_sin_descargar[i],rallyInfo[i],i,"hola", "Este rally pesa :"+memoria+"Mb",false));
+        LocalDB db = new LocalDB(this.getApplicationContext());
+        db.prueba();
+        List<Rally> rallyListTemp = db.selectAllRallies();
+        for(int i = 0; i < rallyListTemp.size(); i++){
+            if(rallyListTemp.get(i).getIsDownloaded()) {
+                rallies_descargados.add(rallyListTemp.get(i));
+            }
+            else{
+                rallies_sin_descargar.add(rallyListTemp.get(i));
+            }
         }
     }
 
@@ -174,7 +168,7 @@ public class RallyList extends AppCompatActivity {
 
                 nombre_rally_descargado.setText(nombre_rally);
                 memoria_rally_descargado.setText(memoria_rally);
-                id_rally_sin_descargar.setText(id_rally);
+                id_rally_descargado.setText(id_rally);
                 boton_menu_rally.setOnClickListener(new View.OnClickListener() {
                     /**
                      * Administra lo que sucede cuando se le da click al boton del menu
@@ -182,8 +176,8 @@ public class RallyList extends AppCompatActivity {
                      */
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
-                        downloadClick(view,getLayoutPosition());
+                        //Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
+                        menuClick(view,getLayoutPosition());
                     }
                 });
             }
@@ -212,7 +206,7 @@ public class RallyList extends AppCompatActivity {
                      */
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
                         downloadClick(view,getLayoutPosition());
                     }
                 });
@@ -400,7 +394,7 @@ public class RallyList extends AppCompatActivity {
      * @param v La vista que acabamos de presionar
      * @param position Posicion de la vista en el recycler view
      */
-    public void downloadClick(View v, int position) {
+    public void downloadClick(View v, final int position) {
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
         long bytesAvailable;
         if (android.os.Build.VERSION.SDK_INT >=
@@ -420,7 +414,7 @@ public class RallyList extends AppCompatActivity {
              * @param id identificador unico
              */
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked OK button
+                changeRallyState(position);// User clicked OK button
             }
         });
         alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -441,7 +435,7 @@ public class RallyList extends AppCompatActivity {
      * Maneja lo que sucede cuando presionamos el menu
      * @param v La vista que acabamos de presionar
      */
-    public void menuClick(final View v){
+    public void menuClick(final View v, final int position){
         //creating a popup menu
         PopupMenu popup = new PopupMenu(v.getContext(), v);
         //inflating menu from xml resource
@@ -471,7 +465,7 @@ public class RallyList extends AppCompatActivity {
                              * @param id id unico para identificar el item del menu
                              */
                             public void onClick(DialogInterface dialog, int id) {
-                                // Se elimina el Rally
+                                changeRallyState(position);// Se elimina el Rally
                             }
                         });
                         alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -497,5 +491,25 @@ public class RallyList extends AppCompatActivity {
         });
         //displaying the popup
         popup.show();
+    }
+
+    public void changeRallyState(int position){
+        position --; //Le quitamos el encabezado de la primera lista que siempre tiene la posicion 0
+        Rally rallyTemp;
+        if(position > rallies_descargados.size()){ //Esta en la segunda lista
+            position--;//Le quitamos el encabezado de la segunda lista
+            position = position - rallies_descargados.size(); //Encontramos la posicion en la segunda lista
+            rallyTemp = rallies_sin_descargar.get(position);
+            rallies_sin_descargar.remove(position);
+            rallyTemp.setDownloaded(true);
+            rallies_descargados.add(rallyTemp);
+        }
+        else{
+            rallyTemp = rallies_descargados.get(position);
+            rallies_descargados.remove(position);
+            rallyTemp.setDownloaded(false);
+            rallies_sin_descargar.add(rallyTemp);
+        }
+        mDynamicListAdapter.notifyDataSetChanged();
     }
 }

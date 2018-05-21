@@ -1,22 +1,407 @@
 package SqlDatabase;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import java.nio.channels.ScatteringByteChannel;
+import java.util.ArrayList;
+import java.util.List;
+
+import SqlEntities.Rally;
+import SqlEntities.Site;
+import SqlEntities.User;
 
 /**
  * Created by Pablo Madrigal on 10/05/2018.
  */
 
 public class LocalDB{
+
+    private SQLiteDatabase database;
+    private LocalDBHelper localDBHelper;
+
+    /**
+     * Constructor de la base de datos
+     *
+     * @param context contexto general de la aplicación
+     */
+    public LocalDB(Context context) {
+        localDBHelper = new LocalDBHelper(context);
+        database = localDBHelper.getWritableDatabase();
+    }
+
+    /**
+     * Metodo para recuperar todos los usuarios de la base de datos
+     * @return un cursor con los datos de la base de datos
+     */
+    public Cursor selectAllUsers(){
+        /**
+         * Se describen las columnas que va a devolver la consulta
+         */
+        String[] columnas = {
+                DBContract.UserEntry.COLUMN_NAME_USERID,
+                DBContract.UserEntry.COLUMN_NAME_USERNAME,
+                DBContract.UserEntry.COLUMN_NAME_FIRSTNAME,
+                DBContract.UserEntry.COLUMN_NAME_LASTNAME,
+                DBContract.UserEntry.COLUMN_NAME_EMAIL,
+                DBContract.UserEntry.COLUMN_NAME_GOOGLEID,
+                DBContract.UserEntry.COLUMN_NAME_FACEBOOKID,
+                DBContract.UserEntry.COLUMN_NAME_PHOTOURL,
+                DBContract.UserEntry.COLUMN_NAME_ISLOGGED
+        };
+
+        /**
+         * Filtro que se utiliza para la clausula WHERE "id" = 1
+         */
+        String selection = DBContract.UserEntry.COLUMN_NAME_USERID + " = ?";
+        String[] selectionArgs = { "1" };
+
+        /**
+         *  Como queremos que esten ordenados los resultados
+         */
+        String sortOrder =
+                DBContract.UserEntry.COLUMN_NAME_USERNAME + " DESC";
+
+        /**
+         * La consulta en si
+         */
+        Cursor cursor = database.query(
+                DBContract.UserEntry.TABLE_NAME,    // La tabla en la que se hace la consulta
+                columnas,                           // El arreglo de las columnas que queremos que devuelva
+                null,                          // Las columnas para el WHERE
+                null,                      // Los valores para cada una de las columnas
+                null,                       // La agrupación de las filas
+                null,                        // El parametro HAVING para agrupar las filas
+                sortOrder                          // The sort order
+        );
+        if(cursor != null)
+            cursor.moveToFirst();
+        return cursor;
+    }
+
+    /**
+     * Metodo para recuperar todos los rallies de la base de datos
+     * @return una lista on los rallies de la base de datos
+     */
+    public List<Rally> selectAllRallies(){
+        /**
+         * Se describen las columnas que va a devolver la consulta
+         */
+        String[] columnas = {
+                DBContract.RallyEntry.COLUMN_NAME_RALLYID,
+                DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE,
+                DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD,
+                DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION,
+                DBContract.RallyEntry.COLUMN_NAME_IMAGEURL,
+                DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED,
+                DBContract.RallyEntry.COLUMN_NAME_NAME
+        };
+
+        /**
+         *  Como queremos que esten ordenados los resultados
+         */
+        String sortOrder =
+                DBContract.RallyEntry.COLUMN_NAME_NAME + " DESC";
+
+        /**
+         * La consulta en si
+         */
+        Cursor cursor = database.query(
+                DBContract.RallyEntry.TABLE_NAME,    // La tabla en la que se hace la consulta
+                columnas,                           // El arreglo de las columnas que queremos que devuelva
+                null,                          // Las columnas para el WHERE
+                null,                      // Los valores para cada una de las columnas
+                null,                       // La agrupación de las filas
+                null,                        // El parametro HAVING para agrupar las filas
+                sortOrder                          // The sort order
+        );
+        if(cursor != null)
+            cursor.moveToFirst();
+
+        ArrayList<Rally> mArrayList = new ArrayList<Rally>();
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            // The Cursor is now set to the right position
+            int index;
+            Rally rally = new Rally();
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_RALLYID);
+            int rallyId = cursor.getInt(index);
+            rally.setRallyId(rallyId);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
+            String memoryUsage = cursor.getString(index);
+            rally.setMemoryUsage(memoryUsage);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
+            int temporatl = cursor.getInt(index);
+            boolean download = temporatl>0;
+            rally.setDownloaded(download);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION);
+            String description = cursor.getString(index);
+            rally.setDescription(description);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL);
+            String imageURL = cursor.getString(index);
+            rally.setImageURL(imageURL);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
+            int points = cursor.getInt(index);
+            rally.setPointsAwarded(points);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
+            String name = cursor.getString(index);
+            rally.setName(name);
+
+            mArrayList.add(rally);
+        }
+        return mArrayList;
+    }
+
+    /**
+     * Metodo para devolver todos los rallies asociados a un usuario
+     * @param userId Identificador del usuario del cual deseo obtener los rallies
+     * @return una lista con los rallies asociados al usuario
+     */
+    public List<Rally> selectAllRalliesFromUser(int userId){
+        String rawQuery = "Select * FROM " + DBContract.RallyEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME +
+                " ON " + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = " + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
+                " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME +
+                " ON " + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = " + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
+                " WHERE " + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = " + userId;
+
+        Cursor cursor = database.rawQuery(
+                rawQuery,
+                null
+        );
+        if(cursor != null)
+            cursor.moveToFirst();
+
+        List<Rally> rallyList = new ArrayList<Rally>();
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            // The Cursor is now set to the right position
+            int index;
+            Rally rally = new Rally();
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_RALLYID);
+            int rallyId = cursor.getInt(index);
+            rally.setRallyId(rallyId);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
+            String memoryUsage = cursor.getString(index);
+            rally.setMemoryUsage(memoryUsage);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
+            int temporatl = cursor.getInt(index);
+            boolean download = temporatl>0;
+            rally.setDownloaded(download);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION);
+            String description = cursor.getString(index);
+            rally.setDescription(description);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL);
+            String imageURL = cursor.getString(index);
+            rally.setImageURL(imageURL);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
+            int points = cursor.getInt(index);
+            rally.setPointsAwarded(points);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
+            String name = cursor.getString(index);
+            rally.setName(name);
+
+            rallyList.add(rally);
+        }
+
+        return rallyList;
+    }
+
+    /**
+     * Metodo para actualizar el estatus de un sitio en la base de datos local
+     * @param siteId identificador del sitio a modificar
+     * @param newStatus nuevo estatus para el sitio seleccionado
+     * @return cantidad de filas modificadas, devuelve un -1 si ocurrio un error
+     */
+    public int updateSiteVisit(int siteId, int newStatus){
+        ContentValues values = new ContentValues();
+        values.put(DBContract.SiteEntry.COLUMN_NAME_STATUS,newStatus);
+
+        /**
+         *
+         */
+        String selection = DBContract.SiteEntry.COLUMN_NAME_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(siteId)};
+        int count = database.update(
+                DBContract.SiteEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs
+        );
+        return count;
+    }
+
+    /**
+     * Metodo para devolver todos los sitios asociados a un rally
+     * @param rallyId Identificador del rally del cual deseo obtener los puntos
+     * @return una lista con los sitios asociados al punto
+     */
+    public List<Site> selectAllSitesFromRally(int rallyId){
+        String rawQuery = "Select * FROM " + DBContract.SiteEntry.TABLE_NAME +
+                " INNER JOIN " + DBContract.Rally_SiteEntry.TABLE_NAME +
+                " ON " + DBContract.SiteEntry.COLUMN_NAME_ID + " = " + DBContract.Rally_SiteEntry.COLUMN_NAME_SITEID +
+                " WHERE " + DBContract.Rally_SiteEntry.COLUMN_NAME_RallyID + " = " + rallyId;
+
+        Cursor cursor = database.rawQuery(
+                rawQuery,
+                null
+        );
+        if(cursor != null)
+            cursor.moveToFirst();
+
+        List<Site> siteList = new ArrayList<Site>();
+
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            // The Cursor is now set to the right position
+            int index;
+            Site site = new Site();
+
+            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ID);
+            int siteId = cursor.getInt(index);
+            site.setSiteId(siteId);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_NAME);
+            String name = cursor.getString(index);
+            site.setSiteName(name);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_POINTSAWARDED);
+            int points = cursor.getInt(index);
+            site.setSitePointsAwarded(points);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_STATUS);
+            int status = cursor.getInt(index);
+            site.setStatus(status);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_DESCRIPTION);
+            String description = cursor.getString(index);
+            site.setSiteDescription(description);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_LATITUD);
+            String latitud = cursor.getString(index);
+            site.setLatitud(latitud);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_LONGITUD);
+            String longitud = cursor.getString(index);
+            site.setLongitud(longitud);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_TOTALPOINTS);
+            int totalPoints = cursor.getInt(index);
+            site.setSiteTotalPoints(totalPoints);
+
+            siteList.add(site);
+        }
+        return siteList;
+    }
+
+    /**
+     * Metodo para ingresar un usuario a la base de datos local
+     * @param user que desea ser ingresado
+     * @return cantidad de filas afectadas
+     */
+    public long insertUser(User user){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.UserEntry.COLUMN_NAME_USERNAME,user.getUsername());
+        values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
+        values.put(DBContract.UserEntry.COLUMN_NAME_FACEBOOKID, user.getFacebookId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
+        values.put(DBContract.UserEntry.COLUMN_NAME_GOOGLEID, user.getGoogleId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
+        values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
+        values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
+        values.put(DBContract.UserEntry.COLUMN_NAME_USERID, user.getUserId());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.UserEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Metodo para ingresar un rally a la base de datos local
+     * @param rally que desea ser ingresado
+     * @return cantidad de filas afectadas
+     */
+    public long insertRally(Rally rally){
+        /**
+         * Como en SQLite no exite el boolean tenemos que pasar de "true" and "false" a 1 y 0
+         */
+        int rallyDownloaded = 0;
+        if(rally.getIsDownloaded())
+            rallyDownloaded = 1;
+
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.RallyEntry.COLUMN_NAME_RALLYID, rally.getRallyId());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_NAME, rally.getName());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION, rally.getDescription());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD, rallyDownloaded);
+        values.put(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL, rally.getImageURL());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE, rally.getMemoryUsage());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED, rally.getPointsAwarded());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.RallyEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Metodo para haer pruebas en la base de datos
+     */
+    public void prueba(){
+        database.execSQL("delete from "+ DBContract.RallyEntry.TABLE_NAME);
+        database.execSQL("delete from "+ DBContract.UserEntry.TABLE_NAME);
+        User user1 = new User("1","Face1","Google1","Usuario 1","Pablo ","Madrigal"," Correo 1","Foto 1",false);
+        User user2 = new User("2","Face2","Google2","Usuario 2","Marco ","Madrigal"," Correo 2","Foto 2",false);;
+        long prueba1 = this.insertUser(user1);
+        long prueba2 = this.insertUser(user2);
+        Rally rally1 = new Rally(1,"rally 1","Descripcion 1", 3,"https://www.google.com/logos/doodles/2013/qixi_festival__chilseok_-2009005-hp.jpg","Utiliza 34Mb",false);
+        Rally rally2 = new Rally(2,"rally 2","Descripcion 2", 6,"https://www.google.com/logos/2012/montessori-hp.jpg","Utiliza 55Mb ",true);
+        long prueba3 = this.insertRally(rally1);
+        long prueba4 = this.insertRally(rally2);
+        long prueba5 = 0;
+    }
+
+    /**
+     * Clase con la definicion de las tablas de la base de datos
+     */
     public final class DBContract {
         // To prevent someone from accidentally instantiating the contract class, make the constructor private.
         private DBContract() {}
 
-        /* Inner class that defines the USER table contents */
+
+        /** Inner class that defines the USER table contents */
         public class UserEntry implements BaseColumns {
             public static final String TABLE_NAME = "USERS";
             public static final String COLUMN_NAME_USERID = "userId";
@@ -30,7 +415,7 @@ public class LocalDB{
             public static final String COLUMN_NAME_ISLOGGED = "isLogged";
         }
 
-        /* Inner class that defines the COMPETITION table contents */
+        /** Inner class that defines the COMPETITION table contents */
         public class CompetitionEntry implements BaseColumns {
             public static final String TABLE_NAME = "COMPETITION";
             public static final String COLUMN_NAME_COMPETITIONID = "competitionId";
@@ -43,7 +428,7 @@ public class LocalDB{
             public static final String COLUMN_NAME_RALLYID = "rallyId";
         }
 
-        /* Inner class that defines the RALLY contents */
+        /** Inner class that defines the RALLY contents */
         public class RallyEntry implements BaseColumns {
             public static final String TABLE_NAME = "RALLY";
             public static final String COLUMN_NAME_RALLYID = "rallyId";
@@ -55,7 +440,7 @@ public class LocalDB{
             public static final String COLUMN_NAME_MEMORYUSAGE = "memoryUsage";
         }
 
-        /* Inner class that defines the MULTIMEDIA contents */
+        /** Inner class that defines the MULTIMEDIA contents */
         public class MultimediaEntry implements BaseColumns {
             public static final String TABLE_NAME = "MULTIMEDIA";
             public static final String COLUMN_NAME_ID = "multimediaId";
@@ -63,7 +448,7 @@ public class LocalDB{
             public static final String COLUMN_NAME_URL = "multimediaURL";
         }
 
-        /* Inner class that defines the ACTIVITY contents */
+        /** Inner class that defines the ACTIVITY contents */
         public class ActivityEntry implements BaseColumns {
             public static final String TABLE_NAME = "ACTIVITY";
             public static final String COLUMN_NAME_ID = "activityId";
@@ -72,7 +457,7 @@ public class LocalDB{
             public static final String COLUMN_NAME_STATUS = "activityStatus";
         }
 
-        /* Inner class that defines the SITE contents */
+        /** Inner class that defines the SITE contents */
         public class SiteEntry implements BaseColumns {
             public static final String TABLE_NAME = "SITE";
             public static final String COLUMN_NAME_ID = "siteId";
@@ -85,7 +470,7 @@ public class LocalDB{
             public static final String COLUMN_NAME_TOTALPOINTS = "siteTotalPoints";
         }
 
-        /* Inner class that defines the TERM contents */
+        /** Inner class that defines the TERM contents */
         public class TermEntry implements BaseColumns {
             public static final String TABLE_NAME = "TERM";
             public static final String COLUMN_NAME_ID = "termID";
@@ -93,42 +478,42 @@ public class LocalDB{
             public static final String COLUMN_NAME_DESCRIPTION = "termDescription";
         }
 
-        /* Inner class that defines the User_Competition table contents */
+        /** Inner class that defines the User_Competition table contents */
         public class User_CompetitionEntry implements BaseColumns {
             public static final String TABLE_NAME = "USER_COMPETITION";
             public static final String COLUMN_NAME_USERID = "userId";
             public static final String COLUMN_NAME_ID = "competitionId";
         }
 
-        /* Inner class that defines the Rally_site table contents */
+        /** Inner class that defines the Rally_site table contents */
         public class Rally_SiteEntry implements BaseColumns {
             public static final String TABLE_NAME = "RALLY_SITE";
             public static final String COLUMN_NAME_RallyID = "rallyId";
             public static final String COLUMN_NAME_SITEID = "siteId";
         }
 
-        /* Inner class that defines the Rally_site table contents */
+        /** Inner class that defines the Rally_site table contents */
         public class Term_SiteEntry implements BaseColumns {
             public static final String TABLE_NAME = "TERM_SITE";
             public static final String COLUMN_NAME_TermID = "TermId";
             public static final String COLUMN_NAME_SITEID = "siteId";
         }
 
-        /* Inner class that defines the Rally_site table contents */
+        /** Inner class that defines the Rally_site table contents */
         public class Activity_SiteEntry implements BaseColumns {
             public static final String TABLE_NAME = "ACTIVITY_SITE";
             public static final String COLUMN_NAME_ACTIVITYID = "activityId";
             public static final String COLUMN_NAME_SITEID = "siteId";
         }
 
-        /* Inner class that defines the Rally_site table contents */
+        /** Inner class that defines the Rally_site table contents */
         public class Multimedia_ActivityEntry implements BaseColumns {
             public static final String TABLE_NAME = "MULTIMEDIA_ACTIVITY";
             public static final String COLUMN_NAME_MULTIMEDIAID = "multimediaId";
             public static final String COLUMN_NAME_ACTIVITYID = "activityId";
         }
 
-        /* Inner class that defines the Rally_site table contents */
+        /** Inner class that defines the Rally_site table contents */
         public class Multimedia_TermEntry implements BaseColumns {
             public static final String TABLE_NAME = "MULTIMEDIA_ACTIVITY";
             public static final String COLUMN_NAME_TermID = "TermId";
@@ -136,7 +521,10 @@ public class LocalDB{
         }
     }
 
-    public class LocalDBHelper extends SQLiteOpenHelper {
+    /**
+     * Clase que permite manejar facilmente la base de datos y lo que se hace con ella
+     */
+    public static class LocalDBHelper extends SQLiteOpenHelper {
         public static final String dbName = "RallyDB";
         public static final int DATABASE_VERSION = 1;
 
