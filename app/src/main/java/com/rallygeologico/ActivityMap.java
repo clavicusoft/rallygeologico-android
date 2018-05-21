@@ -105,6 +105,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                     mc.animateTo(center);
                     addMarker(center, 0, "Ultima Ubicacion Registrada");
                     lastKnown = true;
+
+                verificarPuntos();
                 }
             }
 
@@ -127,7 +129,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         //Pruebas
         addMarker(new GeoPoint(10.8643, -85.6947),1,"1"); //No visitado
         addMarker(new GeoPoint(11.0356, -85.5849),2,"2"); //Visitado
-        addMarker(new GeoPoint(  10.8333, -85.3885),3,"3"); //Especial
 
 
 
@@ -284,7 +285,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                     removeMarker();
                     center=newLocation;
                     addMarker(newLocation, 0, "Aca estoy");
-                }
+
+                    }
                 else {
                         lastKnown=true;
                     center=newLocation;
@@ -293,6 +295,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
             }
 
+                verificarPuntos();
 
             }
         }
@@ -398,5 +401,38 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
         mapView.setMinZoomLevel(12.7);
         mapView.setMaxZoomLevel(20.0);
         mapView.setScrollableAreaLimitDouble(boundingBox);}
+
+     public void verificarPuntos()
+     {
+
+         try{
+             locationManager.removeUpdates(this);
+         }
+         catch(SecurityException e){
+             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
+         }
+
+         double lat = 10.8333;
+         double lon =  -85.3885;
+         verificarEspecial(lat,lon);
+
+         try{
+             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 1, this);
+         }
+         catch(SecurityException e){
+             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
+         }
+
+
+     }
+
+     public void verificarEspecial(double lat,double lon)
+     {
+         if (center.distanceToAsDouble(new GeoPoint(lat,lon))<=1000.0) //Menor o igual a un km
+         {
+             addMarker(new GeoPoint(  10.8333, -85.3885),3,"3"); //Especial
+             Toast.makeText(this,"Encontraste un especial",Toast.LENGTH_LONG);
+         }
+     }
 
 }
