@@ -516,11 +516,7 @@ public class LocalDB{
         return cursor;
     }
 
-    /**
-     * Metodo para recuperar todos los rallies de la base de datos
-     * @return una lista on los rallies de la base de datos
-     */
-    public List<Rally> selectAllRallies(){
+    public ArrayList<Rally> selectAllRallies(){
         /**
          * Se describen las columnas que va a devolver la consulta
          */
@@ -595,6 +591,7 @@ public class LocalDB{
         return mArrayList;
     }
 
+
     /**
      * Metodo para devolver todos los rallies asociados a un usuario
      * @param userId Identificador del usuario del cual deseo obtener los rallies
@@ -608,10 +605,7 @@ public class LocalDB{
                 " ON " + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = " + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
                 " WHERE " + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = " + userId;
 
-        Cursor cursor = database.rawQuery(
-                rawQuery,
-                null
-        );
+        Cursor cursor = database.rawQuery(rawQuery,null);
         if(cursor != null)
             cursor.moveToFirst();
 
