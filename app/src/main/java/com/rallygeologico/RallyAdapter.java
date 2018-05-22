@@ -1,15 +1,16 @@
-package MenuRallies;
+package com.rallygeologico;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rallygeologico.R;
 import java.util.ArrayList;
 
+import SqlDatabase.LocalDB;
 import SqlEntities.Rally;
 
 /**
