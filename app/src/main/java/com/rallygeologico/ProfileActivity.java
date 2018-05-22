@@ -4,6 +4,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +16,11 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import FileManager.FileManager;
 
 /**
  * Clase para manejar la pantalla del perfil del usuario
@@ -64,11 +70,13 @@ public class ProfileActivity extends AppCompatActivity {
         tabs.setDistributeEvenly(true);
         tabs.setViewPager(viewPager);
 
+        FileManager fm = new FileManager();
+
         // Si se esta conectado a Facebook se carga la informacion obtenida en login
         boolean conectado = AccessToken.getCurrentAccessToken() != null;
         Profile perfil = Profile.getCurrentProfile();
         if (conectado && perfil != null) {
-            new ImageLoader(fotoPerfil).execute(perfil.getProfilePictureUri(200, 200).toString());
+            //new ImageLoader(fotoPerfil).execute(perfil.getProfilePictureUri(200, 200).toString());
             GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
@@ -86,6 +94,9 @@ public class ProfileActivity extends AppCompatActivity {
             parameters.putString("fields", "id,name,link,hometown");
             request.setParameters(parameters);
             request.executeAsync();
+        }
+        if (fm.hayAlmacenamientoExterno()) {
+            fm.cargarImagenAlmacenamientoExterno("fotoPerfil", fotoPerfil);
         }
     }
 

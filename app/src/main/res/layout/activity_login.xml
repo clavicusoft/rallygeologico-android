@@ -64,7 +64,8 @@
                 android:textAllCaps="false"
                 android:textColor="@color/Blanco"
                 android:paddingLeft="26dp"
-                android:paddingRight="26dp"/>
+                android:paddingRight="26dp"
+                android:elevation="2dp"/>
 
             <Button
                 android:id="@+id/btn_google"
@@ -78,7 +79,8 @@
                 android:textAllCaps="false"
                 android:textColor="@color/Blanco"
                 android:paddingLeft="36dp"
-                android:paddingRight="36dp" />
+                android:paddingRight="36dp"
+                android:elevation="2dp"/>
 
             <Button
                 android:id="@+id/btn_continuar"
@@ -88,7 +90,8 @@
                 android:textAllCaps="false"
                 android:background="@color/Gris_5"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:elevation="2dp"/>
 
         </LinearLayout>
 

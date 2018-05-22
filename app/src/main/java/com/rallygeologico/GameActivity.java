@@ -2,6 +2,7 @@ package com.rallygeologico;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
@@ -9,6 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +20,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.facebook.AccessToken;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 /**
  * Clase para manejar la pantalla principal del juego y solicitar los permisos de memoria externa y uso del GPS
@@ -29,6 +39,11 @@ public class GameActivity extends AppCompatActivity {
     NavigationView navView;
     Toolbar appbar;
 
+    GoogleSignInOptions gso;
+    GoogleSignInClient mGoogleSignInClient;
+    LoginManager fbLoginManager;
+    boolean fbSignIn;
+    boolean googleSignIn;
 
     /**
      * Se ejecuta cuando se crea la vista
@@ -40,6 +55,15 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        fbLoginManager = LoginManager.getInstance();
+        boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
+        Profile profile = Profile.getCurrentProfile();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        fbSignIn = enableButtons && profile != null;
+        googleSignIn = account != null;
 
         //Busca el boton de jugar en la vista y le asigna una funcion
         // de click para cambiar a la actividad del mapa
@@ -88,11 +112,15 @@ public class GameActivity extends AppCompatActivity {
                             case R.id.menu_info:
                                 Log.i("NavigationView", "Pulsada opcion 2");
                                 break;
+                            case R.id.menu_salir:
+                                showAlertLogout();
+                                break;
                         }
                         drawerLayout.closeDrawers();
                         return true;
                     }
                 });
+
     }
 
     /**
@@ -173,8 +201,41 @@ public class GameActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ActivityMap.class);
             startActivity(intent);
         }
-
         else {Toast.makeText(this,"Active el GPS",Toast.LENGTH_SHORT).show();}
-
     }
+
+    public void manejarCierreSesion(){
+        if(fbSignIn) {
+            fbLoginManager.logOut();
+        } else if(googleSignIn) {
+            mGoogleSignInClient.signOut();
+        }
+        setStartScreen();
+    }
+
+    public void setStartScreen() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed(){
+        if(fbSignIn || googleSignIn) {
+            setStartScreen();
+        }
+    }
+
+    private void showAlertLogout() {
+        new AlertDialog.Builder(this)
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Seguro que desea salir?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        manejarCierreSesion();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
 }
