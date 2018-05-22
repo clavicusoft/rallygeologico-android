@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import SqlDatabase.LocalDB;
 
+
 /**
  * Clase para controlar la pantalla de inicio del juego
  */
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         //LocalDB localDB = new LocalDB(getApplicationContext());
         setContentView(R.layout.activity_main);
         start = findViewById(R.id.btn_inicio);
+        logo = findViewById(R.id.iv_logoucr);
 
         account = GoogleSignIn.getLastSignedInAccount(this);
         enableButtons = AccessToken.getCurrentAccessToken() != null;

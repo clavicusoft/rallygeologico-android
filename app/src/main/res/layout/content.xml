@@ -24,24 +24,38 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:background="@drawable/fondo_inicio">
+        android:orientation="vertical"
+       >
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.5"
+            android:scaleType="fitXY"
+            android:src="@drawable/fondomain" />
 
-
-        <Button
-            android:id="@+id/btnMap"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ir a mapa"
-            android:elevation="2dp"
-            android:layout_gravity="center"
-            android:background="@drawable/btn_inicio_shape"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="30dp"
-            android:textColor="#FFFFFF"
-            android:textSize="20dp" />
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/btnMap"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ir a mapa"
+                android:background="@drawable/btn_inicio_shape"
+                android:layout_marginBottom="30dp"
+                android:textColor="#FFFFFF"
+                android:textSize="20dp"
+                />
+
+        </LinearLayout>
+
 
     </RelativeLayout>
+
 
 </LinearLayout>
