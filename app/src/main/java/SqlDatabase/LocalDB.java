@@ -11,8 +11,12 @@ import java.nio.channels.ScatteringByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import SqlEntities.Activity;
+import SqlEntities.Competition;
+import SqlEntities.Multimedia;
 import SqlEntities.Rally;
 import SqlEntities.Site;
+import SqlEntities.Term;
 import SqlEntities.User;
 
 /**
@@ -32,6 +36,435 @@ public class LocalDB{
     public LocalDB(Context context) {
         localDBHelper = new LocalDBHelper(context);
         database = localDBHelper.getWritableDatabase();
+    }
+
+    /**
+     * Metodo para ingresar un usuario a la base de datos local
+     * @param user que desea ser ingresado
+     * @return cantidad de filas afectadas
+     */
+    public long insertUser(User user){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.UserEntry.COLUMN_NAME_USERNAME,user.getUsername());
+        values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
+        values.put(DBContract.UserEntry.COLUMN_NAME_FACEBOOKID, user.getFacebookId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
+        values.put(DBContract.UserEntry.COLUMN_NAME_GOOGLEID, user.getGoogleId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
+        values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
+        values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
+        values.put(DBContract.UserEntry.COLUMN_NAME_USERID, user.getUserId());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.UserEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Metodo para ingresar una competencia a la base de datos local
+     * @param competition que desea ser ingresado
+     * @return cantidad de filas afectadas
+     */
+    public long insertCompetition(Competition competition){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID,competition.getCompetitionId());
+        values.put(DBContract.CompetitionEntry.COLUMN_NAME_ACTIVE, competition.isActive());
+        values.put(DBContract.CompetitionEntry.COLUMN_NAME_STARTINGDATE, competition.getStartingDate().toString());
+        values.put(DBContract.CompetitionEntry.COLUMN_NAME_FINISHINGDATE, competition.getFinichingDate().toString());
+        values.put(DBContract.CompetitionEntry.COLUMN_NAME_ISPUBLIC, competition.isPublic());
+        values.put(DBContract.CompetitionEntry.COLUMN_NAME_NAME, competition.getName());
+        values.put(DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS, competition.getTotalPoints());
+        values.put(DBContract.CompetitionEntry.COLUMN_NAME_RALLYID, competition.getRally().getRallyId());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.CompetitionEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Metodo para ingresar un rally a la base de datos local
+     * @param rally que desea ser ingresado
+     * @return cantidad de filas afectadas
+     */
+    public long insertRally(Rally rally){
+        /**
+         * Como en SQLite no exite el boolean tenemos que pasar de "true" and "false" a 1 y 0
+         */
+        int rallyDownloaded = 0;
+        if(rally.getIsDownloaded())
+            rallyDownloaded = 1;
+
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.RallyEntry.COLUMN_NAME_RALLYID, rally.getRallyId());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_NAME, rally.getName());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION, rally.getDescription());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD, rallyDownloaded);
+        values.put(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL, rally.getImageURL());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE, rally.getMemoryUsage());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED, rally.getPointsAwarded());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.RallyEntry.TABLE_NAME,
+                null,
+                values
+        );
+
+        //Revisa si hay que crear relaciones entre las tablas
+        if(rally.getSites().size()>0){
+            for(int i = 0; i < rally.getSites().size(); i++) {
+                try {
+                    newRowId+=this.insertSite(rally.getSites().get(i));
+                } catch (android.database.sqlite.SQLiteException e) {}
+                try {
+                    newRowId+=this.insertRally_Site(rally.getRallyId(),rally.getSites().get(i).getSiteId());
+                } catch (android.database.sqlite.SQLiteException e) {}
+            }
+        }
+        return newRowId;
+    }
+
+    /**
+     * Metodo para ingresar una multimedia a la base de datos local
+     * @param multimedia que desea ser ingresado
+     * @return cantidad de filas afectadas
+     */
+    public long insertMultimedia(Multimedia multimedia){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.MultimediaEntry.COLUMN_NAME_ID, multimedia.getMultimediaId());
+        values.put(DBContract.MultimediaEntry.COLUMN_NAME_TYPE, multimedia.getMultimediaType());
+        values.put(DBContract.MultimediaEntry.COLUMN_NAME_URL, multimedia.getMultimediaURL());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.MultimediaEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Metodo para ingresar una multimedia a la base de datos local
+     * @param activity que desea ser ingresado
+     */
+    public long insertActivity(Activity activity){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.ActivityEntry.COLUMN_NAME_ID, activity.getActivityId());
+        values.put(DBContract.ActivityEntry.COLUMN_NAME_TYPE, activity.getGetActivityType());
+        values.put(DBContract.ActivityEntry.COLUMN_NAME_POINTS, activity.getActivityPoints());
+        values.put(DBContract.ActivityEntry.COLUMN_NAME_STATUS, activity.getActivityStatus());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.ActivityEntry.TABLE_NAME,
+                null,
+                values
+        );
+
+        //Revisa si hay que crear relaciones entre las tablas
+        if(activity.getActivityMultimediaList().size()>0){
+            for(int i = 0; i < activity.getActivityMultimediaList().size(); i++) {
+                try {
+                    newRowId+=this.insertMultimedia(activity.getActivityMultimediaList().get(i));
+                } catch (android.database.sqlite.SQLiteException e) {}
+                try {
+                    newRowId+=this.insertMultimedia_Activity(activity.getActivityMultimediaList().get(i).getMultimediaId(),activity.getActivityId());
+                } catch (android.database.sqlite.SQLiteException e) {}
+            }
+        }
+        return newRowId;
+    }
+
+    /**
+     * Metodo para ingresar un Site a la base de datos local
+     * @param site que desea ser ingresado
+     */
+    public long insertSite(Site site){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.SiteEntry.COLUMN_NAME_ID, site.getSiteId());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_NAME, site.getSiteName());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_POINTSAWARDED, site.getSitePointsAwarded());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_STATUS, site.getStatus());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_DESCRIPTION, site.getSiteDescription());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_LATITUD, site.getLatitud());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_LONGITUD, site.getLongitud());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_TOTALPOINTS, site.getSiteTotalPoints());
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.SiteEntry.TABLE_NAME,
+                null,
+                values
+        );
+
+        if(site.getActivityList().size()>0){
+            for(int i = 0; i < site.getActivityList().size(); i++) {
+                try {
+                    this.insertActivity(site.getActivityList().get(i));
+                } catch (android.database.sqlite.SQLiteException e) {}
+                try {
+                    this.insertActivity_Site(site.getSiteId(),site.getActivityList().get(i).getActivityId());
+                } catch (android.database.sqlite.SQLiteException e) {}
+            }
+        }
+        if(site.getTermList().size()>0){
+            for(int i = 0; i < site.getTermList().size(); i++) {
+                try {
+                    newRowId += this.insertTerm(site.getTermList().get(i));
+                } catch (android.database.sqlite.SQLiteException e) {}
+                try {
+                    newRowId += this.insertTerm_Site(site.getSiteId(),site.getTermList().get(i).getTermId());
+                } catch (android.database.sqlite.SQLiteException e) {}
+            }
+        }
+        return newRowId;
+    }
+
+    /**
+     * Metodo para ingresar un termino a la base de datos local
+     * @param term que desea ser ingresado
+     */
+    public long insertTerm(Term term){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.TermEntry.COLUMN_NAME_ID,term.getTermId());
+        values.put(DBContract.TermEntry.COLUMN_NAME_NAME, term.getTermName());
+        values.put(DBContract.TermEntry.COLUMN_NAME_DESCRIPTION, term.getTermDescription());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.TermEntry.TABLE_NAME,
+                null,
+                values
+        );
+
+        //Revisa si hay que crear relaciones entre las tablas
+        if(term.getTermMultimediaList().size()>0){
+            for(int i = 0; i < term.getTermMultimediaList().size(); i++) {
+                try {
+                    newRowId += this.insertMultimedia(term.getTermMultimediaList().get(i));
+                } catch (android.database.sqlite.SQLiteException e) {}
+                try {
+                    newRowId += this.insertMultimedia_Term(term.getTermMultimediaList().get(i).getMultimediaId(),term.getTermId());
+                } catch (android.database.sqlite.SQLiteException e) {}
+            }
+        }
+        return newRowId;
+    }
+
+    /**
+     * Crea la relacion entre una actividad y el sitio relacionado
+     * @param userId identificador del usuario
+     * @param competitionId identificador de la competencia
+     * @return filas modificadas
+     */
+    public long insertUser_Competition(int userId, int competitionId){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.User_CompetitionEntry.COLUMN_NAME_USERID, userId);
+        values.put(DBContract.User_CompetitionEntry.COLUMN_NAME_ID, competitionId);
+
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.User_CompetitionEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Crea la relacion entre una actividad y el sitio relacionado
+     * @param rallyId identificador del termino
+     * @param SiteId identificador de la actividad
+     * @return filas modificadas
+     */
+    public long insertRally_Site(int rallyId, int SiteId){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Rally_SiteEntry.COLUMN_NAME_RallyID, rallyId);
+        values.put(DBContract.Rally_SiteEntry.COLUMN_NAME_SITEID, SiteId);
+
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.Rally_SiteEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Crea la relacion entre una actividad y el sitio relacionado
+     * @param TermId identificador del termino
+     * @param siteId identificador del sitio
+     * @return filas modificadas
+     */
+    public long insertTerm_Site(int siteId, int TermId){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Term_SiteEntry.COLUMN_NAME_SITEID, siteId);
+        values.put(DBContract.Term_SiteEntry.COLUMN_NAME_TermID, TermId);
+
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.Term_SiteEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Crea la relacion entre una actividad y el sitio relacionado
+     * @param siteId identificador del sitio
+     * @param activityId identificador de la actividad
+     * @return filas modificadas
+     */
+    public long insertActivity_Site(int siteId, int activityId){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Activity_SiteEntry.COLUMN_NAME_SITEID, siteId);
+        values.put(DBContract.Activity_SiteEntry.COLUMN_NAME_ACTIVITYID, activityId);
+
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.Activity_SiteEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Crea la relacion entre una actividad y el multimedia relacionado
+     * @param multimediaId identificador del contenido multimedia
+     * @param activityId identificador de la actividad
+     * @return filas modificadas
+     */
+    public long insertMultimedia_Activity(int multimediaId, int activityId){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Multimedia_ActivityEntry.COLUMN_NAME_MULTIMEDIAID, multimediaId);
+        values.put(DBContract.Multimedia_ActivityEntry.COLUMN_NAME_ACTIVITYID, activityId);
+
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.Multimedia_ActivityEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Crea la relacion entre una actividad y el multimedia relacionado
+     * @param multimediaId identificador del contenido multimedia
+     * @param termId identificador del termino
+     * @return filas modificadas
+     */
+    public long insertMultimedia_Term(int multimediaId, int termId){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Multimedia_TermEntry.COLUMN_NAME_MULTIMEDIAID, multimediaId);
+        values.put(DBContract.Multimedia_TermEntry.COLUMN_NAME_TermID, termId);
+
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.Multimedia_TermEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Metodo para haer pruebas en la base de datos
+     */
+    public void prueba(){
+        database.execSQL("delete from "+ DBContract.RallyEntry.TABLE_NAME);
+        database.execSQL("delete from "+ DBContract.UserEntry.TABLE_NAME);
+        User user1 = new User("1","Face1","Google1","Usuario 1","Pablo ","Madrigal"," Correo 1","Foto 1",false);
+        User user2 = new User("2","Face2","Google2","Usuario 2","Marco ","Madrigal"," Correo 2","Foto 2",false);
+        long prueba1 = this.insertUser(user1);
+        long prueba2 = this.insertUser(user2);
+        Rally rally1 = new Rally(1,"rally 1","Descripcion 1", 3,"https://www.google.com/logos/doodles/2013/qixi_festival__chilseok_-2009005-hp.jpg","Utiliza 34Mb",false);
+        Rally rally2 = new Rally(2,"rally 2","Descripcion 2", 6,"https://www.google.com/logos/2012/montessori-hp.jpg","Utiliza 55Mb ",true);
+        this.insertRally(rally1);
+        this.insertRally(rally2);
+        long prueba5 = 0;
     }
 
     /**
@@ -307,90 +740,6 @@ public class LocalDB{
             siteList.add(site);
         }
         return siteList;
-    }
-
-    /**
-     * Metodo para ingresar un usuario a la base de datos local
-     * @param user que desea ser ingresado
-     * @return cantidad de filas afectadas
-     */
-    public long insertUser(User user){
-        /**
-         * Crea un mapa de valores donde los nombres de las columnas es el Key
-         */
-        ContentValues values = new ContentValues();
-        values.put(DBContract.UserEntry.COLUMN_NAME_USERNAME,user.getUsername());
-        values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
-        values.put(DBContract.UserEntry.COLUMN_NAME_FACEBOOKID, user.getFacebookId());
-        values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
-        values.put(DBContract.UserEntry.COLUMN_NAME_GOOGLEID, user.getGoogleId());
-        values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
-        values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
-        values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
-        values.put(DBContract.UserEntry.COLUMN_NAME_USERID, user.getUserId());
-
-        /**
-         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
-         */
-        long newRowId = database.insert(
-                DBContract.UserEntry.TABLE_NAME,
-                null,
-                values
-        );
-        return newRowId;
-    }
-
-    /**
-     * Metodo para ingresar un rally a la base de datos local
-     * @param rally que desea ser ingresado
-     * @return cantidad de filas afectadas
-     */
-    public long insertRally(Rally rally){
-        /**
-         * Como en SQLite no exite el boolean tenemos que pasar de "true" and "false" a 1 y 0
-         */
-        int rallyDownloaded = 0;
-        if(rally.getIsDownloaded())
-            rallyDownloaded = 1;
-
-        /**
-         * Crea un mapa de valores donde los nombres de las columnas es el Key
-         */
-        ContentValues values = new ContentValues();
-        values.put(DBContract.RallyEntry.COLUMN_NAME_RALLYID, rally.getRallyId());
-        values.put(DBContract.RallyEntry.COLUMN_NAME_NAME, rally.getName());
-        values.put(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION, rally.getDescription());
-        values.put(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD, rallyDownloaded);
-        values.put(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL, rally.getImageURL());
-        values.put(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE, rally.getMemoryUsage());
-        values.put(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED, rally.getPointsAwarded());
-
-        /**
-         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
-         */
-        long newRowId = database.insert(
-                DBContract.RallyEntry.TABLE_NAME,
-                null,
-                values
-        );
-        return newRowId;
-    }
-
-    /**
-     * Metodo para haer pruebas en la base de datos
-     */
-    public void prueba(){
-        database.execSQL("delete from "+ DBContract.RallyEntry.TABLE_NAME);
-        database.execSQL("delete from "+ DBContract.UserEntry.TABLE_NAME);
-        User user1 = new User("1","Face1","Google1","Usuario 1","Pablo ","Madrigal"," Correo 1","Foto 1",false);
-        User user2 = new User("2","Face2","Google2","Usuario 2","Marco ","Madrigal"," Correo 2","Foto 2",false);;
-        long prueba1 = this.insertUser(user1);
-        long prueba2 = this.insertUser(user2);
-        Rally rally1 = new Rally(1,"rally 1","Descripcion 1", 3,"https://www.google.com/logos/doodles/2013/qixi_festival__chilseok_-2009005-hp.jpg","Utiliza 34Mb",false);
-        Rally rally2 = new Rally(2,"rally 2","Descripcion 2", 6,"https://www.google.com/logos/2012/montessori-hp.jpg","Utiliza 55Mb ",true);
-        long prueba3 = this.insertRally(rally1);
-        long prueba4 = this.insertRally(rally2);
-        long prueba5 = 0;
     }
 
     /**
