@@ -1,14 +1,19 @@
 package com.rallygeologico;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.osmdroid.tileprovider.tilesource.XYTileSource;
@@ -17,6 +22,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
 
 import java.util.List;
 
@@ -35,7 +41,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     GeoPoint center; //Almacena la ubicacion del GPS
     GeoPoint arribaDerecha; //Ubicacion del vertice superior derecho del mapa
     GeoPoint abajoIzquierda;  //Ubicacion del vertice inferior izquierdo del mapa
-    int numberMarker; //El 0 siempre es para el actual
     boolean lastKnown; //Almacena si se pudo conseguir la ultima ubiacion registrada con GPS antes de usar la aplicacion
     BoundingBox boundingBox;
 
@@ -46,6 +51,17 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     Button botonQR;
 
     Marker me;
+
+    //Dialogo
+    Dialog especialDialog;
+
+    Button botonobservar;
+    TextView botoncerrar;
+
+    //Lugares
+    int numeroVisitados;
+    int numeroNoVisitados;
+    int numeroEspeciales;
 
     /**
      * Se ejecuta cuando se crea la vista
@@ -60,7 +76,14 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
         setContentView(R.layout.activity_maps);
+
+        Toast.makeText(this,"Cargando el mapa",Toast.LENGTH_LONG).show();
+        //Copia el folder
+        CopyFolder.copyAssets(this);
 
         //Actualiza el cuadrado del mapa para generar un rango de validas
 
@@ -68,9 +91,14 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         arribaDerecha=new GeoPoint(11.1124, -85.2827);
         abajoIzquierda=new GeoPoint(  10.6775, -86.0264);
 
-        numberMarker=1; //El 0 siempre es la ubicacion real
         lastKnown=false;
 
+        especialDialog=new Dialog(this);
+
+        /*Inicializa contadores*/
+         numeroVisitados=0;
+         numeroNoVisitados=0;
+         numeroEspeciales=0;
 
         mapView = (MapView) findViewById(R.id.mapview);
 
@@ -80,22 +108,22 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         mapView.setUseDataConnection(false);
 
 
-
-        //Copia el folder
-        CopyFolder.copyAssets(this);
-
         //Inicializa el controlador
         mc = (MapController) mapView.getController();
 
-        mc.setZoom(13);
+        mc.setZoom(14);
 
 
-        mapView.setTileSource(new XYTileSource("tiles", 10, 16, 256, ".png", new String[0]));
+        mapView.setTileSource(new XYTileSource("tiles", 10, 15, 256, ".png", new String[0]));
 
         crearBorde();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+
+        //Pruebas
+        addMarker(new GeoPoint(10.8643, -85.6947),1,"1"); //No visitado
+        addMarker(new GeoPoint(11.0356, -85.5849),2,"2"); //Visitado
 
         try {
             Location ultimo = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -105,6 +133,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                     mc.animateTo(center);
                     addMarker(center, 0, "Ultima Ubicacion Registrada");
                     lastKnown = true;
+
+                verificarPuntos();
                 }
             }
 
@@ -123,11 +153,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
         }
 
-
-        //Pruebas
-        addMarker(new GeoPoint(10.8643, -85.6947),1,"1"); //No visitado
-        addMarker(new GeoPoint(11.0356, -85.5849),2,"2"); //Visitado
-        addMarker(new GeoPoint(  10.8333, -85.3885),3,"3"); //Especial
 
 
 
@@ -158,7 +183,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         botonAcercar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mc.zoomIn();
+                mc.zoomOut();
             }
         });
 
@@ -166,7 +191,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         botonAlejar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mc.zoomOut();
+                mc.zoomIn();;
             }
         });
 
@@ -190,6 +215,19 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 
 
+    }
+
+    public void removeMarker(GeoPoint loc)
+    {
+        int i=0;
+        boolean noEncontrado=true;
+        while (i<mapView.getOverlays().size() && noEncontrado)
+        { Marker compare = (Marker) mapView.getOverlays().get(i);
+            if (compare.getPosition().getLatitude()==loc.getLatitude() && compare.getPosition().getLongitude()==loc.getLongitude())
+            {mapView.getOverlays().remove(i);
+                noEncontrado=false;}
+            i++;
+        }
     }
 
     /**
@@ -228,12 +266,16 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         else {
             if (ite==1) {
                 marker.setIcon(getResources().getDrawable(R.drawable.novisitado));
+                ++numeroNoVisitados;
             }
             if  (ite==2){
                 marker.setIcon(getResources().getDrawable(R.drawable.visitado));
+                ++numeroVisitados;
+
             }
             if  (ite==3) {
                 marker.setIcon(getResources().getDrawable(R.drawable.dorado));
+                ++numeroEspeciales;
             }
             marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
 
@@ -256,15 +298,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         mapView.invalidate();
     }
 
-    /**
-     * Elimina los marcadores asociados a un numero de iterador
-     * */
-
-    public void removeMarker()
-    {
-        mapView.getOverlays().remove(me);
-
-    }
 
 
     /**
@@ -281,10 +314,11 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             if (estaAdentro(location)) {
                 GeoPoint newLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
                 if (lastKnown) {
-                    removeMarker();
+                    mapView.getOverlays().remove(me);
                     center=newLocation;
                     addMarker(newLocation, 0, "Aca estoy");
-                }
+
+                    }
                 else {
                         lastKnown=true;
                     center=newLocation;
@@ -293,6 +327,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
             }
 
+              //  verificarPuntos();
 
             }
         }
@@ -364,7 +399,7 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
                 i.putExtra("Nombre","Playa Carrillo");
                 i.putExtra("Numero","Punto #2");
                 i.putExtra("Distancia",Distancia);
-                i.putExtra("Geopuntos","Valor: 50 Geopuntos");
+                i.putExtra("Geopuntos","Valor: 50 Petrocoins");
                 i.putExtra("Informacion","Carrillo esta repleta de palmeras y arena blanca. La costa por lo general nunca esta muy concurrida, lo que la convierte en un lugar perfecto para relajarse y escapar de los dias estresantes en el trabajo. Al tiempo que usted se relaja, puede disfrutar de impresionantes paisajes de las exuberantes montanas que se dibujan en la distancia y que hacen las veces de un hermoso marco para la playa.");
                 break;
             case 3:
@@ -373,7 +408,7 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
                 i.putExtra("Nombre","Rio Agrio");
                 i.putExtra("Numero","Punto Extra");
                 i.putExtra("Distancia",Distancia);
-                i.putExtra("Geopuntos","Valor: 100 Geopuntos");
+                i.putExtra("Geopuntos","Valor: 100 Petrocoins");
                 i.putExtra("Informacion","Catarata Rio Agrio y las Pozas Celestes se han convertido en uno de los principales atractivos turisticos del canton de Sarchi, ya no solo es conocido por la artesania sino tambien por la majestuosa naturaleza en esta zona del pais");
                 break;
         }
@@ -398,5 +433,161 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
         mapView.setMinZoomLevel(12.7);
         mapView.setMaxZoomLevel(20.0);
         mapView.setScrollableAreaLimitDouble(boundingBox);}
+
+     public void verificarPuntos()
+     {
+
+         try{
+             locationManager.removeUpdates(this);
+         }
+         catch(SecurityException e){
+             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
+         }
+
+         //Verificar eliminarlo
+         double lat = 10.8333;
+         double lon =  -85.3885;
+         verificarEspecial(lat,lon);
+
+         lat=10.8643;
+         lon=-85.6947;
+
+         verificarNoVisitados(lat,lon);
+
+         try{
+             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 1, this);
+         }
+         catch(SecurityException e){
+             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
+         }
+
+
+     }
+
+     public void verificarEspecial(double lat,double lon)
+     {
+         final GeoPoint esp=new GeoPoint(lat,lon);
+
+         if (center.distanceToAsDouble(new GeoPoint(lat,lon))<=10000.0) //Menor o igual a un km
+         {
+             Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+             v.vibrate(3000);
+
+             addMarker(esp,3,"3"); //Especial
+
+             especialDialog.setContentView(R.layout.alertaespecial);
+
+             /*Llenar el activity*/
+
+             ImageView imagen= especialDialog.findViewById(R.id.iv_alerta_imagen);
+
+             imagen.setImageResource(getResources().getIdentifier( "dorado", "drawable", getPackageName()));
+
+
+             TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto);
+             secreto.setText("¡Has encontrado un secreto!");
+
+             TextView valor= especialDialog.findViewById( R.id.tv_alerta_valor);
+             valor.setText("Playa Carrillo: 20 Petrocoins");
+
+             TextView especial= especialDialog.findViewById( R.id.tv_alerta_especial);
+             especial.setText(Integer.toString(numeroEspeciales));
+
+             TextView visitados= especialDialog.findViewById( R.id.tv_alerta_visitados);
+             visitados.setText(Integer.toString(numeroVisitados));
+
+             TextView novisitados= especialDialog.findViewById( R.id.tv_alerta_novisitados);
+             novisitados.setText(Integer.toString(numeroNoVisitados));
+
+
+             /*Asigna los botones*/
+
+             botoncerrar= especialDialog.findViewById( R.id.btn_close);
+             especialDialog.show();
+
+             botoncerrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    especialDialog.hide();
+                }
+            });
+
+             botonobservar= especialDialog.findViewById( R.id.btn_observar);
+
+             botonobservar.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     especialDialog.hide();
+                     mc.animateTo(esp);
+                 }
+             });
+
+         }
+}
+
+    public void verificarNoVisitados( double lat, double lon)
+    {
+        final GeoPoint esp=new GeoPoint(10.8643, -85.6947);
+
+        if (center.distanceToAsDouble(new GeoPoint(lat,lon))<=5000.0) //Menor o igual a un km
+        {
+            Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            v.vibrate(3000);
+
+
+            /*Quita el marcador pasado e inserta otro*/
+            --numeroNoVisitados;
+            removeMarker(esp);
+           addMarker(esp,2,"2"); //Visitado
+
+            especialDialog.setContentView(R.layout.alertaespecial);
+
+            /*Llenar el activity*/
+
+            ImageView imagen= especialDialog.findViewById(R.id.iv_alerta_imagen);
+
+            imagen.setImageResource(getResources().getIdentifier( "visitado", "drawable", getPackageName()));
+
+
+            TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto);
+            secreto.setText("¡Bienvenido!");
+
+            TextView valor= especialDialog.findViewById( R.id.tv_alerta_valor);
+            valor.setText("Playa Carrillo: 20 Petrocoins");
+
+            TextView especial= especialDialog.findViewById( R.id.tv_alerta_especial);
+            especial.setText(Integer.toString(numeroEspeciales));
+
+            TextView visitados= especialDialog.findViewById( R.id.tv_alerta_visitados);
+            visitados.setText(Integer.toString(numeroVisitados));
+
+            TextView novisitados= especialDialog.findViewById( R.id.tv_alerta_novisitados);
+            novisitados.setText(Integer.toString(numeroNoVisitados));
+
+
+            /*Asigna los botones*/
+
+            botoncerrar= especialDialog.findViewById( R.id.btn_close);
+            especialDialog.show();
+
+            botoncerrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    especialDialog.hide();
+                }
+            });
+
+            botonobservar= especialDialog.findViewById( R.id.btn_observar);
+
+            botonobservar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    especialDialog.hide();
+                    mc.animateTo(esp);
+                }
+            });
+
+        }
+    }
 
 }
