@@ -99,8 +99,8 @@ public class LoginActivity extends AppCompatActivity {
                 Profile profile = Profile.getCurrentProfile();
                 String uri = profile.getProfilePictureUri(200, 200).toString();
                 new DownloadTask(context, 1, "fotoPerfil", uri);
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                updateUI(account);
+                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
+                //updateUI(account);
                 setGameScreen();
             }
 
@@ -110,8 +110,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onCancel() {
                 showAlert();
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                updateUI(account);
+                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
+                //updateUI(account);
             }
 
             /**
@@ -121,8 +121,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(FacebookException exception) {
                 showAlert();
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                updateUI(account);
+                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
+                //updateUI(account);
             }
 
             /**
@@ -146,8 +146,8 @@ public class LoginActivity extends AppCompatActivity {
              */
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                updateUI(account);
+                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
+                //updateUI(account);
             }
         };
 
@@ -163,8 +163,8 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     fbLoginManager.logOut();
                 }
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                updateUI(account);
+                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
+                //updateUI(account);
             }
         });
 
@@ -197,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                updateUI(null);
+                //updateUI(null);
             }
         });
     }
@@ -230,13 +230,13 @@ public class LoginActivity extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
             toast.show();
-            updateUI(account);
+            //updateUI(account);
             setGameScreen();
         } catch (ApiException e) {
             Log.w("Error", "handleSignInResult:error ", e);
             Toast toast = Toast.makeText(context, "No se pudo conectar", Toast.LENGTH_SHORT);
             toast.show();
-            updateUI(null);
+            //updateUI(null);
         }
     }
 
@@ -247,8 +247,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         AppEventsLogger.activateApp(this);
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account);
+        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        //updateUI(account);
     }
 
     /**
@@ -275,8 +275,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        updateUI(account);
+        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        //updateUI(account);
     }
 
     /**

@@ -29,8 +29,12 @@
                 android:title="Cómo jugar"/>
             <item
                 android:id="@+id/menu_info"
-                android:icon="@drawable/ic_about"
+                android:icon="@drawable/ic_info"
                 android:title="Sobre nosotros"/>
+            <item
+                android:id="@+id/menu_salir"
+                android:icon="@drawable/ic_exit"
+                android:title="Cerrar sesión"/>
         </menu>
     </item>
 </menu>

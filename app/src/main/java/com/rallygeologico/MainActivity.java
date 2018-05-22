@@ -17,7 +17,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import SqlDatabase.LocalDB;
 
-
 /**
  * Clase para controlar la pantalla de inicio del juego
  */
@@ -54,11 +53,11 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View view) {
-                //if(googleSignIn || fbSignIn){
-                //    irAJuego(view);
-                //}else{
+                if(googleSignIn || fbSignIn){
+                    irAJuego(view);
+                }else{
                     irALogin(view);
-                //}
+                }
             }
         });
     }
