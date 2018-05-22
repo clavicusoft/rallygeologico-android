@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -27,6 +28,7 @@ import FileManager.FileManager;
  */
 public class ProfileActivity extends AppCompatActivity {
 
+    ScrollView scrollView;
     ImageView fotoPerfil;
     ImageView fotoFondo;
     ImageView editar;
@@ -49,6 +51,9 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        scrollView = (ScrollView) findViewById(R.id.sv_profile);
+        scrollView.setFocusableInTouchMode(true);
 
         fotoFondo = findViewById(R.id.header_cover_image);
         fotoPerfil = findViewById(R.id.profile);
