@@ -9,7 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 import SqlDatabase.LocalDB;
+import SqlEntities.Rally;
 
 /**
  * Fragmento para manejar la lista de los logros obtenidos por el usuario
@@ -22,6 +25,12 @@ public class RallyListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_rally_list, container, false);
         ListView listaRallies = (ListView) v.findViewById(R.id.rallyListView);
+        LocalDB db = new LocalDB(getContext());
+        ArrayList<Rally> rallies = db.selectAllRallies();
+// Create the adapter to convert the array to views
+        RallyListAdapter adapter = new RallyListAdapter(getContext(), rallies);
+// Attach the adapter to a ListView
+        listaRallies.setAdapter(adapter);
         return v;
 
        /* // TodoDatabaseHandler is a SQLiteOpenHelper class connecting to SQLite

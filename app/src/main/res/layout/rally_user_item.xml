@@ -1,31 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:elevation="2dp"
+    >
 
-    <TextView
-        android:id="@+id/nombre_rally_usuario"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nombre:"/>
+        android:paddingHorizontal="5dp"
+        >
 
-    <TextView
-        android:id="@+id/estado_rally_usuario"
+        <TextView
+            android:id="@+id/tag_nombre"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:text="Nombre:"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/nombre_rally_usuario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:text="Nombre:"
+            app:layout_constraintLeft_toRightOf="@id/tag_nombre"/>
+
+        <TextView
+            android:id="@+id/tag_est"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:text="Estado:"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/tag_nombre"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:layout_editor_absoluteX="5dp" />
+
+        <TextView
+            android:id="@+id/estado_rally_usuario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:text="Estado:"
+            app:layout_constraintLeft_toRightOf="@id/tag_est"
+
+            app:layout_constraintTop_toBottomOf="@+id/nombre_rally_usuario"
+            />
+
+        <TextView
+            android:id="@+id/tag_pts"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:text="GeoPuntos:"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/tag_est"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:layout_editor_absoluteX="5dp" />
+
+        <TextView
+            android:id="@+id/puntos_rally_usuario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:text="Puntos Obtenidos:"
+            app:layout_constraintLeft_toRightOf="@id/tag_pts"
+            app:layout_constraintTop_toBottomOf="@+id/estado_rally_usuario"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Estado:"/>
+        android:paddingHorizontal="5dp"
+        >
 
-    <TextView
-        android:id="@+id/puntos_rally_usuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Puntos Obtenidos:"/>
+        <TextView
+            android:id="@+id/tag_sitio"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:padding="1dp"
+            android:text="Sitios descubiertos:"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="5dp" />
 
-    <TextView
-        android:id="@+id/sitios_rally_usuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sitios descubiertos:"/>
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
