@@ -454,17 +454,33 @@ public class LocalDB{
      * Metodo para haer pruebas en la base de datos
      */
     public void prueba(){
-        database.execSQL("delete from "+ DBContract.RallyEntry.TABLE_NAME);
+        database.execSQL("delete from "+ DBContract.Rally_SiteEntry.TABLE_NAME);
         database.execSQL("delete from "+ DBContract.UserEntry.TABLE_NAME);
+        database.execSQL("delete from "+ DBContract.SiteEntry.TABLE_NAME);
+        database.execSQL("delete from "+ DBContract.RallyEntry.TABLE_NAME);
         User user1 = new User("1","Face1","Google1","Usuario 1","Pablo ","Madrigal"," Correo 1","Foto 1",false);
         User user2 = new User("2","Face2","Google2","Usuario 2","Marco ","Madrigal"," Correo 2","Foto 2",false);
         long prueba1 = this.insertUser(user1);
         long prueba2 = this.insertUser(user2);
-        Rally rally1 = new Rally(1,"rally 1","Descripcion 1", 3,"https://www.google.com/logos/doodles/2013/qixi_festival__chilseok_-2009005-hp.jpg","Utiliza 34Mb",false);
-        Rally rally2 = new Rally(2,"rally 2","Descripcion 2", 6,"https://www.google.com/logos/2012/montessori-hp.jpg","Utiliza 55Mb ",true);
+
+        String descripcionRally1 = "El Rally #1 incluye localidades en sitios del cantón de La Cruz como: El parque nacional Santa Rosa, con increíbles paisajes naturales declarados patrimonio de la humanidad; y Cuajiniquil, pueblo costero cuya principal actividad económica es la pesca y el creciente desarrollo turístico.";
+        String descripcionRally2 = "Esta geoaventura abarca pueblos costeros del cantón de La Cruz, entre los que destacan Cuajiniquil, pueblo cercano a sitios turísticos; El Jobo, pueblo con diversidad de playas y el centro poblacional del cantón, identificado por sus maravillosas vistas a la cordillera volcánica de Guanacaste y a bahía Salinas.";
+        Rally rally1 = new Rally(1,"rally 1",descripcionRally1, 3,"https://www.google.com/logos/doodles/2013/qixi_festival__chilseok_-2009005-hp.jpg","Utiliza 34Mb",false);
+        Rally rally2 = new Rally(2,"rally 2",descripcionRally2, 6,"https://www.google.com/logos/2012/montessori-hp.jpg","Utiliza 55Mb ",false);
+        String descripcionSitio1 = "Desde este punto se pueden observar volcanes de la Cordillera Volcánica de Guanacaste. El volcán Orosí (N48°), el volcán Cacao (N60°) y el volcán Rincón de la Vieja (N90°).Hacia el azimut 110° (Sureste) se observa el cerro Góngora que es un domo volcánico con una edad de unos 8 millones de años. Un domo de lava se forma cuando sale lava muy densa o viscosa, que no puede fluir y se enfría. Queda como una protuberancia del terreno. Ligeramente a la derecha del cerro Góngora se observan protuberancias del terreno más pequeñas que corresponden con los domos de Cañas Dulces, que fueron domos que se formaron por erupciones de lava que ocurrieron hace unos 1.5 millones de años. El participante en este juego está parado sobre la Meseta de Ignimbrita, que es una planicie formada por una serie de erupciones volcánicas violentas que cubrieron la topografía existente hace unos 2 millones explosión  de  un  volcán.  En  este  caso  rellenaron  la  topografía  existente  y  dejaron  una  planicie  (Meseta  de  ignimbrita). Desde  este  punto  se  puede  observar  la  península  de  Santa  Elena  al  Noroeste,    El  cerro  El  Inglés  que  es  uno  de  los  puntos  más  altos  de  la  península  de  Santa  Elena  con  más  de  500  m  de  altura.    Desde  este  sitio  lo  puede  observar  hacia  el  Noroeste  (305°),  que  está  compuesta  por  rocas  provenientes  del  manto    terrestre.    Es  decir,  rocas  que  viajaron  desde  más  de  40  kilómetros  para  llegar  a  la  superficie  terrestre.  Estas  rocas  son  más  antiguas  que  80  millones  de  años.";
+        String descripcionSitio2 = "La Casona está edificada sobre rocas de la meseta ignimbrítica de unos 2 millones de años de antiguedad.  Específicamente en este sitio, estas rocas contienen fragmentos de lava negruscos, que se llaman escorias por contener muchos poros, que fueron cavidades que contenían gases volcánicos cuando se formaron.";
+        Site site1 = new Site(1,"El monumento",descripcionSitio1,"10.5005","-85.3669",2,5,5);
+        Site site2 = new Site(2,"La casona",descripcionSitio2,"10.5002","-85.3675",1,5,5);
+        rally1.addSite(site1);
+        rally1.addSite(site2);
+        String descripcionSitio7 = "Desde este mirador. Se observa La isla Los Muñecos. Localice visualmente el muñeco de la isla, que es un monolito de piedra caliza (relicto de erosión) en el extremo izquierdo de la isla. Active la brújula. Dirija la brújula hacia el “muñeco” y acepte el azimuth. Esta isla está compuesta por calizas, que son rocas ricas en carbonato de calcio (CaCO3).  Estas rocas se disuelven con el agua y forman hermosas “esculturas” como El Muñeco.  Anteriormente eran 2 muñecos, pero hace unos años el muñeco más grande, que llamaban Nefertiti desapareció.  Las rocas calizas que conforman esta isla fueron originados por construcciones de arrecifes de coral que se formaron hace unos 30 millones de años. ";
+        String descripcionSitio8 = "Estas rocas se formaron hace unos 35 millones de años, son muy parecidas a las de la playa 4x4.  Se pueden observar algunos troncos. y espectaculares bioturbaciones destacadas con líneas punteadas y flechas. ";
+        Site site7 = new Site(7,"El mirador",descripcionSitio7,"10.5775","-85.4186",2,15,0);
+        Site site8 = new Site(8,"La Islita",descripcionSitio8,"10.5783","-85.4176",1,25,0);
+        rally2.addSite(site7);
+        rally2.addSite(site8);
         this.insertRally(rally1);
         this.insertRally(rally2);
-        long prueba5 = 0;
     }
 
     /**
@@ -591,60 +607,59 @@ public class LocalDB{
         return mArrayList;
     }
 
-
     /**
      * Metodo para devolver todos los rallies asociados a un usuario
      * @param userId Identificador del usuario del cual deseo obtener los rallies
      * @return una lista con los rallies asociados al usuario
      */
     public List<Rally> selectAllRalliesFromUser(int userId){
-        String rawQuery = "Select * FROM " + DBContract.RallyEntry.TABLE_NAME +
-                " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME +
-                " ON " + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = " + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
-                " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME +
-                " ON " + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = " + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
-                " WHERE " + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = " + userId;
+        String rawQuery = "Select * FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
+                " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
+                " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME + " c " +
+                " ON c." + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
+                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = " + userId;
 
         Cursor cursor = database.rawQuery(rawQuery,null);
-        if(cursor != null)
-            cursor.moveToFirst();
-
         List<Rally> rallyList = new ArrayList<Rally>();
-        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            // The Cursor is now set to the right position
-            int index;
-            Rally rally = new Rally();
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_RALLYID);
-            int rallyId = cursor.getInt(index);
-            rally.setRallyId(rallyId);
+        if(cursor != null){
+            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                int index;
+                Rally rally = new Rally();
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
-            String memoryUsage = cursor.getString(index);
-            rally.setMemoryUsage(memoryUsage);
+                index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_RALLYID);
+                int rallyId = cursor.getInt(index);
+                rally.setRallyId(rallyId);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
-            int temporatl = cursor.getInt(index);
-            boolean download = temporatl>0;
-            rally.setDownloaded(download);
+                index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
+                String memoryUsage = cursor.getString(index);
+                rally.setMemoryUsage(memoryUsage);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION);
-            String description = cursor.getString(index);
-            rally.setDescription(description);
+                index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
+                int temporatl = cursor.getInt(index);
+                boolean download = temporatl>0;
+                rally.setDownloaded(download);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL);
-            String imageURL = cursor.getString(index);
-            rally.setImageURL(imageURL);
+                index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION);
+                String description = cursor.getString(index);
+                rally.setDescription(description);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
-            int points = cursor.getInt(index);
-            rally.setPointsAwarded(points);
+                index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL);
+                String imageURL = cursor.getString(index);
+                rally.setImageURL(imageURL);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
-            String name = cursor.getString(index);
-            rally.setName(name);
+                index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
+                int points = cursor.getInt(index);
+                rally.setPointsAwarded(points);
 
-            rallyList.add(rally);
+                index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
+                String name = cursor.getString(index);
+                rally.setName(name);
+
+                rallyList.add(rally);
+            }
         }
 
         return rallyList;
@@ -680,60 +695,237 @@ public class LocalDB{
      * @return una lista con los sitios asociados al punto
      */
     public List<Site> selectAllSitesFromRally(int rallyId){
-        String rawQuery = "Select * FROM " + DBContract.SiteEntry.TABLE_NAME +
-                " INNER JOIN " + DBContract.Rally_SiteEntry.TABLE_NAME +
-                " ON " + DBContract.SiteEntry.COLUMN_NAME_ID + " = " + DBContract.Rally_SiteEntry.COLUMN_NAME_SITEID +
-                " WHERE " + DBContract.Rally_SiteEntry.COLUMN_NAME_RallyID + " = " + rallyId;
+        String rawQuery = "Select * FROM " + DBContract.SiteEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.Rally_SiteEntry.TABLE_NAME + " b " +
+                " ON " + " a." + DBContract.SiteEntry.COLUMN_NAME_ID + " = b." + DBContract.Rally_SiteEntry.COLUMN_NAME_SITEID +
+                " WHERE b." + DBContract.Rally_SiteEntry.COLUMN_NAME_RallyID + " = " + rallyId;
 
         Cursor cursor = database.rawQuery(
                 rawQuery,
                 null
         );
-        if(cursor != null)
-            cursor.moveToFirst();
 
         List<Site> siteList = new ArrayList<Site>();
 
-        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            // The Cursor is now set to the right position
-            int index;
-            Site site = new Site();
+        if(cursor != null){
+            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                int index;
+                Site site = new Site();
 
-            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ID);
-            int siteId = cursor.getInt(index);
-            site.setSiteId(siteId);
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ID);
+                int siteId = cursor.getInt(index);
+                site.setSiteId(siteId);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_NAME);
-            String name = cursor.getString(index);
-            site.setSiteName(name);
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_NAME);
+                String name = cursor.getString(index);
+                site.setSiteName(name);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_POINTSAWARDED);
-            int points = cursor.getInt(index);
-            site.setSitePointsAwarded(points);
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_POINTSAWARDED);
+                int points = cursor.getInt(index);
+                site.setSitePointsAwarded(points);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_STATUS);
-            int status = cursor.getInt(index);
-            site.setStatus(status);
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_STATUS);
+                int status = cursor.getInt(index);
+                site.setStatus(status);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_DESCRIPTION);
-            String description = cursor.getString(index);
-            site.setSiteDescription(description);
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_DESCRIPTION);
+                String description = cursor.getString(index);
+                site.setSiteDescription(description);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_LATITUD);
-            String latitud = cursor.getString(index);
-            site.setLatitud(latitud);
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_LATITUD);
+                String latitud = cursor.getString(index);
+                site.setLatitud(latitud);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_LONGITUD);
-            String longitud = cursor.getString(index);
-            site.setLongitud(longitud);
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_LONGITUD);
+                String longitud = cursor.getString(index);
+                site.setLongitud(longitud);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_TOTALPOINTS);
-            int totalPoints = cursor.getInt(index);
-            site.setSiteTotalPoints(totalPoints);
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_TOTALPOINTS);
+                int totalPoints = cursor.getInt(index);
+                site.setSiteTotalPoints(totalPoints);
 
-            siteList.add(site);
+                siteList.add(site);
+            }
         }
+
         return siteList;
+    }
+
+    /**
+     * Metodo para devolver todas las activities asociados a un sitio
+     * @param siteId Identificador del sitio del cual deseo obtener las actividades
+     * @return una lista con las actividades asociados al punto
+     */
+    public List<Activity> selectAllActivitiesFromSite(int siteId){
+        String rawQuery = "Select * FROM " + DBContract.ActivityEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.Activity_SiteEntry.TABLE_NAME + " b " +
+                " ON " + " a." + DBContract.ActivityEntry.COLUMN_NAME_ID + " = b." + DBContract.Activity_SiteEntry.COLUMN_NAME_ACTIVITYID +
+                " WHERE b." + DBContract.Activity_SiteEntry.COLUMN_NAME_SITEID + " = " + siteId;
+
+        Cursor cursor = database.rawQuery(
+                rawQuery,
+                null
+        );
+
+        List<Activity> activityList = new ArrayList<Activity>();
+
+        if(cursor != null){
+            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                int index;
+                Activity activity = new Activity();
+
+                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_ID);
+                int activityId = cursor.getInt(index);
+                activity.setActivityId(activityId);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_POINTS);
+                int points = cursor.getInt(index);
+                activity.setActivityPoints(points);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_STATUS);
+                int status = cursor.getInt(index);
+                activity.setActivityStatus(status);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_TYPE);
+                int type = cursor.getInt(index);
+                activity.setGetActivityType(type);
+
+                activityList.add(activity);
+            }
+        }
+
+        return activityList;
+    }
+
+    /**
+     * Metodo para devolver todos los terminos asociados a un sitio
+     * @param siteId Identificador del sitio del cual deseo obtener los terminos
+     * @return una lista con los terminos asociados al punto
+     */
+    public List<Term> selectAllTermsFromSite(int siteId){
+        String rawQuery = "Select * FROM " + DBContract.TermEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.Term_SiteEntry.TABLE_NAME + " b " +
+                " ON " + " a." + DBContract.TermEntry.COLUMN_NAME_ID + " = b." + DBContract.Term_SiteEntry.COLUMN_NAME_TermID +
+                " WHERE b." + DBContract.Term_SiteEntry.COLUMN_NAME_SITEID + " = " + siteId;
+
+        Cursor cursor = database.rawQuery(
+                rawQuery,
+                null
+        );
+
+        List<Term> termList = new ArrayList<Term>();
+
+        if(cursor != null){
+            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                int index;
+                Term term = new Term();
+
+                index = cursor.getColumnIndexOrThrow(DBContract.TermEntry.COLUMN_NAME_ID);
+                int termId = cursor.getInt(index);
+                term.setTermId(termId);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.TermEntry.COLUMN_NAME_DESCRIPTION);
+                String descripcion = cursor.getString(index);
+                term.setTermDescription(descripcion);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.TermEntry.COLUMN_NAME_NAME);
+                String name = cursor.getString(index);
+                term.setTermName(name);
+
+                termList.add(term);
+            }
+        }
+
+        return termList;
+    }
+
+    /**
+     * Metodo para devolver toda la multimedia asociados a una activity
+     * @param activityId Identificador del activity del cual deseo obtener la multimedia
+     * @return una lista con la multimedia asociados al activity
+     */
+    public List<Multimedia> selectAllMultimediaFromActivities(int activityId){
+        String rawQuery = "Select * FROM " + DBContract.MultimediaEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.Multimedia_ActivityEntry.TABLE_NAME + " b " +
+                " ON " + " a." + DBContract.MultimediaEntry.COLUMN_NAME_ID + " = b." + DBContract.Multimedia_ActivityEntry.COLUMN_NAME_MULTIMEDIAID +
+                " WHERE b." + DBContract.Multimedia_ActivityEntry.COLUMN_NAME_ACTIVITYID + " = " + activityId;
+
+        Cursor cursor = database.rawQuery(
+                rawQuery,
+                null
+        );
+
+        List<Multimedia> multimediaList = new ArrayList<Multimedia>();
+
+        if(cursor != null){
+            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                int index;
+                Multimedia multimedia = new Multimedia();
+
+                index = cursor.getColumnIndexOrThrow(DBContract.MultimediaEntry.COLUMN_NAME_ID);
+                int multimediaId = cursor.getInt(index);
+                multimedia.setMultimediaId(multimediaId);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.MultimediaEntry.COLUMN_NAME_TYPE);
+                int type = cursor.getInt(index);
+                multimedia.setMultimediaType(type);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_STATUS);
+                String url = cursor.getString(index);
+                multimedia.setMultimediaURL(url);
+
+                multimediaList.add(multimedia);
+            }
+        }
+
+        return multimediaList;
+    }
+
+    /**
+     * Metodo para devolver toda la multimedia asociados a un Termino
+     * @param termId Identificador del termino del cual deseo obtener la multimedia
+     * @return una lista con la multimedia asociados al termino
+     */
+    public List<Multimedia> selectAllMultimediaFromTerm(int termId){
+        String rawQuery = "Select * FROM " + DBContract.MultimediaEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.Multimedia_TermEntry.TABLE_NAME + " b " +
+                " ON " + " a." + DBContract.MultimediaEntry.COLUMN_NAME_ID + " = b." + DBContract.Multimedia_TermEntry.COLUMN_NAME_MULTIMEDIAID +
+                " WHERE b." + DBContract.Multimedia_TermEntry.COLUMN_NAME_TermID + " = " + termId;
+
+        Cursor cursor = database.rawQuery(
+                rawQuery,
+                null
+        );
+
+        List<Multimedia> multimediaList = new ArrayList<Multimedia>();
+
+        if(cursor != null){
+            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                int index;
+                Multimedia multimedia = new Multimedia();
+
+                index = cursor.getColumnIndexOrThrow(DBContract.MultimediaEntry.COLUMN_NAME_ID);
+                int multimediaId = cursor.getInt(index);
+                multimedia.setMultimediaId(multimediaId);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.MultimediaEntry.COLUMN_NAME_TYPE);
+                int type = cursor.getInt(index);
+                multimedia.setMultimediaType(type);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_STATUS);
+                String url = cursor.getString(index);
+                multimedia.setMultimediaURL(url);
+
+                multimediaList.add(multimedia);
+            }
+        }
+
+        return multimediaList;
     }
 
     /**
