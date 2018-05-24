@@ -387,7 +387,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     @Override
     public void onProviderEnabled(String s) {
 
-        Toast.makeText(this,"Se activo la ubicacion",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this,"Se activo la ubicacion",Toast.LENGTH_SHORT).show();
 
     }
 
@@ -501,13 +501,13 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
 
 
 
-             if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=200.0)
+             if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=150.0)
              {
                  localDB.updateSiteVisit(sites.get(ite).getSiteId(),3);
                  verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
              }
 
-             if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=50.0)
+             if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0)
              {     localDB.updateSiteVisit(sites.get(ite).getSiteId(),2);
                  verificarNoVisitados(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
                  }
