@@ -11,9 +11,9 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.5"
+        android:alpha="0.4"
         android:scaleType="fitXY"
-        android:src="@drawable/fondomain" />
+        android:src="@drawable/home1" />
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -73,20 +73,22 @@
                 android:layout_height="70dp"
                 android:orientation="horizontal"
                 android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
                 >
 
                 <ImageView
                     android:id="@+id/iv_logoci"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
                     android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
                     android:layout_weight="1"
                     android:scaleType="fitXY"
-                    android:layout_marginTop="10dp"
-                    app:srcCompat="@drawable/logoci" />
+                    app:srcCompat="@drawable/sinac" />
 
                 <ImageView
                     android:id="@+id/iv_logoucr"
-                    android:layout_width="200dp"
+                    android:layout_width="150dp"
                     android:layout_height="80dp"
                     android:layout_weight="1"
                     android:scaleType="fitXY"
@@ -94,11 +96,11 @@
 
                 <ImageView
                     android:id="@+id/iv_logoarea"
-                    android:layout_width="150dp"
+                    android:layout_width="120dp"
                     android:layout_height="60dp"
-                    android:layout_weight="1"
                     android:layout_marginTop="10dp"
-                    app:srcCompat="@drawable/logoareaconservacion" />
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/logocicgpng" />
 
             </LinearLayout>
 

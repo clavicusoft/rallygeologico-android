@@ -10,17 +10,13 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
-//import com.facebook.GraphRequest;
-//import com.facebook.GraphResponse;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import FileManager.FileManager;
 
 /**
@@ -54,6 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         scrollView = (ScrollView) findViewById(R.id.sv_profile);
         scrollView.setFocusableInTouchMode(true);
+        scrollView.fullScroll(ScrollView.FOCUS_UP);
 
         fotoFondo = findViewById(R.id.header_cover_image);
         fotoPerfil = findViewById(R.id.profile);
@@ -90,15 +87,22 @@ public class ProfileActivity extends AppCompatActivity {
                                 Log.d("Request", object.toString());
                                 String name = JSONParser.getName(object);
                                 nombreUsuario.setText(name);
-                                String home = JSONParser.getHometown(object);
+                                String home = JSONParser.getEmail(object);
                                 lugar.setText(home);
                             }
                         }
                     });
             Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,link,hometown");
+            parameters.putString("fields", "id,name,link,hometown,email");
             request.setParameters(parameters);
             request.executeAsync();
+        }
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if (account != null){
+            String name = account.getDisplayName();
+            nombreUsuario.setText(name);
+            String home = account.getEmail();
+            lugar.setText(home);
         }
         if (fm.hayAlmacenamientoExterno()) {
             fm.cargarImagenAlmacenamientoExterno("fotoPerfil", fotoPerfil);

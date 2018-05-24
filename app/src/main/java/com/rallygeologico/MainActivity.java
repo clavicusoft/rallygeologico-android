@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //LocalDB localDB = new LocalDB(getApplicationContext());
+        LocalDB localDB = new LocalDB(getApplicationContext());
+        localDB.prueba();
         setContentView(R.layout.activity_main);
         start = findViewById(R.id.btn_inicio);
         logo = findViewById(R.id.iv_logoucr);
@@ -81,16 +82,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
-
-    /*private boolean tieneConexionInternet() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }*/
 
 }

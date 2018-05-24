@@ -23,6 +23,7 @@ import java.util.List;
 
 import SqlDatabase.LocalDB;
 import SqlEntities.Rally;
+import SqlEntities.Site;
 
 /**
  * Clase para manejar la pantalla con una lista de rallies
@@ -70,7 +71,6 @@ public class RallyList extends AppCompatActivity {
      */
     private void initializeData() {
         LocalDB db = new LocalDB(this.getApplicationContext());
-        db.prueba();
         List<Rally> rallyListTemp = db.selectAllRallies();
         for(int i = 0; i < rallyListTemp.size(); i++){
             if(rallyListTemp.get(i).getIsDownloaded()) {
@@ -394,9 +394,10 @@ public class RallyList extends AppCompatActivity {
      * @param v La vista que acabamos de presionar
      * @param position Posicion de la vista en el recycler view
      */
-    public void downloadClick(View v, final int position) {
+    public void downloadClick(final View v, final int position) {
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
         long bytesAvailable;
+        final LocalDB db = new LocalDB(this.getApplicationContext());
         if (android.os.Build.VERSION.SDK_INT >=
                 android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
             bytesAvailable = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
@@ -414,7 +415,13 @@ public class RallyList extends AppCompatActivity {
              * @param id identificador unico
              */
             public void onClick(DialogInterface dialog, int id) {
-                changeRallyState(position);// User clicked OK button
+                int rallyid = changeRallyState(position);// User clicked OK button
+                List<Site> siteList = db.selectAllSitesFromRally(rallyid);
+                String mensaje = "Los sitios son:\n";
+                for(int i = 0; i < siteList.size(); i++){
+                    mensaje += siteList.get(i).getSiteName() + " - Latitud: " + siteList.get(i).getLatitud() + " Longitud: " + siteList.get(i).getLongitud() + "\n";
+                }
+                Toast.makeText(v.getContext(), mensaje, Toast.LENGTH_LONG).show();
             }
         });
         alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -493,23 +500,34 @@ public class RallyList extends AppCompatActivity {
         popup.show();
     }
 
-    public void changeRallyState(int position){
+    public int changeRallyState(int position){
         position --; //Le quitamos el encabezado de la primera lista que siempre tiene la posicion 0
         Rally rallyTemp;
+        int rallyId = 0;
         if(position > rallies_descargados.size()){ //Esta en la segunda lista
             position--;//Le quitamos el encabezado de la segunda lista
             position = position - rallies_descargados.size(); //Encontramos la posicion en la segunda lista
             rallyTemp = rallies_sin_descargar.get(position);
+            rallyId = rallyTemp.getRallyId();
             rallies_sin_descargar.remove(position);
             rallyTemp.setDownloaded(true);
             rallies_descargados.add(rallyTemp);
         }
-        else{
+        else if(rallies_descargados.size()>0){
             rallyTemp = rallies_descargados.get(position);
+            rallyId = rallyTemp.getRallyId();
             rallies_descargados.remove(position);
             rallyTemp.setDownloaded(false);
             rallies_sin_descargar.add(rallyTemp);
         }
+        else{
+            rallyTemp = rallies_sin_descargar.get(position);
+            rallyId = rallyTemp.getRallyId();
+            rallies_sin_descargar.remove(position);
+            rallyTemp.setDownloaded(true);
+            rallies_descargados.add(rallyTemp);
+        }
         mDynamicListAdapter.notifyDataSetChanged();
+        return rallyId;
     }
 }

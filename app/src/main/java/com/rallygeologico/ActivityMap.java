@@ -101,7 +101,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 
 
-
         //Actualiza el cuadrado del mapa para generar un rango de validas
 
        //arribaDerecha=new GeoPoint(10.57,-85.3);
