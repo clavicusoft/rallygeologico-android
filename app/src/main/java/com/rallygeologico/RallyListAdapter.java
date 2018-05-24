@@ -34,7 +34,7 @@ public class RallyListAdapter extends ArrayAdapter<Rally> {
         // Populate the data into the template view using the data object
         tv_nombre.setText(rally.getName());
         tv_puntos.setText(String.valueOf(rally.getPointsAwarded()));
-        tv_estado.setText(rally.getDescription());
+        tv_estado.setText(String.valueOf(rally.getRallyId()));
         // Return the completed view to render on screen
         return convertView;
     }
