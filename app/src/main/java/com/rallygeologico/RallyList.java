@@ -71,7 +71,6 @@ public class RallyList extends AppCompatActivity {
      */
     private void initializeData() {
         LocalDB db = new LocalDB(this.getApplicationContext());
-        db.prueba();
         List<Rally> rallyListTemp = db.selectAllRallies();
         for(int i = 0; i < rallyListTemp.size(); i++){
             if(rallyListTemp.get(i).getIsDownloaded()) {
