@@ -1,7 +1,11 @@
 package com.rallygeologico;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -30,6 +34,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -94,14 +99,29 @@ public class LoginActivity extends AppCompatActivity {
              */
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
-                toast.show();
-                Profile profile = Profile.getCurrentProfile();
-                String uri = profile.getProfilePictureUri(200, 200).toString();
-                new DownloadTask(context, 1, "fotoPerfil", uri);
-                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                //updateUI(account);
-                setGameScreen();
+                final Profile perfil = Profile.getCurrentProfile();
+                String name = perfil.getFirstName();
+                new AlertDialog.Builder(context)
+                        .setTitle("Iniciar Sesión")
+                        .setMessage("¿Desea continuar como " + name + "?")
+                        .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Uri uri = perfil.getProfilePictureUri(200, 200);
+                                if(uri != null) {
+                                    String url = uri.toString();
+                                    new DownloadTask(context, 1, "fotoPerfil", url);
+                                }
+                                Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
+                                toast.show();
+                                setGameScreen();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                fbLoginManager.logOut();
+                            }
+                        })
+                        .show();
             }
 
             /**
@@ -110,8 +130,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onCancel() {
                 showAlert();
-                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                //updateUI(account);
             }
 
             /**
@@ -121,8 +139,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onError(FacebookException exception) {
                 showAlert();
-                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                //updateUI(account);
             }
 
             /**
@@ -130,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
              */
             private void showAlert() {
                 new AlertDialog.Builder(context)
-                        .setTitle(R.string.cancelled)
+                        .setTitle("No se pudo iniciar sesión")
                         .setPositiveButton(R.string.ok, null)
                         .show();
             }
@@ -146,8 +162,7 @@ public class LoginActivity extends AppCompatActivity {
              */
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                //updateUI(account);
+
             }
         };
 
@@ -158,13 +173,15 @@ public class LoginActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View v) {
-                if(!fbSignIn){
+                if(tieneConexionInternet()){
                     fbLoginManager.logInWithReadPermissions(LoginActivity.this,listPermission);
-                } else {
-                    fbLoginManager.logOut();
+                }else {
+                    new AlertDialog.Builder(context)
+                            .setTitle("Aviso")
+                            .setMessage("Debe conectarse a internet para iniciar sesión.")
+                            .setPositiveButton(R.string.ok, null)
+                            .show();
                 }
-                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(context);
-                //updateUI(account);
             }
         });
 
@@ -179,11 +196,16 @@ public class LoginActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View v) {
-                if(!googleSignIn){
+                if(tieneConexionInternet()){
                     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                     startActivityForResult(signInIntent, RC_SIGN_IN);
                 }else{
-                    googleSignOut();
+                    new AlertDialog.Builder(context)
+                            .setTitle("Alerta")
+                            .setMessage("Debe conectarse a internet para iniciar sesión.")
+
+                            .setPositiveButton(R.string.ok, null)
+                            .show();
                 }
             }
         });
@@ -227,16 +249,34 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
-            toast.show();
-            //updateUI(account);
-            setGameScreen();
+            final GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            String nombre = account.getGivenName();
+            new AlertDialog.Builder(context)
+                    .setTitle("Iniciar Sesión")
+                    .setMessage("¿Desea continuar como " + nombre + "?")
+                    .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Uri uri = account.getPhotoUrl();
+                            if(uri != null) {
+                                String url = uri.toString();
+                                new DownloadTask(context, 1, "fotoPerfil", url);
+                            }
+                            Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
+                            toast.show();
+                            setGameScreen();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            mGoogleSignInClient.signOut();
+                        }
+                    })
+                    .show();
+
         } catch (ApiException e) {
             Log.w("Error", "handleSignInResult:error ", e);
-            Toast toast = Toast.makeText(context, "No se pudo conectar", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(context, "No se pudo iniciar sesión", Toast.LENGTH_SHORT);
             toast.show();
-            //updateUI(null);
         }
     }
 
@@ -275,8 +315,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        //updateUI(account);
     }
 
     /**
@@ -326,6 +364,17 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    private boolean tieneConexionInternet() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 }

@@ -24,6 +24,16 @@ public class JSONParser {
         return s1;
     }
 
+    public static String getEmail(JSONObject obj) {
+        String s1 = "";
+        try {
+            s1 = obj.getString("email");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return s1;
+    }
+
     /**
      * Parsea el id de Facebook del usuario
      * @param obj Objeto en formato JSON

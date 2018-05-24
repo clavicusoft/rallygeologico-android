@@ -82,15 +82,4 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /*private boolean tieneConexionInternet() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }*/
-
 }

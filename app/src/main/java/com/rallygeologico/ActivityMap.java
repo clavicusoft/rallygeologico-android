@@ -77,13 +77,12 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        //Copia el folder
+        CopyFolder.copyAssets(this);
 
         setContentView(R.layout.activity_maps);
 
         Toast.makeText(this,"Cargando el mapa",Toast.LENGTH_LONG).show();
-        //Copia el folder
-        CopyFolder.copyAssets(this);
 
         //Actualiza el cuadrado del mapa para generar un rango de validas
 
