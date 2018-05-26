@@ -26,22 +26,12 @@ public class RallyListFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_rally_list, container, false);
         ListView listaRallies = (ListView) v.findViewById(R.id.rallyListView);
         LocalDB db = new LocalDB(getContext());
+        // Obtiene todos los rallies asignados a un usuario
         ArrayList<Rally> rallies = db.selectAllRallies();
-// Create the adapter to convert the array to views
+        // Crea e adaptador para convertir el arreglo a vistas
         RallyListAdapter adapter = new RallyListAdapter(getContext(), rallies);
-// Attach the adapter to a ListView
+        // Agrega el adaptador a la list view
         listaRallies.setAdapter(adapter);
         return v;
-
-       /* // TodoDatabaseHandler is a SQLiteOpenHelper class connecting to SQLite
-        LocalDB.LocalDBHelper handler = new LocalDB.LocalDBHelper(getContext());
-        // Get access to the underlying writeable database
-        SQLiteDatabase db = handler.getWritableDatabase();
-        // Query for items from the database and get a cursor back
-        Cursor cursor = db.rawQuery("SELECT  * FROM todo_items", null);
-        // Setup cursor adapter using cursor from last step
-        RallyListAdapter adapter = new RallyListAdapter(getContext(), cursor);
-        // Attach cursor adapter to the ListView
-        listaRallies.setAdapter(adapter);*/
     }
 }

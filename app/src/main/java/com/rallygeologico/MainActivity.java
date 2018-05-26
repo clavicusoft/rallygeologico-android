@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         start.setOnClickListener(new View.OnClickListener() {
             /**
-             * Se continua a la pantalla de login o del juego
+             * Se continua a la pantalla de login o del juego pero revisa si el jugador esta loggeado
              * @param view Vista del activity
              */
             @Override
