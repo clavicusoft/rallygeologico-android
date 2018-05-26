@@ -78,7 +78,6 @@ public class ProfileActivity extends AppCompatActivity {
         boolean conectado = AccessToken.getCurrentAccessToken() != null;
         Profile perfil = Profile.getCurrentProfile();
         if (conectado && perfil != null) {
-            //new ImageLoader(fotoPerfil).execute(perfil.getProfilePictureUri(200, 200).toString());
             GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
@@ -97,6 +96,7 @@ public class ProfileActivity extends AppCompatActivity {
             request.setParameters(parameters);
             request.executeAsync();
         }
+        //Si esta conectado a google, obtiene los datos del perfil
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null){
             String name = account.getDisplayName();
@@ -104,6 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
             String home = account.getEmail();
             lugar.setText(home);
         }
+        //Si hay almacenamiento externo carga la imagen de perfil
         if (fm.hayAlmacenamientoExterno()) {
             fm.cargarImagenAlmacenamientoExterno("fotoPerfil", fotoPerfil);
         }

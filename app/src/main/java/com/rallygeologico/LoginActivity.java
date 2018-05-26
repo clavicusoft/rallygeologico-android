@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -34,7 +32,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,10 +44,9 @@ import static android.view.View.GONE;
  */
 public class LoginActivity extends AppCompatActivity {
 
+    // Codigo de login para Google
     private static final int RC_SIGN_IN = 9001;
 
-    private boolean fbSignIn;
-    private boolean googleSignIn;
     private Button loginFacebookButton;
     private Button loginGoogleButton;
     private Button continuar;
@@ -88,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginFacebookButton = findViewById(R.id.btn_fb);
         loginFacebookButton.setVisibility(View.VISIBLE);
+        // Asigna una lista con los permisos de login
         final List<String> listPermission = Arrays.asList("email", "public_profile", "user_hometown");
         fbLoginManager = LoginManager.getInstance();
         callbackManager = CallbackManager.Factory.create();
@@ -99,29 +96,7 @@ public class LoginActivity extends AppCompatActivity {
              */
             @Override
             public void onSuccess(LoginResult loginResult) {
-                final Profile perfil = Profile.getCurrentProfile();
-                String name = perfil.getFirstName();
-                new AlertDialog.Builder(context)
-                        .setTitle("Iniciar Sesión")
-                        .setMessage("¿Desea continuar como " + name + "?")
-                        .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Uri uri = perfil.getProfilePictureUri(200, 200);
-                                if(uri != null) {
-                                    String url = uri.toString();
-                                    new DownloadTask(context, 1, "fotoPerfil", url);
-                                }
-                                Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
-                                toast.show();
-                                setGameScreen();
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                fbLoginManager.logOut();
-                            }
-                        })
-                        .show();
+                manejarInicioSesionFb();
             }
 
             /**
@@ -187,11 +162,12 @@ public class LoginActivity extends AppCompatActivity {
 
         loginGoogleButton = findViewById(R.id.btn_google);
         loginGoogleButton.setVisibility(View.VISIBLE);
+        //Asigna opciones de login como permisos
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         loginGoogleButton.setOnClickListener(new View.OnClickListener() {
             /**
-             * Se hace el login por medio de Google o logout
+             * Se hace el login por medio de Google
              * @param v Vista del activity
              */
             @Override
@@ -203,7 +179,6 @@ public class LoginActivity extends AppCompatActivity {
                     new AlertDialog.Builder(context)
                             .setTitle("Alerta")
                             .setMessage("Debe conectarse a internet para iniciar sesión.")
-
                             .setPositiveButton(R.string.ok, null)
                             .show();
                 }
@@ -213,13 +188,41 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
+     * Pregunta si desea continuar o no con la cuenta indicada
+     */
+    private void manejarInicioSesionFb() {
+        final Profile perfil = Profile.getCurrentProfile();
+        String name = perfil.getFirstName();
+        new AlertDialog.Builder(context)
+                .setTitle("Iniciar Sesión")
+                .setMessage("¿Desea continuar como " + name + "?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Uri uri = perfil.getProfilePictureUri(200, 200);
+                        if(uri != null) {
+                            String url = uri.toString();
+                            new DownloadTask(context, 1, "fotoPerfil", url);
+                        }
+                        Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
+                        toast.show();
+                        setGameScreen();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        fbLoginManager.logOut();
+                    }
+                })
+                .show();
+    }
+
+    /**
      * Cierra la sesion de Google
      */
     private void googleSignOut() {
         mGoogleSignInClient.signOut().addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                //updateUI(null);
             }
         });
     }
@@ -234,11 +237,11 @@ public class LoginActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
+            // Devuelve una tarea de login con el resultado
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
         }else{
+            //Maneja el login de Facebook de a cuerdo con el resultado obtenido
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -281,14 +284,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Se actualiza la interfaz cuando se vuelve a iniciar el activity
+     * Se ejecuta cuando se vuelve a iniciar el activity
      */
     @Override
     public void onResume() {
         super.onResume();
         AppEventsLogger.activateApp(this);
-        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        //updateUI(account);
     }
 
     /**
@@ -318,42 +319,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Actualiza la interfaz habilitando los botones de Facebook, Google o continuar
-     * dependiendo si el usuario esta conectado o no
-     */
-    private void updateUI(@Nullable GoogleSignInAccount account) {
-        boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
-        Profile profile = Profile.getCurrentProfile();
-        fbSignIn = enableButtons && profile != null;
-        googleSignIn = account != null;
-
-        // Si el usuario esta conectado se actualiza la interfaz
-        if (fbSignIn || googleSignIn) {
-            if(fbSignIn){
-                loginFacebookButton.setText("Salir de Facebook");
-                //loginGoogleButton.setVisibility(View.GONE);
-            } else if(!fbSignIn) {
-                loginFacebookButton.setVisibility(View.VISIBLE);
-                loginFacebookButton.setText("Conectar con Facebook");
-            }
-            if(googleSignIn){
-                loginGoogleButton.setText("Salir de Google");
-                //loginFacebookButton.setVisibility(View.GONE);
-            } else if(!googleSignIn){
-                loginGoogleButton.setVisibility(View.VISIBLE);
-                loginGoogleButton.setText("Conectar con Google");
-            }
-            continuar.setVisibility(View.VISIBLE);
-        } else {
-            loginFacebookButton.setVisibility(View.VISIBLE);
-            loginGoogleButton.setVisibility(View.VISIBLE);
-            loginFacebookButton.setText("Conectar con Facebook");
-            loginGoogleButton.setText("Conectar con Google");
-            continuar.setVisibility(View.GONE);
-        }
-    }
-
-    /**
      * Cambia a la actividad principal del juego
      */
     public void setGameScreen() {
@@ -366,6 +331,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Revisa si el dispositivo tiene acceso a internet
+     * @return Verdadero si esta conectado, sino falso
+     */
     private boolean tieneConexionInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();

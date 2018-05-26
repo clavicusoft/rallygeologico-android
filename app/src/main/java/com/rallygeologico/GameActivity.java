@@ -56,6 +56,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        //Inicia las misma variables que en el login para controlar si el usuario desea salir de la sesion
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         fbLoginManager = LoginManager.getInstance();
@@ -195,14 +196,18 @@ public class GameActivity extends AppCompatActivity {
      */
     public void setMapScreen() {
         LocationManager locationManager= (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if ((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)))
-        {
+        if ((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
             Intent intent = new Intent(this, ActivityMap.class);
             startActivity(intent);
         }
-        else {Toast.makeText(this,"Active el GPS",Toast.LENGTH_SHORT).show();}
+        else {
+            Toast.makeText(this,"Active el GPS",Toast.LENGTH_SHORT).show();
+        }
     }
 
+    /**
+     * Maneja el cierre de sesion, dependiendo de con cual api esta conectada
+     */
     public void manejarCierreSesion(){
         if(fbSignIn) {
             fbLoginManager.logOut();
@@ -212,11 +217,17 @@ public class GameActivity extends AppCompatActivity {
         setStartScreen();
     }
 
+    /**
+     * Muestra el activity de inicio del juego
+     */
     public void setStartScreen() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Si se presiona el boton de atras, se devuelve a la pantalla principal
+     */
     @Override
     public void onBackPressed(){
         if(fbSignIn || googleSignIn) {
@@ -224,6 +235,9 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Muestra alerta de confirmacion cuando el usuario desea hacer logout
+     */
     private void showAlertLogout() {
         new AlertDialog.Builder(this)
                 .setTitle("Cerrar sesión")
