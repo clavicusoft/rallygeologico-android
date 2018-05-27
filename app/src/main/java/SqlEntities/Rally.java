@@ -22,7 +22,7 @@ public class Rally {
 
 
     /**
-     *
+     * Devuelve el identificador de este rally especifico
      * @return Codigo que identifica ese rally especifico
      */
     public int getRallyId() {
@@ -30,7 +30,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Clase que describe un rally
      * @param id del rally
      */
     public void setRallyId(int id){
@@ -38,7 +38,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Devuelve el nombre que tiene el Rally
      * @return Nombre que tiene el Rally
      */
     public String getName() {
@@ -46,7 +46,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Asigna el nombre que tiene el Rally
      * @param name Nombre del rally
      */
     public void setName(String name){
@@ -54,7 +54,7 @@ public class Rally {
     }
 
     /**
-     *
+     * devuelve una  descripcion basica del rally y en que consiste
      * @return descripcion basica del rally y en que consiste
      */
     public String getDescription() {
@@ -62,7 +62,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Asigna una descripcion basica del rally y en que consiste
      * @param description basica del rally y en que consiste
      */
     public void setDescription(String description){
@@ -70,7 +70,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Devuelve los puntos que se pueden obtener con el rally
      * @return Puntos que se pueden obtener con el rally
      */
     public int getPointsAwarded() {
@@ -78,7 +78,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Asigna los puntos que se pueden obtener con el rally
      * @param pointsAwarded Puntos que se pueden obtener con el rally
      */
     public void setPointsAwarded(int pointsAwarded) {
@@ -86,7 +86,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Devuelve el URL que direcciona a donde esta guardada la imagen de portada del rally
      * @return URL que direcciona a donde esta guardada la imagen de portada del rally
      */
     public String getImageURL() {
@@ -94,7 +94,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Asigna la URL que direcciona a donde esta guardada la imagen de portada del rally
      * @param imageURL URL que direcciona a donde esta guardada la imagen de portada del rally
      */
     public void setImageURL(String imageURL) {
@@ -102,7 +102,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Devuelve el tamaño total que ocupa el rally descargado
      * @return Tamaño total que ocupa el rally descargado
      */
     public String getMemoryUsage() {
@@ -110,7 +110,7 @@ public class Rally {
     }
 
     /**
-     *
+     * permite asignar la memoria total que esta ocupando el rally
      * @param memoryUsage actualiza la memoria total que esta ocupando el rally
      */
     public void setMemoryUsage(String memoryUsage) {
@@ -118,7 +118,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Devuelve un variable que nos dice si el rally se encuentra descargado en el dispositivo
      * @return Nos dice si el rally se encuentra descargado en el dispositivo
      */
     public boolean getIsDownloaded() {
@@ -126,7 +126,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Permite asignar un valor a la variable que nos dice si el rally se encuentra descargado en el dispositivo
      * @param downloaded Nos dice si el rally se encuentra descargado en el dispositivo
      */
     public void setDownloaded(boolean downloaded) {
@@ -134,7 +134,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Devuelve la lista de sitios que pertenecen al Rally
      * @return la lista de sitios que pertenecen al Rally
      */
     public List<Site> getSites() {
@@ -142,7 +142,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Permite asignar una lista de sitios que pertenecen al Rally
      * @param sites Lista de sitios que pertenecen a dicho rally
      */
     public void setSites(List<Site> sites) {
@@ -150,7 +150,7 @@ public class Rally {
     }
 
     /**
-     *
+     * Permite agregar un sitio a la lista interna de sitios
      * @param siteTemp sitio para agregar a la lista
      */
     public void addSite(Site siteTemp){
@@ -158,7 +158,7 @@ public class Rally {
     }
 
     /**
-     * Constructor de la clase
+     * Constructor de la clase con parametros
      * @param rallyId Codigo que identifica ese rally especifico
      * @param name Nombre que tiene el Rally
      * @param description Descripcion basica del rally y en que consiste

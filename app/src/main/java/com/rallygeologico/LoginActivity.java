@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         context = this;
 
         continuar = findViewById(R.id.btn_continuar);
-        continuar.setVisibility(GONE);
+        //continuar.setVisibility(GONE);
         continuar.setOnClickListener(new View.OnClickListener() {
             /**
              * Continuar a la pantalla principal del juego

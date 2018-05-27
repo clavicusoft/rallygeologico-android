@@ -20,7 +20,6 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -28,13 +27,13 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class PruebaListaRallies {
+public class PruebaDistanciaEntrePuntos {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void pruebaListaRallies() {
+    public void pruebaDistanciaEntrePuntos() {
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_inicio), withText("INICIAR"),
                         childAtPosition(
@@ -55,26 +54,25 @@ public class PruebaListaRallies {
                         isDisplayed()));
         appCompatButton2.perform(click());
 
-        ViewInteraction appCompatImageButton = onView(
-                allOf(withContentDescription("Navegar hacia arriba"),
+        ViewInteraction appCompatButton3 = onView(
+                allOf(withId(R.id.btnMap), withText("Ir a mapa"),
                         childAtPosition(
-                                allOf(withId(R.id.appbar),
-                                        childAtPosition(
-                                                withId(R.id.content),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        appCompatImageButton.perform(click());
-
-        ViewInteraction navigationMenuItemView = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.navview),
-                                        0)),
-                        2),
+                                        withClassName(is("android.widget.RelativeLayout")),
+                                        1),
+                                0),
                         isDisplayed()));
-        navigationMenuItemView.perform(click());
+        appCompatButton3.perform(click());
+
+        ViewInteraction appCompatButton4 = onView(
+                allOf(withId(R.id.btn_observar), withText("Observar"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                3),
+                        isDisplayed()));
+        appCompatButton4.perform(click());
 
     }
 
