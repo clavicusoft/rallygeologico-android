@@ -141,8 +141,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 
         //Pruebas
-        //addMarker(new GeoPoint(10.8643, -85.6947),1,"1"); //No visitado
-        /*Añade puntos*/
+        /*Anade puntos*/
         insertarPuntos();
 
         try {
@@ -157,7 +156,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 }
             }
 
-            if (lastKnown==false)//Centro el mapa y digo que busco una ubicación
+            if (lastKnown==false)//Centro el mapa y digo que busco una ubicacion
 
             {
                 mc.animateTo( boundingBox.getCenter());
@@ -193,7 +192,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 {mc.animateTo(center);
                 }
                 else {
-                    Toast.makeText(getApplicationContext(),"No podemos encontrar tu ubicación",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"No podemos encontrar tu ubicacion",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -236,6 +235,11 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     }
 
+
+    /**
+     * Remueve un marcador del mapa
+     * @param loc  ubicacion donde se encuentra el marcador a elminar
+     */
 
     public void removeMarker(GeoPoint loc)
     {
@@ -471,6 +475,12 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
 
     }
 
+
+    /**
+     * Verifica si la localizacion se encuentra dentro del area de juego
+     * @param location localizacion que se chequea si esta adentro
+     */
+
     public boolean estaAdentro(Location location)
     {
         if((abajoIzquierda.getLongitude()<location.getLongitude()  && location.getLongitude()<arribaDerecha.getLongitude()) && (arribaDerecha.getLatitude()>location.getLatitude()  && location.getLatitude()>abajoIzquierda.getLatitude()))
@@ -482,12 +492,19 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
         }
     }
 
+/**
+ * Establece el borde del area de juego para que no se observe lo gris,
+ * tambien se establece el nivel minimo y maximo de zoom
+ * */
     public void crearBorde()
     {  boundingBox=new BoundingBox(arribaDerecha.getLatitude(),arribaDerecha.getLongitude(),abajoIzquierda.getLatitude(),abajoIzquierda.getLongitude());
        mapView.setMinZoomLevel(13.0);
         mapView.setMaxZoomLevel(20.0);
         mapView.setScrollableAreaLimitDouble(boundingBox);}
 
+    /**
+     * Este metodo se encarga agarrar todos los sitios de la base de datos y chequear si estamos cerca de un no visitado o uno especial
+     * */
      public void verificarPuntos()
      {
 
@@ -518,6 +535,14 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
 
      }
 
+     /**
+      * Despliega un mensaje al usuario indicando que encontro un punto especial
+      * @param lat latitud del punto encontrado
+      * @param lon Longitud del punto encontrado
+      * @param nombre Nombre del punto encontrado
+      * @param petrocoins valor del punto en petrocoins
+      *
+       * */
      public void verificarEspecial(double lat,double lon,String nombre, String petrocoins)
      {
          final GeoPoint esp=new GeoPoint(lat,lon);
@@ -580,6 +605,14 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
 
 }
 
+    /**
+     * Despliega un mensaje al usuario indicando que visito un punto
+     * @param lat latitud del punto encontrado
+     * @param lon Longitud del punto encontrado
+     * @param nombre Nombre del punto encontrado
+     * @param petrocoins valor del punto en petrocoins
+     *
+     * */
     public void verificarNoVisitados( double lat, double lon,String nombre, String petrocoins)
     {
         final GeoPoint esp=new GeoPoint(lat, lon);
@@ -648,6 +681,9 @@ Toast.makeText(this,"Se desconecto la ubicacion",Toast.LENGTH_SHORT).show();
 
     }
 
+    /**
+     * Este metodo se encarga de poner los marcadores en el mapa, con los sitios recibidos en la base de datos
+     * */
     private void insertarPuntos() {
         List <Site> sites= localDB.selectAllSitesFromRally(1);
         if (sites.size()==0)
