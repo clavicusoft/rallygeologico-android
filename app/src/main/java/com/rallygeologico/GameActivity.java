@@ -240,9 +240,9 @@ public class GameActivity extends AppCompatActivity {
      */
     private void showAlertLogout() {
         new AlertDialog.Builder(this)
-                .setTitle("Cerrar sesión")
-                .setMessage("¿Seguro que desea salir?")
-                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                .setTitle("Cerrar sesion")
+                .setMessage("Seguro que desea salir?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         manejarCierreSesion();
                     }

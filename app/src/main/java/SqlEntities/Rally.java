@@ -103,7 +103,7 @@ public class Rally {
 
     /**
      * Devuelve el tamano total que ocupa el rally descargado
-     * @return Tamano total que ocupa el rally descargado
+                     * @return Tamano total que ocupa el rally descargado
      */
     public String getMemoryUsage() {
         return memoryUsage;

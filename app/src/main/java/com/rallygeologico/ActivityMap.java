@@ -560,7 +560,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 
         TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto);
-        secreto.setText("¡Has encontrado un secreto!");
+        secreto.setText("Has encontrado un secreto!");
 
         TextView nom= especialDialog.findViewById( R.id.tv_alerta_valor);
         nom.setText(nombre);
@@ -634,7 +634,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 
         TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto);
-        secreto.setText("¡Bienvenido!");
+        secreto.setText("Bienvenido!");
 
         TextView nom= especialDialog.findViewById( R.id.tv_alerta_valor);
         nom.setText(nombre);

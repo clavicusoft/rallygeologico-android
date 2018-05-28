@@ -31,7 +31,7 @@ public class LocalDB{
     /**
      * Constructor de la base de datos
      *
-     * @param context contexto general de la aplicación
+     * @param context contexto general de la aplicacion
      */
     public LocalDB(Context context) {
         localDBHelper = new LocalDBHelper(context);
@@ -463,18 +463,18 @@ public class LocalDB{
         long prueba1 = this.insertUser(user1);
         long prueba2 = this.insertUser(user2);
 
-        String descripcionRally1 = "El Rally #1 incluye localidades en sitios del cantón de La Cruz como: El parque nacional Santa Rosa, con increíbles paisajes naturales declarados patrimonio de la humanidad; y Cuajiniquil, pueblo costero cuya principal actividad económica es la pesca y el creciente desarrollo turístico.";
-        String descripcionRally2 = "Esta geoaventura abarca pueblos costeros del cantón de La Cruz, entre los que destacan Cuajiniquil, pueblo cercano a sitios turísticos; El Jobo, pueblo con diversidad de playas y el centro poblacional del cantón, identificado por sus maravillosas vistas a la cordillera volcánica de Guanacaste y a bahía Salinas.";
+        String descripcionRally1 = "El Rally #1 incluye localidades en sitios del canton de La Cruz como: El parque nacional Santa Rosa, con increibles paisajes naturales declarados patrimonio de la humanidad; y Cuajiniquil, pueblo costero cuya principal actividad economica es la pesca y el creciente desarrollo turistico.";
+        String descripcionRally2 = "Esta geoaventura abarca pueblos costeros del canton de La Cruz, entre los que destacan Cuajiniquil, pueblo cercano a sitios turisticos; El Jobo, pueblo con diversidad de playas y el centro poblacional del canton, identificado por sus maravillosas vistas a la cordillera volcanica de Guanacaste y a bahia Salinas.";
         Rally rally1 = new Rally(1,"rally 1",descripcionRally1, 3,"https://www.google.com/logos/doodles/2013/qixi_festival__chilseok_-2009005-hp.jpg","Utiliza 34Mb",false);
         Rally rally2 = new Rally(2,"rally 2",descripcionRally2, 6,"https://www.google.com/logos/2012/montessori-hp.jpg","Utiliza 55Mb ",false);
-        String descripcionSitio1 = "Desde este punto se pueden observar volcanes de la Cordillera Volcánica de Guanacaste. El volcán Orosí (N48°), el volcán Cacao (N60°) y el volcán Rincón de la Vieja (N90°).Hacia el azimut 110° (Sureste) se observa el cerro Góngora que es un domo volcánico con una edad de unos 8 millones de anos. Un domo de lava se forma cuando sale lava muy densa o viscosa, que no puede fluir y se enfría. Queda como una protuberancia del terreno. Ligeramente a la derecha del cerro Góngora se observan protuberancias del terreno más pequenas que corresponden con los domos de Canas Dulces, que fueron domos que se formaron por erupciones de lava que ocurrieron hace unos 1.5 millones de anos. El participante en este juego está parado sobre la Meseta de Ignimbrita, que es una planicie formada por una serie de erupciones volcánicas violentas que cubrieron la topografía existente hace unos 2 millones explosión  de  un  volcán.  En  este  caso  rellenaron  la  topografía  existente  y  dejaron  una  planicie  (Meseta  de  ignimbrita). Desde  este  punto  se  puede  observar  la  península  de  Santa  Elena  al  Noroeste,    El  cerro  El  Inglés  que  es  uno  de  los  puntos  más  altos  de  la  península  de  Santa  Elena  con  más  de  500  m  de  altura.    Desde  este  sitio  lo  puede  observar  hacia  el  Noroeste  (305°),  que  está  compuesta  por  rocas  provenientes  del  manto    terrestre.    Es  decir,  rocas  que  viajaron  desde  más  de  40  kilómetros  para  llegar  a  la  superficie  terrestre.  Estas  rocas  son  más  antiguas  que  80  millones  de  anos.";
-        String descripcionSitio2 = "La Casona está edificada sobre rocas de la meseta ignimbrítica de unos 2 millones de anos de antiguedad.  Específicamente en este sitio, estas rocas contienen fragmentos de lava negruscos, que se llaman escorias por contener muchos poros, que fueron cavidades que contenían gases volcánicos cuando se formaron.";
+        String descripcionSitio1 = "Desde este punto se pueden observar volcanes de la Cordillera Volcanica de Guanacaste. El volcan Orosi (N48), el volcan Cacao (N60) y el volcan Rincon de la Vieja (N90).Hacia el azimut 110 (Sureste) se observa el cerro Gongora que es un domo volcanico con una edad de unos 8 millones de anos. Un domo de lava se forma cuando sale lava muy densa o viscosa, que no puede fluir y se enfria. Queda como una protuberancia del terreno. Ligeramente a la derecha del cerro Gongora se observan protuberancias del terreno mas pequenas que corresponden con los domos de Canas Dulces, que fueron domos que se formaron por erupciones de lava que ocurrieron hace unos 1.5 millones de anos. El participante en este juego esta parado sobre la Meseta de Ignimbrita, que es una planicie formada por una serie de erupciones volcanicas violentas que cubrieron la topografia existente hace unos 2 millones explosion  de  un  volcan.  En  este  caso  rellenaron  la  topografia  existente  y  dejaron  una  planicie  (Meseta  de  ignimbrita). Desde  este  punto  se  puede  observar  la  peninsula  de  Santa  Elena  al  Noroeste,    El  cerro  El  Ingl es  que  es  uno  de  los  puntos  mas  altos  de  la  peninsula  de  Santa  Elena  con  mas  de  500  m  de  altura.    Desde  este  sitio  lo  puede  observar  hacia  el  Noroeste  (305),  que  esta  compuesta  por  rocas  provenientes  del  manto    terrestre.    Es  decir,  rocas  que  viajaron  desde  mas  de  40  kilometros  para  llegar  a  la  superficie  terrestre.  Estas  rocas  son  mas  antiguas  que  80  millones  de  anos.";
+        String descripcionSitio2 = "La Casona esta edificada sobre rocas de la meseta ignimbritica de unos 2 millones de anos de antiguedad.  Especificamente en este sitio, estas rocas contienen fragmentos de lava negruscos, que se llaman escorias por contener muchos poros, que fueron cavidades que contenian gases volcanicos cuando se formaron.";
         Site site1 = new Site(1,"El monumento",descripcionSitio1,"10.5005","-85.3669",2,5,5);
         Site site2 = new Site(2,"La casona",descripcionSitio2,"10.5002","-85.3675",1,5,5);
         rally1.addSite(site1);
         rally1.addSite(site2);
-        String descripcionSitio7 = "Desde este mirador. Se observa La isla Los Munecos. Localice visualmente el muneco de la isla, que es un monolito de piedra caliza (relicto de erosión) en el extremo izquierdo de la isla. Active la brújula. Dirija la brújula hacia el “muneco” y acepte el azimuth. Esta isla está compuesta por calizas, que son rocas ricas en carbonato de calcio (CaCO3).  Estas rocas se disuelven con el agua y forman hermosas “esculturas” como El Muneco.  Anteriormente eran 2 munecos, pero hace unos anos el muneco más grande, que llamaban Nefertiti desapareció.  Las rocas calizas que conforman esta isla fueron originados por construcciones de arrecifes de coral que se formaron hace unos 30 millones de anos. ";
-        String descripcionSitio8 = "Estas rocas se formaron hace unos 35 millones de anos, son muy parecidas a las de la playa 4x4.  Se pueden observar algunos troncos. y espectaculares bioturbaciones destacadas con líneas punteadas y flechas. ";
+        String descripcionSitio7 = "Desde este mirador. Se observa La isla Los Munecos. Localice visualmente el muneco de la isla, que es un monolito de piedra caliza (relicto de erosion) en el extremo izquierdo de la isla. Active la brujula. Dirija la brujula hacia el muneco y acepte el azimuth. Esta isla esta compuesta por calizas, que son rocas ricas en carbonato de calcio (CaCO3).  Estas rocas se disuelven con el agua y forman hermosas esculturas como El Muneco.  Anteriormente eran 2 munecos, pero hace unos anos el muneco mas grande, que llamaban Nefertiti desaparecio.  Las rocas calizas que conforman esta isla fueron originados por construcciones de arrecifes de coral que se formaron hace unos 30 millones de anos. ";
+        String descripcionSitio8 = "Estas rocas se formaron hace unos 35 millones de anos, son muy parecidas a las de la playa 4x4.  Se pueden observar algunos troncos. y espectaculares bioturbaciones destacadas con lineas punteadas y flechas. ";
         Site site7 = new Site(7,"El mirador",descripcionSitio7,"10.5775","-85.4186",2,15,0);
         Site site8 = new Site(8,"La Islita",descripcionSitio8,"10.5783","-85.4176",1,25,0);
         rally2.addSite(site7);
@@ -523,7 +523,7 @@ public class LocalDB{
                 columnas,                           // El arreglo de las columnas que queremos que devuelva
                 null,                          // Las columnas para el WHERE
                 null,                      // Los valores para cada una de las columnas
-                null,                       // La agrupación de las filas
+                null,                       // La agrupacion de las filas
                 null,                        // El parametro HAVING para agrupar las filas
                 sortOrder                          // The sort order
         );
@@ -560,7 +560,7 @@ public class LocalDB{
                 columnas,                           // El arreglo de las columnas que queremos que devuelva
                 null,                          // Las columnas para el WHERE
                 null,                      // Los valores para cada una de las columnas
-                null,                       // La agrupación de las filas
+                null,                       // La agrupacion de las filas
                 null,                        // El parametro HAVING para agrupar las filas
                 sortOrder                          // The sort order
         );
