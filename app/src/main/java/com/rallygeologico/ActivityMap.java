@@ -540,7 +540,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * @param lat latitud del punto encontrado
      * @param lon Longitud del punto encontrado
      * @param nombre Nombre del punto encontrado
-     * @param petrocoins valor del punto en petrocoins
+     * @param petrocoins valor del punto en petrocoins para el usuario
      *
      * */
     public void verificarEspecial(double lat,double lon,String nombre, String petrocoins)
