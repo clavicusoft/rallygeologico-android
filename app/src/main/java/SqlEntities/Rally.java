@@ -102,8 +102,8 @@ public class Rally {
     }
 
     /**
-     * Devuelve el tamaño total que ocupa el rally descargado
-     * @return Tamaño total que ocupa el rally descargado
+     * Devuelve el tamano total que ocupa el rally descargado
+     * @return Tamano total que ocupa el rally descargado
      */
     public String getMemoryUsage() {
         return memoryUsage;
@@ -165,7 +165,7 @@ public class Rally {
      * @param pointsAwarded Puntos que se pueden obtener con el rally
      * @param imageURL URL que direcciona a donde esta guardada la imagen de portada del rally
      * @param isDownloaded Nos dice si el rally se encuentra descargado en el dispositivo
-     * @param memoryUsage Tamaño total que ocupa el rally descargado
+     * @param memoryUsage Tamano total que ocupa el rally descargado
      */
     public Rally(int rallyId, String name, String description, int pointsAwarded, String imageURL, String memoryUsage, boolean isDownloaded) {
         this.rallyId = rallyId;
