@@ -44,5 +44,6 @@
     <string name="ok">OK</string>
     <string name="hello_user">Conectado como %1$s</string>
     <string name="bg_inicio">Fondo de pantalla inicio</string>
+    <string name="title_activity_inclination">inclinationActivity</string>
 
 </resources>
