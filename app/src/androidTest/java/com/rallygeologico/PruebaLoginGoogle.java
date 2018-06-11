@@ -88,7 +88,7 @@ public class PruebaLoginGoogle {
         appCompatButton2.perform(click());
 
         ViewInteraction appCompatButton3 = onView(
-                allOf(withId(android.R.id.button1), withText("Sí"),
+                allOf(withId(android.R.id.button1), withText("Si"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.buttonPanel),
