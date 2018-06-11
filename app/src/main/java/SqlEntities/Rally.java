@@ -184,4 +184,9 @@ public class Rally {
     public Rally() {
         this.sites = new ArrayList<Site>();
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

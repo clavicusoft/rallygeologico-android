@@ -217,8 +217,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         botonCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Realidad Aumentada en Trabajo",Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(getApplicationContext(),"Realidad Aumentada en Trabajo",Toast.LENGTH_SHORT).show();
+                irABrujula(view);
             }
         });
 
@@ -714,6 +714,11 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             }
 
         }
+    }
+
+    public void irABrujula(View view) {
+        Intent intent = new Intent(this, CompassActivity.class);
+        startActivity(intent);
     }
 
 
