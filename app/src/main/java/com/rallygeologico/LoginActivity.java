@@ -216,6 +216,7 @@ public class LoginActivity extends AppCompatActivity {
                 String resultado = validarCredencialesWeb(usuario, contrasena);
                 Toast toast = Toast.makeText(context, resultado, Toast.LENGTH_SHORT);
                 toast.show();
+
             } else {
                 user.setLogged(true);
                 db.updateUser(user);
