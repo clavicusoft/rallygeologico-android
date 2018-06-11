@@ -229,9 +229,9 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     private boolean solicitarPermisos()
     {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M){
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
             {
-                ActivityCompat.requestPermissions(this,new String []{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                ActivityCompat.requestPermissions(this,new String []{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.CAMERA},
                         SOLICITUD_TODOS);
             }
         }
@@ -279,6 +279,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     public void setMapScreen() {
         LocationManager locationManager= (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if ((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
+            //Intent intent = new Intent(this, ActivityMap.class);
             Intent intent = new Intent(this, ActivityMap.class);
             startActivity(intent);
         }
