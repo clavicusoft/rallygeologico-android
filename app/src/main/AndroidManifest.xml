@@ -85,7 +85,8 @@
         <activity
             android:name=".InclinationActivity"
             android:label="@string/title_activity_inclination"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SensorsActivity"></activity>
     </application>
 
 </manifest>
