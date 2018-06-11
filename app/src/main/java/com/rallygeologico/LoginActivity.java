@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         context = this;
 
         continuar = findViewById(R.id.btn_ingresar);
+
         //continuar.setVisibility(GONE);
         continuar.setOnClickListener(new View.OnClickListener() {
             /**
@@ -137,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
              */
            /* private void showAlert() {
                 new AlertDialog.Builder(context)
-                        .setTitle("No se pudo iniciar sesión")
+                        .setTitle("No se pudo iniciar sesion")
                         .setPositiveButton(R.string.ok, null)
                         .show();
             }
@@ -169,7 +170,7 @@ public class LoginActivity extends AppCompatActivity {
                 }else {
                     new AlertDialog.Builder(context)
                             .setTitle("Aviso")
-                            .setMessage("Debe conectarse a internet para iniciar sesión.")
+                            .setMessage("Debe conectarse a internet para iniciar sesion.")
                             .setPositiveButton(R.string.ok, null)
                             .show();
                 }
@@ -194,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
                 }else{
                     new AlertDialog.Builder(context)
                             .setTitle("Alerta")
-                            .setMessage("Debe conectarse a internet para iniciar sesión.")
+                            .setMessage("Debe conectarse a internet para iniciar sesion.")
                             .setPositiveButton(R.string.ok, null)
                             .show();
                 }
@@ -231,9 +232,9 @@ public class LoginActivity extends AppCompatActivity {
         user = db.selectUser(id);
         String name = perfil.getFirstName();
         new AlertDialog.Builder(context)
-                .setTitle("Iniciar Sesión")
-                .setMessage("¿Desea continuar como " + name + "?")
-                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                .setTitle("Iniciar Sesion")
+                .setMessage("Desea continuar como " + name + "?")
+                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Uri uri = perfil.getProfilePictureUri(200, 200);
                         String url = "";
@@ -316,9 +317,9 @@ public class LoginActivity extends AppCompatActivity {
             user = db.selectUser(id);
             String nombre = account.getGivenName();
             new AlertDialog.Builder(context)
-                    .setTitle("Iniciar Sesión")
-                    .setMessage("¿Desea continuar como " + nombre + "?")
-                    .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    .setTitle("Iniciar Sesion")
+                    .setMessage("Desea continuar como " + nombre + "?")
+                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             Uri uri = account.getPhotoUrl();
                             String url = "";
@@ -348,7 +349,7 @@ public class LoginActivity extends AppCompatActivity {
 
         } catch (ApiException e) {
             Log.w("Error", "handleSignInResult:error ", e);
-            Toast toast = Toast.makeText(context, "No se pudo iniciar sesión", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(context, "No se pudo iniciar sesion", Toast.LENGTH_SHORT);
             toast.show();
         }
     }

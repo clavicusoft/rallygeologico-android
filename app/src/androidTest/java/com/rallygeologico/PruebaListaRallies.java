@@ -34,7 +34,7 @@ public class PruebaListaRallies {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void rallyListTest() {
+    public void pruebaListaRallies() {
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_inicio), withText("INICIAR"),
                         childAtPosition(
@@ -45,37 +45,18 @@ public class PruebaListaRallies {
                         isDisplayed()));
         appCompatButton.perform(click());
 
-        ViewInteraction loginButton = onView(
-                allOf(withId(R.id.loginButton), withText("INGRESAR CON FACEBOOK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
-                                        0),
-                                2),
-                        isDisplayed()));
-        loginButton.perform(click());
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.btn_cont_login), withText("CONTINUAR"),
+                allOf(withId(R.id.btn_continuar), withText("Continuar"),
                         childAtPosition(
                                 childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
+                                        withClassName(is("android.widget.RelativeLayout")),
                                         1),
-                                0),
+                                2),
                         isDisplayed()));
         appCompatButton2.perform(click());
 
         ViewInteraction appCompatImageButton = onView(
-                allOf(withContentDescription("Navigate up"),
+                allOf(withContentDescription("Navegar hacia arriba"),
                         childAtPosition(
                                 allOf(withId(R.id.appbar),
                                         childAtPosition(
@@ -94,58 +75,6 @@ public class PruebaListaRallies {
                         2),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
-
-        ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.boton_menu),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.layout_rally_descargado),
-                                        2),
-                                1),
-                        isDisplayed()));
-        appCompatButton3.perform(click());
-
-        ViewInteraction appCompatTextView = onView(
-                allOf(withId(android.R.id.title), withText("Eliminar"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("com.android.internal.view.menu.ListMenuItemView")),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatTextView.perform(click());
-
-        ViewInteraction appCompatButton4 = onView(
-                allOf(withId(android.R.id.button1), withText("Eliminar"),
-                        childAtPosition(
-                                allOf(withClassName(is("com.android.internal.widget.ButtonBarLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                3)),
-                                3),
-                        isDisplayed()));
-        appCompatButton4.perform(click());
-
-        ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.boton_descargar), withText("Descargar"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.layout_rally_no_descargado),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton5.perform(click());
-
-        ViewInteraction appCompatButton6 = onView(
-                allOf(withId(android.R.id.button1), withText("Descargar"),
-                        childAtPosition(
-                                allOf(withClassName(is("com.android.internal.widget.ButtonBarLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                3)),
-                                3),
-                        isDisplayed()));
-        appCompatButton6.perform(click());
 
     }
 
