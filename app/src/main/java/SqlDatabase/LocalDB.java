@@ -3,6 +3,7 @@ package SqlDatabase;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -626,18 +627,19 @@ public class LocalDB{
 
     /**
      * Metodo para devolver todos los rallies asociados a un usuario
-     * @param userId Identificador del usuario del cual deseo obtener los rallies
+     * @param id Identificador del usuario del cual deseo obtener los rallies
      * @return una lista con los rallies asociados al usuario
      */
-    public List<Rally> selectAllRalliesFromUser(int userId){
+    public List<Rally> selectAllRalliesFromUser(int id){
         String rawQuery = "Select * FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
                 " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
                 " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
                 " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME + " c " +
                 " ON c." + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
-                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = " + userId;
+                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = ?";
 
-        Cursor cursor = database.rawQuery(rawQuery,null);
+        String userId = "" + id;
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
         List<Rally> rallyList = new ArrayList<Rally>();
 
         if(cursor != null){
@@ -680,6 +682,165 @@ public class LocalDB{
         }
 
         return rallyList;
+    }
+
+    public User selectUser(String userId){
+        String rawQuery = "Select * FROM " + DBContract.UserEntry.TABLE_NAME + " a " +
+                " WHERE a." + DBContract.UserEntry.COLUMN_NAME_USERID + " = " + userId;
+
+        Cursor cursor = database.rawQuery(rawQuery,null);
+        User user = null;
+
+        if(cursor.moveToFirst() == false) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                user = new User();
+                int index;
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_EMAIL);
+                String email = cursor.getString(index);
+                user.setEmail(email);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME);
+                String fisrtName = cursor.getString(index);
+                user.setFirstName(fisrtName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_LASTNAME);
+                String lastName = cursor.getString(index);
+                user.setLastName(lastName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_PHOTOURL);
+                String photo = cursor.getString(index);
+                user.setPhotoUrl(photo);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERID);
+                String id = cursor.getString(index);
+                user.setUserId(id);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERNAME);
+                String username = cursor.getString(index);
+                user.setUsername(username);
+            }
+        }
+
+        return user;
+    }
+
+    public User selectUserByUsername(String username, String contrasena){
+        String rawQuery = "Select * FROM " + DBContract.UserEntry.TABLE_NAME +
+                " WHERE " + DBContract.UserEntry.COLUMN_NAME_USERNAME + " = ?";// +
+                //" AND a." + DBContract.UserEntry.COLUMN_NAME_CONTRASENA + " = " + contrasena;
+
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{username});
+
+        User user = null;
+
+        if(cursor.moveToFirst()) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                user = new User();
+                int index;
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_EMAIL);
+                String email = cursor.getString(index);
+                user.setEmail(email);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME);
+                String fisrtName = cursor.getString(index);
+                user.setFirstName(fisrtName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_LASTNAME);
+                String lastName = cursor.getString(index);
+                user.setLastName(lastName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_PHOTOURL);
+                String photo = cursor.getString(index);
+                user.setPhotoUrl(photo);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERID);
+                String id = cursor.getString(index);
+                user.setUserId(id);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERNAME);
+                String uname = cursor.getString(index);
+                user.setUsername(uname);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_ISLOGGED);
+                String logged = cursor.getString(index);
+                if(logged.equalsIgnoreCase("0")){
+                    user.setLogged(false);
+                }else{
+                    user.setLogged(true);
+                }
+            }
+        }
+
+        return user;
+    }
+
+    public User selectLoggedUser(){
+        String rawQuery = "Select * FROM " + DBContract.UserEntry.TABLE_NAME + " a " +
+                " WHERE a." + DBContract.UserEntry.COLUMN_NAME_ISLOGGED + " = ?";
+
+        Cursor cursor = database.rawQuery(rawQuery,new String[] {"1"});
+        User user = null;
+
+        if(cursor.moveToFirst()) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                user = new User();
+                int index;
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_EMAIL);
+                String email = cursor.getString(index);
+                user.setEmail(email);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME);
+                String fisrtName = cursor.getString(index);
+                user.setFirstName(fisrtName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_LASTNAME);
+                String lastName = cursor.getString(index);
+                user.setLastName(lastName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_PHOTOURL);
+                String photo = cursor.getString(index);
+                user.setPhotoUrl(photo);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERID);
+                String id = cursor.getString(index);
+                user.setUserId(id);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERNAME);
+                String uname = cursor.getString(index);
+                user.setUsername(uname);
+            }
+        }
+
+        return user;
+    }
+
+    public void updateUser(User user){
+        ContentValues values = new ContentValues();
+        values.put(DBContract.UserEntry.COLUMN_NAME_USERNAME,user.getUsername());
+        values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
+        values.put(DBContract.UserEntry.COLUMN_NAME_FACEBOOKID, user.getFacebookId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
+        values.put(DBContract.UserEntry.COLUMN_NAME_GOOGLEID, user.getGoogleId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
+        values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
+        values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
+        values.put(DBContract.UserEntry.COLUMN_NAME_USERID, user.getUserId());
+
+        database.update(
+                DBContract.UserEntry.TABLE_NAME,
+                values,
+                DBContract.UserEntry.COLUMN_NAME_USERID + " = " + user.getUserId(),
+                null
+        );
     }
 
     /**

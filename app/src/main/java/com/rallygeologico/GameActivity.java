@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -18,7 +20,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -29,15 +37,32 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import SqlDatabase.LocalDB;
+import SqlEntities.Rally;
+import SqlEntities.Site;
+import SqlEntities.User;
+
+import android.widget.AdapterView.OnItemSelectedListener;
+
 /**
  * Clase para manejar la pantalla principal del juego y solicitar los permisos de memoria externa y uso del GPS
  */
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements OnItemSelectedListener {
 
     private static final int SOLICITUD_TODOS=100;
+    LocalDB db;
     DrawerLayout drawerLayout;
     NavigationView navView;
     Toolbar appbar;
+    Spinner spinner;
+    ImageView imgRally;
+    TextView nombreRally;
+    TextView descRally;
+    TextView sitesRally;
 
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -55,20 +80,26 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        db = new LocalDB(this);
 
         //Inicia las misma variables que en el login para controlar si el usuario desea salir de la sesion
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        /*gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         fbLoginManager = LoginManager.getInstance();
         boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
         Profile profile = Profile.getCurrentProfile();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         fbSignIn = enableButtons && profile != null;
-        googleSignIn = account != null;
+        googleSignIn = account != null;*/
 
         //Busca el boton de jugar en la vista y le asigna una funcion
         // de click para cambiar a la actividad del mapa
         View myLayout = findViewById( R.id.content);
+        imgRally = myLayout.findViewById( R.id.iv_rally_game_screen);
+        nombreRally = myLayout.findViewById( R.id.name_rally_game_screen);
+        descRally = myLayout.findViewById( R.id.description_rally_game_screen);
+        sitesRally = myLayout.findViewById( R.id.sites_rally_game_screen);
+
         Button botonMapa= myLayout.findViewById( R.id.btnMap);
         botonMapa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +114,34 @@ public class GameActivity extends AppCompatActivity {
         setSupportActionBar(appbar);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //Dropdown para cargar los rallies descargados
+        spinner = (Spinner) myLayout.findViewById(R.id.spinner_rallies);
+        spinner.setOnItemSelectedListener(this);
+        spinner.setPrompt("Seleccione un rally");
+        ArrayList<Rally> rallies = db.selectAllRallies();
+        ArrayAdapter<Rally> dataAdapter = new ArrayAdapter<Rally>(this, R.layout.rally_spinner_item, rallies){
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                String colorHex;
+                if(position%2 == 1) {
+                    // Set the item background color
+                    colorHex = "#" + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.Gris_2) & 0x00ffffff);
+                    tv.setBackgroundColor(Color.parseColor(colorHex));
+                }
+                else {
+                    // Set the alternate item background color
+                    colorHex = "#" + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.Gris_3) & 0x00ffffff);
+                    tv.setBackgroundColor(Color.parseColor(colorHex));
+                }
+                return view;
+            }
+        };
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(R.layout.rally_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
 
         //Vista para poder desplegar el menu de opciones de manera lateral
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -122,6 +181,29 @@ public class GameActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // On selecting a spinner item
+        Rally item = (Rally) parent.getItemAtPosition(position);
+        // Showing selected spinner item
+        Toast.makeText(parent.getContext(), "Seleccionado: " + item.toString(), Toast.LENGTH_LONG).show();
+        nombreRally.setText(item.getName());
+        descRally.setText(item.getDescription());
+        List<Site> sitios = db.selectAllSitesFromRally(item.getRallyId());
+        Iterator iterator = sitios.iterator();
+        String sitesList = "";
+        while(iterator.hasNext()){
+            Site sitio = (Site) iterator.next();
+            sitesList = sitesList + sitio.getSiteName() + "\n";
+        }
+        sitesRally.setText(sitesList);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // TODO Auto-generated method stub
     }
 
     /**
@@ -210,11 +292,14 @@ public class GameActivity extends AppCompatActivity {
      * Maneja el cierre de sesion, dependiendo de con cual api esta conectada
      */
     public void manejarCierreSesion(){
-        if(fbSignIn) {
+        /*if(fbSignIn) {
             fbLoginManager.logOut();
         } else if(googleSignIn) {
             mGoogleSignInClient.signOut();
-        }
+        }*/
+        User user = db.selectLoggedUser();
+        user.setLogged(false);
+        db.updateUser(user);
         setStartScreen();
     }
 
@@ -231,9 +316,7 @@ public class GameActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed(){
-        if(fbSignIn || googleSignIn) {
-            setStartScreen();
-        }
+        setStartScreen();
     }
 
     /**
