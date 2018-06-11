@@ -16,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import SqlDatabase.LocalDB;
+import SqlEntities.User;
 
 
 /**
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     boolean fbSignIn;
     boolean googleSignIn;
     boolean enableButtons;
+    boolean conectado;
+    User user;
     GoogleSignInAccount account;
 
     /**
@@ -43,11 +46,17 @@ public class MainActivity extends AppCompatActivity {
         start = findViewById(R.id.btn_inicio);
         logo = findViewById(R.id.iv_logoucr);
 
-        account = GoogleSignIn.getLastSignedInAccount(this);
+        /*account = GoogleSignIn.getLastSignedInAccount(this);
         enableButtons = AccessToken.getCurrentAccessToken() != null;
         Profile profile = Profile.getCurrentProfile();
         fbSignIn = enableButtons && profile != null;
-        googleSignIn = account != null;
+        googleSignIn = account != null;*/
+        user = localDB.selectLoggedUser();
+        if(user == null){
+            conectado = false;
+        }else{
+            conectado = true;
+        }
 
         start.setOnClickListener(new View.OnClickListener() {
             /**
@@ -56,8 +65,9 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View view) {
-                if(googleSignIn || fbSignIn){
+                if(conectado){
                     irAJuego(view);
+                    //irALogin(view);
                 }else{
                     irALogin(view);
                 }

@@ -13,12 +13,16 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
@@ -32,10 +36,14 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
 
 import FileManager.DownloadTask;
+import SqlDatabase.LocalDB;
+import SqlEntities.User;
 
 import static android.view.View.GONE;
 
@@ -44,18 +52,22 @@ import static android.view.View.GONE;
  */
 public class LoginActivity extends AppCompatActivity {
 
+    LocalDB db;
+    private Button continuar;
+    private EditText username;
+    private EditText password;
     // Codigo de login para Google
     private static final int RC_SIGN_IN = 9001;
 
     private Button loginFacebookButton;
     private Button loginGoogleButton;
-    private Button continuar;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
     private LoginManager fbLoginManager;
     private Context context;
     private GoogleSignInOptions gso;
     private GoogleSignInClient mGoogleSignInClient;
+    private User user;
 
     /**
      * Cuando se inicia la actividad se crea el boton de inicio con Facebook y Google
@@ -65,12 +77,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        FacebookSdk.sdkInitialize(this);
+        setContentView(R.layout.activity_login2);
+        db = new LocalDB(this);
+        //FacebookSdk.sdkInitialize(this);
         context = this;
 
-        continuar = findViewById(R.id.btn_continuar);
-        continuar.setVisibility(GONE);
+        continuar = findViewById(R.id.btn_ingresar);
+        //continuar.setVisibility(GONE);
         continuar.setOnClickListener(new View.OnClickListener() {
             /**
              * Continuar a la pantalla principal del juego
@@ -78,11 +91,14 @@ public class LoginActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View v) {
-                setGameScreen();
+                manejarInicioSesion();
             }
         });
 
-        loginFacebookButton = findViewById(R.id.btn_fb);
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+
+        /*loginFacebookButton = findViewById(R.id.btn_fb);
         loginFacebookButton.setVisibility(View.VISIBLE);
         // Asigna una lista con los permisos de login
         final List<String> listPermission = Arrays.asList("email", "public_profile", "user_hometown");
@@ -94,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
              * Se ejecuta si el login es exitoso
              * @param loginResult Resultado del login
              */
-            @Override
+           /* @Override
             public void onSuccess(LoginResult loginResult) {
                 manejarInicioSesionFb();
             }
@@ -102,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
             /**
              * Se ejecuta si se cancela el login
              */
-            @Override
+           /* @Override
             public void onCancel() {
                 showAlert();
             }
@@ -111,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
              * Se ejecuta si hay un error en el login
              * @param exception Excepcion que envia el error
              */
-            @Override
+           /* @Override
             public void onError(FacebookException exception) {
                 showAlert();
             }
@@ -119,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
             /**
              * Crea una alerta y la muestra cuando no se puede hacer bien el login
              */
-            private void showAlert() {
+           /* private void showAlert() {
                 new AlertDialog.Builder(context)
                         .setTitle("No se pudo iniciar sesión")
                         .setPositiveButton(R.string.ok, null)
@@ -135,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
              * @param oldProfile Perfil antiguo
              * @param currentProfile Perfil actual
              */
-            @Override
+           /* @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
 
             }
@@ -146,7 +162,7 @@ public class LoginActivity extends AppCompatActivity {
              * Se hace el login por medio de Facebook
              * @param v Vista del activity
              */
-            @Override
+          /*  @Override
             public void onClick(View v) {
                 if(tieneConexionInternet()){
                     fbLoginManager.logInWithReadPermissions(LoginActivity.this,listPermission);
@@ -170,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
              * Se hace el login por medio de Google
              * @param v Vista del activity
              */
-            @Override
+         /*   @Override
             public void onClick(View v) {
                 if(tieneConexionInternet()){
                     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -183,8 +199,27 @@ public class LoginActivity extends AppCompatActivity {
                             .show();
                 }
             }
-        });
+        });*/
 
+    }
+
+    public void manejarInicioSesion(){
+        String usuario = username.getText().toString();
+        String contrasena = password.getText().toString();
+        if (!usuario.isEmpty() && !contrasena.isEmpty()){
+            user = db.selectUserByUsername(usuario,contrasena);
+            if (user == null){
+                Toast toast = Toast.makeText(context, "Debe registrarse en la pagina web", Toast.LENGTH_SHORT);
+                toast.show();
+            } else{
+                user.setLogged(true);
+                db.updateUser(user);
+                setGameScreen();
+            }
+        } else {
+            Toast toast = Toast.makeText(context, "Por favor ingrese el nombre de usuario y la contraseña", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     /**
@@ -192,6 +227,8 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void manejarInicioSesionFb() {
         final Profile perfil = Profile.getCurrentProfile();
+        String id = perfil.getId();
+        user = db.selectUser(id);
         String name = perfil.getFirstName();
         new AlertDialog.Builder(context)
                 .setTitle("Iniciar Sesión")
@@ -199,12 +236,34 @@ public class LoginActivity extends AppCompatActivity {
                 .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Uri uri = perfil.getProfilePictureUri(200, 200);
+                        String url = "";
                         if(uri != null) {
-                            String url = uri.toString();
+                            url = uri.toString();
                             new DownloadTask(context, 1, "fotoPerfil", url);
                         }
                         Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
                         toast.show();
+                        /*if(user == null){
+                            user.setUserId(perfil.getId());
+                            user.setFirstName(perfil.getFirstName());
+                            user.setLastName(perfil.getLastName());
+                            GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
+                                    new GraphRequest.GraphJSONObjectCallback() {
+                                        @Override
+                                        public void onCompleted(JSONObject object, GraphResponse response) {
+                                            if (object != null) {
+                                                String email = JSONParser.getEmail(object);
+                                                user.setEmail(email);
+                                            }
+                                        }
+                                    });
+                            Bundle parameters = new Bundle();
+                            parameters.putString("fields", "id,name,link,hometown,email");
+                            request.setParameters(parameters);
+                            request.executeAsync();
+                            user.setPhotoUrl(url);
+                            db.insertUser(user);
+                        }*/
                         setGameScreen();
                     }
                 })
@@ -253,6 +312,8 @@ public class LoginActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             final GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            String id = account.getId();
+            user = db.selectUser(id);
             String nombre = account.getGivenName();
             new AlertDialog.Builder(context)
                     .setTitle("Iniciar Sesión")
@@ -260,12 +321,21 @@ public class LoginActivity extends AppCompatActivity {
                     .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             Uri uri = account.getPhotoUrl();
+                            String url = "";
                             if(uri != null) {
-                                String url = uri.toString();
+                                url = uri.toString();
                                 new DownloadTask(context, 1, "fotoPerfil", url);
                             }
                             Toast toast = Toast.makeText(context, "Conectado", Toast.LENGTH_SHORT);
                             toast.show();
+                           /* if(user == null){
+                                user.setUserId(account.getId());
+                                user.setFirstName(account.getGivenName());
+                                user.setLastName(account.getFamilyName());
+                                user.setEmail(account.getEmail());
+                                user.setPhotoUrl(url);
+                                db.insertUser(user);
+                            }*/
                             setGameScreen();
                         }
                     })

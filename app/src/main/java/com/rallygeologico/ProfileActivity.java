@@ -18,12 +18,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import org.json.JSONObject;
 import FileManager.FileManager;
+import SqlDatabase.LocalDB;
+import SqlEntities.User;
 
 /**
  * Clase para manejar la pantalla del perfil del usuario
  */
 public class ProfileActivity extends AppCompatActivity {
 
+    LocalDB db;
     ScrollView scrollView;
     ImageView fotoPerfil;
     ImageView fotoFondo;
@@ -47,6 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        db = new LocalDB(this);
 
         scrollView = (ScrollView) findViewById(R.id.sv_profile);
         scrollView.setFocusableInTouchMode(true);
@@ -54,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         fotoFondo = findViewById(R.id.header_cover_image);
         fotoPerfil = findViewById(R.id.profile);
-        editar = findViewById(R.id.edit);
+        //editar = findViewById(R.id.edit);
         nombreUsuario = findViewById(R.id.nombre);
         lugar = findViewById(R.id.ubicacion);
         recorridos = findViewById(R.id.rallies);
@@ -75,7 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
         FileManager fm = new FileManager();
 
         // Si se esta conectado a Facebook se carga la informacion obtenida en login
-        boolean conectado = AccessToken.getCurrentAccessToken() != null;
+        /*boolean conectado = AccessToken.getCurrentAccessToken() != null;
         Profile perfil = Profile.getCurrentProfile();
         if (conectado && perfil != null) {
             GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
@@ -103,7 +107,12 @@ public class ProfileActivity extends AppCompatActivity {
             nombreUsuario.setText(name);
             String home = account.getEmail();
             lugar.setText(home);
-        }
+        }*/
+        User user = db.selectLoggedUser();
+        String name = user.getFirstName() + " " + user.getLastName();
+        nombreUsuario.setText(name);
+        String email = user.getEmail();
+        lugar.setText(email);
         //Si hay almacenamiento externo carga la imagen de perfil
         if (fm.hayAlmacenamientoExterno()) {
             fm.cargarImagenAlmacenamientoExterno("fotoPerfil", fotoPerfil);
