@@ -15,27 +15,40 @@ import SqlDatabase.LocalDB;
 import SqlEntities.Rally;
 
 public class RallyListAdapter extends ArrayAdapter<Rally> {
+
+    /**
+     *
+     * @param context Contexto de la actividad
+     * @param users Lista de usuarios
+     */
     public RallyListAdapter(Context context, ArrayList<Rally> users) {
         super(context, 0, users);
     }
 
+    /**
+     * Recibe los elementos y los carga como elementos de la lista
+     * @param position Posicion donde carga el item correspondiente
+     * @param convertView Vista en donde cargar el adaptador
+     * @param parent Vista padre
+     * @return Devuelve la vista con el adaptador cargado
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the data item for this position
+        // Obtiene los datos del item correspondiente a esta posicion
         Rally rally = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
+        // Revisa si se usa una vista, sino se creo una nueva
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.rally_user_item, parent, false);
         }
-        // Lookup view for data population
+        // Busca los elementos en donde cargar la informacion
         TextView tv_nombre = (TextView) convertView.findViewById(R.id.nombre_rally_usuario);
         TextView tv_puntos = (TextView) convertView.findViewById(R.id.puntos_rally_usuario);
         TextView tv_estado = (TextView) convertView.findViewById(R.id.estado_rally_usuario);
-        // Populate the data into the template view using the data object
+        // Carga los datos usando el tipo d e objeto correspondiete
         tv_nombre.setText(rally.getName());
         tv_puntos.setText(String.valueOf(rally.getPointsAwarded()));
-        tv_estado.setText(rally.getDescription());
-        // Return the completed view to render on screen
+        tv_estado.setText(String.valueOf(rally.getRallyId()));
+
         return convertView;
     }
 }

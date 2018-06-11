@@ -1,6 +1,8 @@
 package com.rallygeologico;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -37,7 +39,7 @@ public class VisitasActivity extends AppCompatActivity {
         Intent myIntent = getIntent(); // gets the previously created intent
 
         tipo= myIntent.getStringExtra("Tipo");
-        nombreImagen= myIntent.getStringExtra("Imagen");
+        nombreImagen=  myIntent.getStringExtra("Imagen");
         nombre = myIntent.getStringExtra("Nombre");
         numero = myIntent.getStringExtra("Numero");
         distancia = myIntent.getStringExtra("Distancia");
@@ -47,9 +49,13 @@ public class VisitasActivity extends AppCompatActivity {
             informacion = myIntent.getStringExtra("Informacion");
         }
 
-        ImageView imagenNoVisitado= (ImageView) findViewById(R.id.imagenPunto);
+        ImageView imagenNoVisitado= (ImageView)     findViewById(R.id.imagenPunto);
 
-        imagenNoVisitado.setImageResource(getResources().getIdentifier( nombreImagen, "drawable", getPackageName()));
+        Resources res = getResources();
+
+        int resourceId = res.getIdentifier( nombreImagen, "drawable", getPackageName() );
+
+        imagenNoVisitado.setImageResource( resourceId );
 
 
         TextView nombrePuntoNoVisitado=(TextView) findViewById(R.id.nombrePunto);

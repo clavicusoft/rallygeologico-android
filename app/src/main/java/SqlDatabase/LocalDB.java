@@ -3,6 +3,7 @@ package SqlDatabase;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -467,14 +468,31 @@ public class LocalDB{
         String descripcionRally2 = "Esta geoaventura abarca pueblos costeros del cantón de La Cruz, entre los que destacan Cuajiniquil, pueblo cercano a sitios turísticos; El Jobo, pueblo con diversidad de playas y el centro poblacional del cantón, identificado por sus maravillosas vistas a la cordillera volcánica de Guanacaste y a bahía Salinas.";
         Rally rally1 = new Rally(1,"rally 1",descripcionRally1, 3,"https://www.google.com/logos/doodles/2013/qixi_festival__chilseok_-2009005-hp.jpg","Utiliza 34Mb",false);
         Rally rally2 = new Rally(2,"rally 2",descripcionRally2, 6,"https://www.google.com/logos/2012/montessori-hp.jpg","Utiliza 55Mb ",false);
-        String descripcionSitio1 = "Desde este punto se pueden observar volcanes de la Cordillera Volcánica de Guanacaste. El volcán Orosí (N48°), el volcán Cacao (N60°) y el volcán Rincón de la Vieja (N90°).Hacia el azimut 110° (Sureste) se observa el cerro Góngora que es un domo volcánico con una edad de unos 8 millones de anos. Un domo de lava se forma cuando sale lava muy densa o viscosa, que no puede fluir y se enfría. Queda como una protuberancia del terreno. Ligeramente a la derecha del cerro Góngora se observan protuberancias del terreno más pequenas que corresponden con los domos de Canas Dulces, que fueron domos que se formaron por erupciones de lava que ocurrieron hace unos 1.5 millones de anos. El participante en este juego está parado sobre la Meseta de Ignimbrita, que es una planicie formada por una serie de erupciones volcánicas violentas que cubrieron la topografía existente hace unos 2 millones explosión  de  un  volcán.  En  este  caso  rellenaron  la  topografía  existente  y  dejaron  una  planicie  (Meseta  de  ignimbrita). Desde  este  punto  se  puede  observar  la  península  de  Santa  Elena  al  Noroeste,    El  cerro  El  Inglés  que  es  uno  de  los  puntos  más  altos  de  la  península  de  Santa  Elena  con  más  de  500  m  de  altura.    Desde  este  sitio  lo  puede  observar  hacia  el  Noroeste  (305°),  que  está  compuesta  por  rocas  provenientes  del  manto    terrestre.    Es  decir,  rocas  que  viajaron  desde  más  de  40  kilómetros  para  llegar  a  la  superficie  terrestre.  Estas  rocas  son  más  antiguas  que  80  millones  de  anos.";
-        String descripcionSitio2 = "La Casona está edificada sobre rocas de la meseta ignimbrítica de unos 2 millones de anos de antiguedad.  Específicamente en este sitio, estas rocas contienen fragmentos de lava negruscos, que se llaman escorias por contener muchos poros, que fueron cavidades que contenían gases volcánicos cuando se formaron.";
-        Site site1 = new Site(1,"El monumento",descripcionSitio1,"10.5005","-85.3669",2,5,5);
-        Site site2 = new Site(2,"La casona",descripcionSitio2,"10.5002","-85.3675",1,5,5);
+        String descripcionSitio1 = "Desde este punto se pueden observar volcanes de la Cordillera Volcánica de Guanacaste. El volcán Orosí (N48°), el volcán Cacao (N60°) y el volcán Rincón de la Vieja (N90°).Hacia el azimut 110° (Sureste) se observa el cerro Góngora que es un domo volcánico con una edad de unos 8 millones de años. Un domo de lava se forma cuando sale lava muy densa o viscosa, que no puede fluir y se enfría. Queda como una protuberancia del terreno. Ligeramente a la derecha del cerro Góngora se observan protuberancias del terreno más pequeñas que corresponden con los domos de Cañas Dulces, que fueron domos que se formaron por erupciones de lava que ocurrieron hace unos 1.5 millones de años. El participante en este juego está parado sobre la Meseta de Ignimbrita, que es una planicie formada por una serie de erupciones volcánicas violentas que cubrieron la topografía existente hace unos 2 millones explosión  de  un  volcán.  En  este  caso  rellenaron  la  topografía  existente  y  dejaron  una  planicie  (Meseta  de  ignimbrita). Desde  este  punto  se  puede  observar  la  península  de  Santa  Elena  al  Noroeste,    El  cerro  El  Inglés  que  es  uno  de  los  puntos  más  altos  de  la  península  de  Santa  Elena  con  más  de  500  m  de  altura.    Desde  este  sitio  lo  puede  observar  hacia  el  Noroeste  (305°),  que  está  compuesta  por  rocas  provenientes  del  manto    terrestre.    Es  decir,  rocas  que  viajaron  desde  más  de  40  kilómetros  para  llegar  a  la  superficie  terrestre.  Estas  rocas  son  más  antiguas  que  80  millones  de  años.";
+        String descripcionSitio2 = "La Casona está edificada sobre rocas de la meseta ignimbrítica de unos 2 millones de años de antiguedad.  Específicamente en este sitio, estas rocas contienen fragmentos de lava negruscos, que se llaman escorias por contener muchos poros, que fueron cavidades que contenían gases volcánicos cuando se formaron.";
+
+        String descripcionSitio3="Una  discordancia  angular  es  una  superficie  que  representa  una  roca  más  joven,  depositada  sobre  una  más  antigua  que  ha  sido  deformada  y  erosionad";
+        String descripcionSitio4="Las  peridotitas  (lo  lleva  a  4a)  tuvieron  un  viaje  de  por  lo  menos  40  kilómetros  desde  el  interior  del  planeta  Tierra  hasta  el  sitio  donde  están  hoy,  la  península  de  Santa  Elena.  Durante  este  viaje,  las  peridotitas  fueron  “cruzadas”  por  otra  roca  fundida,  que  entró  y  rellenó  las  zonas  más  débiles  de  la  peridotita";
+        String descripcionSitio5="Este  lugar  muestra  la  fuerza  y  dramatismo  de  las  fuerzas  de  la  Tierra,  pues  antes  del  12  de  Octubre  del  2017  había  una  poza,  que  se  llamaba  la  Poza  de  El  General";
+        String descripcionSitio6="En  esta  localidad  se  observan  varios  estratos,  que  son  las  capas  en  que  se  encuentran  divididos  los  sedimentos,  como  un  resultado  de  sus  características  físicas.  Estas  rocas  se  formaron  por  acumulación  de  arenas,  en  el  fondo  marino  hace  unos  35  millones  de  años. ";
+
+
+        Site site1 = new Site(1,"El Monumento",descripcionSitio1,"10.5005","-85.3669",1,20,5);
+        Site site2 = new Site(2,"La Casona",descripcionSitio2,"10.5002","-85.3675",1,20,5);
+        Site site3 = new Site(3,"La Discortancia de la Cortina",descripcionSitio3,"10.56874","-85.39370",4,20,5);
+        Site site4 = new Site(4,"Peridotitas de Murciélago",descripcionSitio4,"10.53975","-85.43823",4,20,5);
+        Site site5 = new Site(5,"La expoza de El General",descripcionSitio5,"10.53820","-85.43826",1,20,5);
+        Site site6 = new Site(6,"La 4x4",descripcionSitio6,"10.56077","-85.42248",1,20,5);
+
         rally1.addSite(site1);
         rally1.addSite(site2);
-        String descripcionSitio7 = "Desde este mirador. Se observa La isla Los Munecos. Localice visualmente el muneco de la isla, que es un monolito de piedra caliza (relicto de erosión) en el extremo izquierdo de la isla. Active la brújula. Dirija la brújula hacia el “muneco” y acepte el azimuth. Esta isla está compuesta por calizas, que son rocas ricas en carbonato de calcio (CaCO3).  Estas rocas se disuelven con el agua y forman hermosas “esculturas” como El Muneco.  Anteriormente eran 2 munecos, pero hace unos anos el muneco más grande, que llamaban Nefertiti desapareció.  Las rocas calizas que conforman esta isla fueron originados por construcciones de arrecifes de coral que se formaron hace unos 30 millones de anos. ";
-        String descripcionSitio8 = "Estas rocas se formaron hace unos 35 millones de anos, son muy parecidas a las de la playa 4x4.  Se pueden observar algunos troncos. y espectaculares bioturbaciones destacadas con líneas punteadas y flechas. ";
+        rally1.addSite(site3);
+        rally1.addSite(site4);
+        rally1.addSite(site5);
+        rally1.addSite(site6);
+
+        String descripcionSitio7 = "Desde este mirador. Se observa La isla Los Muñecos. Localice visualmente el muñeco de la isla, que es un monolito de piedra caliza (relicto de erosión) en el extremo izquierdo de la isla. Active la brújula. Dirija la brújula hacia el “muñeco” y acepte el azimuth. Esta isla está compuesta por calizas, que son rocas ricas en carbonato de calcio (CaCO3).  Estas rocas se disuelven con el agua y forman hermosas “esculturas” como El Muñeco.  Anteriormente eran 2 muñecos, pero hace unos años el muñeco más grande, que llamaban Nefertiti desapareció.  Las rocas calizas que conforman esta isla fueron originados por construcciones de arrecifes de coral que se formaron hace unos 30 millones de años. ";
+        String descripcionSitio8 = "Estas rocas se formaron hace unos 35 millones de años, son muy parecidas a las de la playa 4x4.  Se pueden observar algunos troncos. y espectaculares bioturbaciones destacadas con líneas punteadas y flechas. ";
         Site site7 = new Site(7,"El mirador",descripcionSitio7,"10.5775","-85.4186",2,15,0);
         Site site8 = new Site(8,"La Islita",descripcionSitio8,"10.5783","-85.4176",1,25,0);
         rally2.addSite(site7);
@@ -609,18 +627,19 @@ public class LocalDB{
 
     /**
      * Metodo para devolver todos los rallies asociados a un usuario
-     * @param userId Identificador del usuario del cual deseo obtener los rallies
+     * @param id Identificador del usuario del cual deseo obtener los rallies
      * @return una lista con los rallies asociados al usuario
      */
-    public List<Rally> selectAllRalliesFromUser(int userId){
+    public List<Rally> selectAllRalliesFromUser(int id){
         String rawQuery = "Select * FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
                 " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
                 " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
                 " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME + " c " +
                 " ON c." + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
-                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = " + userId;
+                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = ?";
 
-        Cursor cursor = database.rawQuery(rawQuery,null);
+        String userId = "" + id;
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
         List<Rally> rallyList = new ArrayList<Rally>();
 
         if(cursor != null){
@@ -663,6 +682,165 @@ public class LocalDB{
         }
 
         return rallyList;
+    }
+
+    public User selectUser(String userId){
+        String rawQuery = "Select * FROM " + DBContract.UserEntry.TABLE_NAME + " a " +
+                " WHERE a." + DBContract.UserEntry.COLUMN_NAME_USERID + " = " + userId;
+
+        Cursor cursor = database.rawQuery(rawQuery,null);
+        User user = null;
+
+        if(cursor.moveToFirst() == false) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                user = new User();
+                int index;
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_EMAIL);
+                String email = cursor.getString(index);
+                user.setEmail(email);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME);
+                String fisrtName = cursor.getString(index);
+                user.setFirstName(fisrtName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_LASTNAME);
+                String lastName = cursor.getString(index);
+                user.setLastName(lastName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_PHOTOURL);
+                String photo = cursor.getString(index);
+                user.setPhotoUrl(photo);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERID);
+                String id = cursor.getString(index);
+                user.setUserId(id);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERNAME);
+                String username = cursor.getString(index);
+                user.setUsername(username);
+            }
+        }
+
+        return user;
+    }
+
+    public User selectUserByUsername(String username, String contrasena){
+        String rawQuery = "Select * FROM " + DBContract.UserEntry.TABLE_NAME +
+                " WHERE " + DBContract.UserEntry.COLUMN_NAME_USERNAME + " = ?";// +
+                //" AND a." + DBContract.UserEntry.COLUMN_NAME_CONTRASENA + " = " + contrasena;
+
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{username});
+
+        User user = null;
+
+        if(cursor.moveToFirst()) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                user = new User();
+                int index;
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_EMAIL);
+                String email = cursor.getString(index);
+                user.setEmail(email);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME);
+                String fisrtName = cursor.getString(index);
+                user.setFirstName(fisrtName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_LASTNAME);
+                String lastName = cursor.getString(index);
+                user.setLastName(lastName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_PHOTOURL);
+                String photo = cursor.getString(index);
+                user.setPhotoUrl(photo);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERID);
+                String id = cursor.getString(index);
+                user.setUserId(id);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERNAME);
+                String uname = cursor.getString(index);
+                user.setUsername(uname);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_ISLOGGED);
+                String logged = cursor.getString(index);
+                if(logged.equalsIgnoreCase("0")){
+                    user.setLogged(false);
+                }else{
+                    user.setLogged(true);
+                }
+            }
+        }
+
+        return user;
+    }
+
+    public User selectLoggedUser(){
+        String rawQuery = "Select * FROM " + DBContract.UserEntry.TABLE_NAME + " a " +
+                " WHERE a." + DBContract.UserEntry.COLUMN_NAME_ISLOGGED + " = ?";
+
+        Cursor cursor = database.rawQuery(rawQuery,new String[] {"1"});
+        User user = null;
+
+        if(cursor.moveToFirst()) {
+
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                user = new User();
+                int index;
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_EMAIL);
+                String email = cursor.getString(index);
+                user.setEmail(email);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME);
+                String fisrtName = cursor.getString(index);
+                user.setFirstName(fisrtName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_LASTNAME);
+                String lastName = cursor.getString(index);
+                user.setLastName(lastName);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_PHOTOURL);
+                String photo = cursor.getString(index);
+                user.setPhotoUrl(photo);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERID);
+                String id = cursor.getString(index);
+                user.setUserId(id);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERNAME);
+                String uname = cursor.getString(index);
+                user.setUsername(uname);
+            }
+        }
+
+        return user;
+    }
+
+    public void updateUser(User user){
+        ContentValues values = new ContentValues();
+        values.put(DBContract.UserEntry.COLUMN_NAME_USERNAME,user.getUsername());
+        values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
+        values.put(DBContract.UserEntry.COLUMN_NAME_FACEBOOKID, user.getFacebookId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
+        values.put(DBContract.UserEntry.COLUMN_NAME_GOOGLEID, user.getGoogleId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
+        values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
+        values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
+        values.put(DBContract.UserEntry.COLUMN_NAME_USERID, user.getUserId());
+
+        database.update(
+                DBContract.UserEntry.TABLE_NAME,
+                values,
+                DBContract.UserEntry.COLUMN_NAME_USERID + " = " + user.getUserId(),
+                null
+        );
     }
 
     /**

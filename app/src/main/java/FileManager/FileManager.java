@@ -16,12 +16,19 @@ import java.io.IOException;
 
 public class FileManager {
 
+    // Nombre de la carpeta donde s guardan los contenidos multimedia del juego
     private final String folderPrincipal = "RallyGeologico";
 
+    /**
+     * Constructor vacio
+     */
     public FileManager(){
     }
 
-    /* Checks if external storage is available for read and write */
+    /**
+     * Revisa si hay almacenamiento externo disponible para llectura y escritura
+     * @return Verdadero si hay almacenamiento externo y permisos, falso de manera contraria
+     */
     public boolean hayAlmacenamientoExterno() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -32,6 +39,13 @@ public class FileManager {
 
     /*************** Cargar archivos de almacenamiento interno ***************/
 
+    /**
+     * Carga una imagen en la vista indicada desde almacenamiento interno que se indica con el nombre
+     * @param path ruta del archivo
+     * @param nombre nombre del archivo
+     * @param v vista conde carga la imagen
+     * @param destination id del elemento donde carga la imagen
+     */
     public void cargarImagenAlmacenamientoInterno(String path, String nombre, View v, int destination) {
         try {
             File f = new File(path, nombre + ".png");
@@ -46,6 +60,11 @@ public class FileManager {
 
     /*************** Cargar archivos de almacenamiento externo ***************/
 
+    /**
+     * Carga una imagen en la vista indicada desde almacenamiento externo que se indica con el nombre
+     * @param nombre Nombre de la imagen
+     * @param iv Vista donde carga la imagen
+     */
     public void cargarImagenAlmacenamientoExterno(String nombre, ImageView iv) {
         try {
             File dir = new File(Environment.getExternalStorageDirectory() + "/" + folderPrincipal, "imagenes");
