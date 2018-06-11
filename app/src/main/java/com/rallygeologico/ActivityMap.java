@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +27,6 @@ import org.osmdroid.views.overlay.Overlay;
 
 import java.lang.reflect.Array;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import SqlDatabase.LocalDB;
 import SqlEntities.Site;
@@ -71,8 +71,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     LocalDB localDB;
 
     Site interes;
+    MediaPlayer mp;
 
-    Semaphore semaphore = new Semaphore(1);
 
     /**
      * Se ejecuta cuando se crea la vista
@@ -119,7 +119,15 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
          /*Base de datos*/
         localDB= new LocalDB(this);
 
+
         mapView = (MapView) findViewById(R.id.mapview);
+
+
+        mapView.setClickable(false);
+        mapView.setMultiTouchControls(false);
+
+
+        crearBorde();
 
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(false);
@@ -127,59 +135,19 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         mapView.setUseDataConnection(false);
 
 
+        //mapView.setTileSource(new XYTileSource("tiles", 13, 16, 256, ".png", new String[0]));
+
+
         //Inicializa el controlador
         mc = (MapController) mapView.getController();
 
         mc.setZoom(14);
+        mc.animateTo( boundingBox.getCenter());
 
 
-        mapView.setTileSource(new XYTileSource("tiles", 13, 16, 256, ".png", new String[0]));
 
-        crearBorde();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-
-        //Pruebas
-        /*Anade puntos*/
-        insertarPuntos();
-
-        try {
-            Location ultimo = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (ultimo != null ) {
-                if (estaAdentro(ultimo)) {
-                    center = new GeoPoint(ultimo.getLatitude(), ultimo.getLongitude());
-                    mc.animateTo(center);
-                    addMarker(center, 0, "Ultima Ubicacion Registrada");
-                    lastKnown = true;
-
-                }
-            }
-
-            if (lastKnown==false)//Centro el mapa y digo que busco una ubicacion
-
-            {
-                mc.animateTo( boundingBox.getCenter());
-                Toast.makeText(this,"Buscando localizacion...",Toast.LENGTH_SHORT).show();
-
-            }
-
-
-        }
-
-        catch(SecurityException e){
-            Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
-        }
-
-
-
-
-        try{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
-        }
-        catch(SecurityException e){
-            Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
-        }
 
         /*Programar botones*/
 
@@ -189,7 +157,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             @Override
             public void onClick(View view) {
                 if (lastKnown)
-                {mc.animateTo(center);
+                {
+                    mc.animateTo(center);
                 }
                 else {
                     Toast.makeText(getApplicationContext(),"No podemos encontrar tu ubicacion",Toast.LENGTH_SHORT).show();
@@ -217,8 +186,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         botonCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Realidad Aumentada en Trabajo",Toast.LENGTH_SHORT).show();
-
+                irRealidadAumentada();
             }
         });
 
@@ -233,6 +201,24 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 
 
+        //Pruebas
+        /*Anade puntos*/
+        insertarPuntos();
+
+
+        try{
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
+        }
+        catch(SecurityException e){
+            Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    public void irRealidadAumentada() {
+        Intent intent = new Intent(this,ActivityRealidadAumentada.class);
+        startActivity(intent);
     }
 
 
@@ -335,11 +321,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
         if (location != null)
         {
-            try {
-                semaphore.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
 
             if (estaAdentro(location)) {
 
@@ -370,7 +352,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         }
 
 
-        semaphore.release();
 
     }
     /**
@@ -405,6 +386,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     }
 
     /**
+     *
      * Se dispara cuando se toca un marcador
      * Agarra datos de la base de datos local asociadas al punto y se las pasa a otro activity (VisitasActivity) para mostrar la pantalla informativa sobre el punto.
      * Como aun no esta implementada la base, se tuvo que inventar los datos
@@ -497,10 +479,12 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * tambien se establece el nivel minimo y maximo de zoom
      * */
     public void crearBorde()
-    {  boundingBox=new BoundingBox(arribaDerecha.getLatitude(),arribaDerecha.getLongitude(),abajoIzquierda.getLatitude(),abajoIzquierda.getLongitude());
+    {
+        boundingBox=new BoundingBox(arribaDerecha.getLatitude(),arribaDerecha.getLongitude(),abajoIzquierda.getLatitude(),abajoIzquierda.getLongitude());
         mapView.setMinZoomLevel(13.0);
         mapView.setMaxZoomLevel(20.0);
-        mapView.setScrollableAreaLimitDouble(boundingBox);}
+        mapView.setScrollableAreaLimitDouble(boundingBox);
+        }
 
     /**
      * Este metodo se encarga agarrar todos los sitios de la base de datos y chequear si estamos cerca de un no visitado o uno especial
@@ -510,6 +494,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 /*Recorro los markers*/
         List <Site> sites= localDB.selectAllSitesFromRally(1);
+        int activosonido=0;
 
         for (int ite=0;ite<sites.size();ite++) {
 
@@ -518,20 +503,29 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 
 
-            if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=200.0)
+            if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0)
             {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),3);
                 verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
+            activosonido=1;
             }
 
-            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=50.0)
+            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0)
             {     localDB.updateSiteVisit(sites.get(ite).getSiteId(),2);
                 verificarNoVisitados(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
+            activosonido=2;
             }
 
         }
+        if(activosonido==1)
+        {//Sonido de Alerta
+            mp = MediaPlayer.create(this,R.raw.alertadesonido);
+            mp.start();}
 
-
+        if(activosonido==2)
+        {//Sonido normal
+            mp = MediaPlayer.create(this,R.raw.alertadesonidonormal);
+            mp.start();}
 
     }
 
@@ -688,11 +682,12 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         List <Site> sites= localDB.selectAllSitesFromRally(1);
         if (sites.size()==0)
         {localDB.prueba();
-            sites= localDB.selectAllSitesFromRally(1);}
+            sites= localDB.selectAllSitesFromRally(1);
+
+        }
 
         for (int i=0; i<sites.size();i++) {
             Location nuevo = new Location("dummyprovider");
-            ;
             nuevo.setLatitude(Double.parseDouble(sites.get(i).getLatitud()));
             nuevo.setLongitude(Double.parseDouble(sites.get(i).getLongitud()));
 
@@ -716,5 +711,33 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+        mapView.getOverlays().clear();
+        numeroNoVisitados=0;
+        numeroVisitados=0;
+        numeroEspeciales=0;
+        insertarPuntos();
+
+        try{
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
+        }
+        catch(SecurityException e){
+            Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try{
+            locationManager.removeUpdates(this);
+        }
+        catch(SecurityException e){
+            Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
+        }
+    }
 }
