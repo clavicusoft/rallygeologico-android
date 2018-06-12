@@ -71,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Cuando se inicia la actividad se crea el boton de inicio con Facebook y Google
+     *
      * @param savedInstanceState
      */
     @Override
@@ -204,15 +205,19 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void manejarInicioSesion(){
+    public void manejarInicioSesion() {
         String usuario = username.getText().toString();
         String contrasena = password.getText().toString();
-        if (!usuario.isEmpty() && !contrasena.isEmpty()){
-            user = db.selectUserByUsername(usuario,contrasena);
-            if (user == null){
-                Toast toast = Toast.makeText(context, "Debe registrarse en la pagina web", Toast.LENGTH_SHORT);
+
+        if (!usuario.isEmpty() && !contrasena.isEmpty()) {
+
+            user = db.selectUserByUsername(usuario, contrasena);
+            if (user == null) {
+                String resultado = validarCredencialesWeb(usuario, contrasena);
+                Toast toast = Toast.makeText(context, resultado, Toast.LENGTH_SHORT);
                 toast.show();
-            } else{
+
+            } else {
                 user.setLogged(true);
                 db.updateUser(user);
                 setGameScreen();
@@ -221,6 +226,21 @@ public class LoginActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, "Por favor ingrese el nombre de usuario y la contraseña", Toast.LENGTH_SHORT);
             toast.show();
         }
+    }
+
+    /**
+     * Utiliza el web service para ver si los credenciales existen el la bd de la web.
+     *
+     * @param usuario
+     * @param contrasena
+     * @return verdadero si el web service responde que los credenciales están correctos.
+     */
+    public String validarCredencialesWeb(String usuario, String contrasena) {
+        String resultado = "JORGE";
+        String idConsultaValor = "0";
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        resultado = backgroundWorker.doInBackground(idConsultaValor, usuario, contrasena);
+        return resultado;
     }
 
     /**
@@ -238,7 +258,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Uri uri = perfil.getProfilePictureUri(200, 200);
                         String url = "";
-                        if(uri != null) {
+                        if (uri != null) {
                             url = uri.toString();
                             new DownloadTask(context, 1, "fotoPerfil", url);
                         }
@@ -289,9 +309,10 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Se llama cuando se sale de la actividad para el callbackManager de Facebook o de Google
+     *
      * @param requestCode Codigo que identifica de donde viene la solicitud
-     * @param resultCode Codigo que devuelve la actividad hijo
-     * @param data Intent nuevo con el resultado devuelto de la actividad
+     * @param resultCode  Codigo que devuelve la actividad hijo
+     * @param data        Intent nuevo con el resultado devuelto de la actividad
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -300,7 +321,7 @@ public class LoginActivity extends AppCompatActivity {
             // Devuelve una tarea de login con el resultado
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        }else{
+        } else {
             //Maneja el login de Facebook de a cuerdo con el resultado obtenido
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
@@ -308,6 +329,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Maneja el login para ver si fue exitoso o no
+     *
      * @param completedTask Tarea que se encarga de hacer el login con Google
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -323,7 +345,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             Uri uri = account.getPhotoUrl();
                             String url = "";
-                            if(uri != null) {
+                            if (uri != null) {
                                 url = uri.toString();
                                 new DownloadTask(context, 1, "fotoPerfil", url);
                             }
@@ -385,7 +407,7 @@ public class LoginActivity extends AppCompatActivity {
      * Se actualiza la interfaz apenas inicia la activity
      */
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
     }
 
@@ -404,15 +426,15 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Revisa si el dispositivo tiene acceso a internet
+     *
      * @return Verdadero si esta conectado, sino falso
      */
     private boolean tieneConexionInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()){
+        if (networkInfo != null && networkInfo.isConnected()) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
