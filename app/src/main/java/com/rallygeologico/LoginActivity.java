@@ -10,10 +10,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -36,6 +39,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -56,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button continuar;
     private EditText username;
     private EditText password;
+    private LinearLayout credentials;
+    private LinearLayout progressBar;
     // Codigo de login para Google
     private static final int RC_SIGN_IN = 9001;
 
@@ -71,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Cuando se inicia la actividad se crea el boton de inicio con Facebook y Google
+     *
      * @param savedInstanceState
      */
     @Override
@@ -98,6 +105,9 @@ public class LoginActivity extends AppCompatActivity {
 
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
+        credentials = findViewById(R.id.layout_credenciales);
+        progressBar = findViewById(R.id.layout_cargando);
+        progressBar.setVisibility(GONE);
 
         /*loginFacebookButton = findViewById(R.id.btn_fb);
         loginFacebookButton.setVisibility(View.VISIBLE);
@@ -204,15 +214,46 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void manejarInicioSesion(){
+    public void manejarInicioSesion() {
         String usuario = username.getText().toString();
         String contrasena = password.getText().toString();
-        if (!usuario.isEmpty() && !contrasena.isEmpty()){
-            user = db.selectUserByUsername(usuario,contrasena);
-            if (user == null){
-                Toast toast = Toast.makeText(context, "Debe registrarse en la pagina web", Toast.LENGTH_SHORT);
-                toast.show();
-            } else{
+
+        if (!usuario.isEmpty() && !contrasena.isEmpty()) {
+            credentials.setVisibility(GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            user = db.selectUserByUsername(usuario, contrasena);
+            if (user == null) {
+                if(tieneConexionInternet()){
+                    String resultado = validarCredencialesWeb(usuario, contrasena);
+                    if (resultado.equalsIgnoreCase("null")) {
+                        credentials.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        mostrarAlerta();
+                    } else {
+                        String toParse = resultado.replace("]","");
+                        toParse = toParse.replace("[","");
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(toParse);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if(jsonObject != null){
+                            user = JSONParser.getUser(jsonObject);
+                            db.insertUser(user);
+                            setGameScreen();
+                        }
+                    }
+                } else {
+                    credentials.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    new AlertDialog.Builder(this)
+                            .setTitle("Error")
+                            .setMessage("Para ingresar por primera vez debe conectarse a Internet.")
+                            .setPositiveButton("Ok", null)
+                            .show();
+                }
+            } else {
                 user.setLogged(true);
                 db.updateUser(user);
                 setGameScreen();
@@ -221,6 +262,34 @@ public class LoginActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, "Por favor ingrese el nombre de usuario y la contraseña", Toast.LENGTH_SHORT);
             toast.show();
         }
+    }
+
+    private void mostrarAlerta() {
+        new AlertDialog.Builder(this)
+                .setTitle("Alerta")
+                .setMessage("Debe registrarse en la página web para poder continuar. ¿Desea continuar a la página web?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    /**
+     * Utiliza el web service para ver si los credenciales existen el la bd de la web.
+     *
+     * @param usuario
+     * @param contrasena
+     * @return verdadero si el web service responde que los credenciales están correctos.
+     */
+    public String validarCredencialesWeb(String usuario, String contrasena) {
+        String resultado = "JORGE";
+        String idConsultaValor = "0";
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        resultado = backgroundWorker.doInBackground(idConsultaValor, usuario, contrasena);
+        return resultado;
     }
 
     /**
@@ -238,7 +307,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Uri uri = perfil.getProfilePictureUri(200, 200);
                         String url = "";
-                        if(uri != null) {
+                        if (uri != null) {
                             url = uri.toString();
                             new DownloadTask(context, 1, "fotoPerfil", url);
                         }
@@ -289,9 +358,10 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Se llama cuando se sale de la actividad para el callbackManager de Facebook o de Google
+     *
      * @param requestCode Codigo que identifica de donde viene la solicitud
-     * @param resultCode Codigo que devuelve la actividad hijo
-     * @param data Intent nuevo con el resultado devuelto de la actividad
+     * @param resultCode  Codigo que devuelve la actividad hijo
+     * @param data        Intent nuevo con el resultado devuelto de la actividad
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -300,7 +370,7 @@ public class LoginActivity extends AppCompatActivity {
             // Devuelve una tarea de login con el resultado
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
-        }else{
+        } else {
             //Maneja el login de Facebook de a cuerdo con el resultado obtenido
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
@@ -308,6 +378,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Maneja el login para ver si fue exitoso o no
+     *
      * @param completedTask Tarea que se encarga de hacer el login con Google
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -323,7 +394,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             Uri uri = account.getPhotoUrl();
                             String url = "";
-                            if(uri != null) {
+                            if (uri != null) {
                                 url = uri.toString();
                                 new DownloadTask(context, 1, "fotoPerfil", url);
                             }
@@ -361,6 +432,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         AppEventsLogger.activateApp(this);
+        credentials.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     /**
@@ -385,7 +458,7 @@ public class LoginActivity extends AppCompatActivity {
      * Se actualiza la interfaz apenas inicia la activity
      */
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
     }
 
@@ -404,17 +477,34 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Revisa si el dispositivo tiene acceso a internet
+     *
      * @return Verdadero si esta conectado, sino falso
      */
     private boolean tieneConexionInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()){
+        if (networkInfo != null && networkInfo.isConnected()) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
+    /**
+     * Muestra el activity de inicio del juego
+     */
+    public void setStartScreen() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Si se presiona el boton de atras, se devuelve a la pantalla principal
+     */
+    @Override
+    public void onBackPressed(){
+        setStartScreen();
+    }
+
 }
+

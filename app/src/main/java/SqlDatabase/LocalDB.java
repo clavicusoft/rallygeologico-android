@@ -456,7 +456,7 @@ public class LocalDB{
      */
     public void prueba(){
         database.execSQL("delete from "+ DBContract.Rally_SiteEntry.TABLE_NAME);
-        database.execSQL("delete from "+ DBContract.UserEntry.TABLE_NAME);
+        //database.execSQL("delete from "+ DBContract.UserEntry.TABLE_NAME);
         database.execSQL("delete from "+ DBContract.SiteEntry.TABLE_NAME);
         database.execSQL("delete from "+ DBContract.RallyEntry.TABLE_NAME);
         User user1 = new User("1","Face1","Google1","Usuario 1","Pablo ","Madrigal"," Correo 1","Foto 1",false);
@@ -568,7 +568,7 @@ public class LocalDB{
          *  Como queremos que esten ordenados los resultados
          */
         String sortOrder =
-                DBContract.RallyEntry.COLUMN_NAME_NAME + " DESC";
+                DBContract.RallyEntry.COLUMN_NAME_NAME + " ASC";
 
         /**
          * La consulta en si
