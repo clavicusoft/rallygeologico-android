@@ -40,6 +40,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import SqlDatabase.LocalDB;
 import SqlEntities.Activity;
@@ -65,6 +66,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     TextView descRally;
     TextView sitesRally;
     Bundle mBundle;
+    String seleccionado;
 
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -84,6 +86,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         setContentView(R.layout.activity_game);
         db = new LocalDB(this);
 
+        seleccionado="-1"; //Rally default
         //Inicia las misma variables que en el login para controlar si el usuario desea salir de la sesion
         /*gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -191,7 +194,20 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         Rally item = (Rally) parent.getItemAtPosition(position);
         mBundle = new Bundle();
         // Showing selected spinner item
-        Toast.makeText(parent.getContext(), "Seleccionado: " + item.toString(), Toast.LENGTH_LONG).show();
+
+        String prueba=item.toString();
+        String seleccTockenizer="";
+
+        /*Agarrar el id del rally*/
+        StringTokenizer st = new StringTokenizer(prueba);
+        while (st.hasMoreTokens()) {
+            seleccTockenizer=st.nextToken();
+        }
+
+        seleccionado= seleccTockenizer;
+
+
+        Toast.makeText(parent.getContext(), "Seleccionado: " + seleccionado, Toast.LENGTH_LONG).show();
         nombreRally.setText(item.getName());
         descRally.setText(item.getDescription());
         mBundle.putInt("rallyId", item.getRallyId());
@@ -298,10 +314,17 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     public void setMapScreen() {
         LocationManager locationManager= (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if ((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
-            //Intent intent = new Intent(this, ActivityMap.class);
-            Intent intent = new Intent(this, ActivityMap.class);
-            intent.putExtras(mBundle);
-            startActivity(intent);
+
+
+            if(!seleccionado.equals("-1")) {
+                Intent intent = new Intent(this, ActivityMap.class);
+                intent.putExtra("ID",seleccionado);
+                startActivity(intent);
+            }
+
+            else {
+                Toast.makeText(this,"Seleccione un Rally",Toast.LENGTH_SHORT).show();
+            }
         }
         else {
             Toast.makeText(this,"Active el GPS",Toast.LENGTH_SHORT).show();

@@ -16,6 +16,9 @@
     <uses-feature android:name="android.hardware.sensor.compass" />
 
     <application
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
+
         android:allowBackup="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
@@ -58,9 +61,10 @@
         <activity
             android:name=".ActivityMap"
             android:label="@string/app_name"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".GameActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            />
         <activity
             android:name=".VisitasActivity"
             android:label="@string/app_name"
@@ -77,7 +81,7 @@
             android:name=".ActivityRealidadAumentada"
             android:label="@string/app_name"
             android:parentActivityName=".ActivityMap"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".HowToPlayActivity"

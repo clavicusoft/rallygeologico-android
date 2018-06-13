@@ -54,6 +54,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     Button botonAlejar;
     Button botonCam;
     Button botonQR;
+    Button botonPausa;
+
 
     Marker me;
 
@@ -73,6 +75,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     Site interes;
     MediaPlayer mp;
 
+    String rallyID;
+
 
     /**
      * Se ejecuta cuando se crea la vista
@@ -88,9 +92,12 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Copia el folder
-        CopyFolder.copyAssets(this);
+        Intent myIntent = getIntent(); // gets the previously created intent
 
+        rallyID= myIntent.getStringExtra("ID");
+
+        //Copia el folder
+        //  CopyFolder.copyAssets(this);
 
         setContentView(R.layout.activity_maps);
 
@@ -135,7 +142,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         mapView.setUseDataConnection(false);
 
 
-        //mapView.setTileSource(new XYTileSource("tiles", 13, 16, 256, ".png", new String[0]));
+       // mapView.setTileSource(new XYTileSource("tiles", 13, 16, 256, ".png", new String[0]));
 
 
         //Inicializa el controlador
@@ -204,6 +211,16 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             }
         });
 
+        botonPausa= findViewById( R.id.pausa);
+        botonPausa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                metodoPausa();
+
+            }
+        });
+
 
 
         //Pruebas
@@ -221,8 +238,15 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     }
 
+    public void metodoPausa()
+    {
+        Toast.makeText(this,"Pausa en trabajo",Toast.LENGTH_SHORT).show();
+
+    }
+
     public void irRealidadAumentada() {
         Intent intent = new Intent(this,ActivityRealidadAumentada.class);
+        intent.putExtra("ID",rallyID);
         startActivity(intent);
     }
 
@@ -403,7 +427,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     {
         boolean noEncontre=true;
 
-        List <Site> sites= localDB.selectAllSitesFromRally(1);
+        List <Site> sites= localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
 
         int ite=0;
         while (ite<sites.size() && noEncontre) {
@@ -684,10 +708,10 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * Este metodo se encarga de poner los marcadores en el mapa, con los sitios recibidos en la base de datos
      * */
     private void insertarPuntos() {
-        List <Site> sites= localDB.selectAllSitesFromRally(1);
+        List <Site> sites= localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
         if (sites.size()==0)
         {localDB.prueba();
-            sites= localDB.selectAllSitesFromRally(1);
+            sites= localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
 
         }
 

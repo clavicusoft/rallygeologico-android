@@ -2,6 +2,7 @@ package com.rallygeologico;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -50,10 +51,26 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
     MediaPlayer mp;
 
+    String rallyID;
+
+    /*botones*/
+
+
+    Button botonMapa;
+    Button botonQR;
+    Button botonInclinometro;
+    Button botonBrujula;
+
+
     protected void onCreate(Bundle savedInstanceState) {
 
 
         super.onCreate(savedInstanceState);
+
+        Intent myIntent = getIntent(); // gets the previously created intent
+
+        rallyID= myIntent.getStringExtra("ID");
+
         setContentView(R.layout.main_realidadaumentada);
         setContentView(R.layout.activity_realidadaumentada);
 
@@ -95,8 +112,66 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         mBeyondarFragment.setDistanceFactor(6);
         //  mBeyondarFragment.setPullCloserDistance (500);
 
+        /*Funcion a los botones*/
+
+        botonMapa= findViewById( R.id.mapa_realidadaumentada);
+        botonMapa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setMapActivity();
+            }
+        });
+
+        botonBrujula= findViewById( R.id.brujula_realidadaumentada);
+        botonBrujula.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setBrujulaActivity();
+                }
+        });
+
+        botonInclinometro= findViewById( R.id.inclinometro_realidadaumentada);
+        botonInclinometro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setInclinometroActivity();
+            }
+        });
+
+        botonQR= findViewById( R.id.qr_realidadaumentada);
+        botonQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setQRActivity();
+            }
+        });
+    }
+
+    public void setMapActivity()
+    {
+       onBackPressed();
 
     }
+
+    public void setBrujulaActivity()
+    {
+        Toast.makeText(this,"Llamar al activity compass",Toast.LENGTH_SHORT).show();
+
+    }
+
+       public void setQRActivity()
+    {
+        Toast.makeText(this,"Llamar al activity inclinometro",Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void setInclinometroActivity()
+    {
+        Toast.makeText(this,"Llamar al activity inclinometro",Toast.LENGTH_SHORT).show();
+
+    }
+
+
 
     private void crearmundo() {
 
@@ -118,11 +193,11 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     }
 
     public void crearGeobjetos() {
-        List<Site> sites = localDB.selectAllSitesFromRally(1);
+        List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
 
         if (sites.size() == 0) {
             localDB.prueba();
-            sites = localDB.selectAllSitesFromRally(1);
+            sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
 
         }
 
@@ -191,7 +266,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         int activoSonido=0;
 
         /*Recorro los markers*/
-        List<Site> sites = localDB.selectAllSitesFromRally(1);
+        List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
 
         for (int ite = 0; ite < sites.size(); ite++) {
 

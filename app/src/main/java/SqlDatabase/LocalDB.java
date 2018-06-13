@@ -493,7 +493,7 @@ public class LocalDB{
 
         String descripcionSitio7 = "Desde este mirador. Se observa La isla Los Muñecos. Localice visualmente el muñeco de la isla, que es un monolito de piedra caliza (relicto de erosión) en el extremo izquierdo de la isla. Active la brújula. Dirija la brújula hacia el “muñeco” y acepte el azimuth. Esta isla está compuesta por calizas, que son rocas ricas en carbonato de calcio (CaCO3).  Estas rocas se disuelven con el agua y forman hermosas “esculturas” como El Muñeco.  Anteriormente eran 2 muñecos, pero hace unos años el muñeco más grande, que llamaban Nefertiti desapareció.  Las rocas calizas que conforman esta isla fueron originados por construcciones de arrecifes de coral que se formaron hace unos 30 millones de años. ";
         String descripcionSitio8 = "Estas rocas se formaron hace unos 35 millones de años, son muy parecidas a las de la playa 4x4.  Se pueden observar algunos troncos. y espectaculares bioturbaciones destacadas con líneas punteadas y flechas. ";
-        Site site7 = new Site(7,"El mirador",descripcionSitio7,"10.5775","-85.4186",2,15,0);
+        Site site7 = new Site(7,"El mirador",descripcionSitio7,"10.5775","-85.4186",1,15,0);
         Site site8 = new Site(8,"La Islita",descripcionSitio8,"10.5783","-85.4176",1,25,0);
         rally2.addSite(site7);
         rally2.addSite(site8);

@@ -17,63 +17,78 @@
         tools:ignore="MissingConstraints">
     </org.osmdroid.views.MapView>
 
-<android.support.v7.widget.LinearLayoutCompat
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <Button
-        android:id="@+id/zoom_in"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/zoom_in"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="310dp"
-        android:layout_marginBottom="5dp">
-    </Button>
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
-    <Button
-        android:id="@+id/zoom_out"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/zoom_out"
-        android:layout_marginLeft="310dp"
-        android:layout_marginBottom="250dp"
-        >
-
-    </Button>
-
-    <Button
-    android:id="@+id/mylocation"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
-    android:background="@drawable/mylocation"
-        android:layout_marginLeft="300dp"
-        android:layout_marginBottom="10dp"
-    >
-</Button>
-
-    <Button
-        android:id="@+id/botonCamara"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/camara"
-        android:layout_marginLeft="300dp"
-        android:layout_marginBottom="10dp">
-        >
-    </Button>
-
-    <Button
-        android:id="@+id/botonqr"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="@drawable/qr"
-        android:layout_marginLeft="300dp">
-        >
-    </Button>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="5dp"
+            >
+            <Button
+                android:id="@+id/pausa"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="25dp"
+                android:background="@drawable/pausa"></Button>
+            <Button
+                android:id="@+id/zoom_in"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="245dp"
+                android:layout_weight="1"
+                android:background="@drawable/zoom_in"></Button>
+        </LinearLayout>
 
 
-</android.support.v7.widget.LinearLayoutCompat>
+        <Button
+            android:id="@+id/zoom_out"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/zoom_out"
+            android:layout_marginLeft="310dp"
+            android:layout_marginBottom="250dp"
+            >
+
+        </Button>
+
+        <Button
+            android:id="@+id/mylocation"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/mylocation"
+            android:layout_marginLeft="300dp"
+            android:layout_marginBottom="10dp"
+            >
+        </Button>
+
+        <Button
+            android:id="@+id/botonCamara"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/camara"
+            android:layout_marginLeft="300dp"
+            android:layout_marginBottom="10dp">
+            >
+        </Button>
+
+        <Button
+            android:id="@+id/botonqr"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/qr"
+            android:layout_marginLeft="300dp">
+            >
+        </Button>
+
+
+    </android.support.v7.widget.LinearLayoutCompat>
 
 </android.support.constraint.ConstraintLayout>
