@@ -10,10 +10,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -36,6 +39,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -56,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button continuar;
     private EditText username;
     private EditText password;
+    private LinearLayout credentials;
+    private LinearLayout progressBar;
     // Codigo de login para Google
     private static final int RC_SIGN_IN = 9001;
 
@@ -99,6 +105,9 @@ public class LoginActivity extends AppCompatActivity {
 
         username = findViewById(R.id.username);
         password = findViewById(R.id.password);
+        credentials = findViewById(R.id.layout_credenciales);
+        progressBar = findViewById(R.id.layout_cargando);
+        progressBar.setVisibility(GONE);
 
         /*loginFacebookButton = findViewById(R.id.btn_fb);
         loginFacebookButton.setVisibility(View.VISIBLE);
@@ -210,13 +219,40 @@ public class LoginActivity extends AppCompatActivity {
         String contrasena = password.getText().toString();
 
         if (!usuario.isEmpty() && !contrasena.isEmpty()) {
-
+            credentials.setVisibility(GONE);
+            progressBar.setVisibility(View.VISIBLE);
             user = db.selectUserByUsername(usuario, contrasena);
             if (user == null) {
-                String resultado = validarCredencialesWeb(usuario, contrasena);
-                Toast toast = Toast.makeText(context, resultado, Toast.LENGTH_SHORT);
-                toast.show();
-
+                if(tieneConexionInternet()){
+                    String resultado = validarCredencialesWeb(usuario, contrasena);
+                    if (resultado.equalsIgnoreCase("null")) {
+                        credentials.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        mostrarAlerta();
+                    } else {
+                        String toParse = resultado.replace("]","");
+                        toParse = toParse.replace("[","");
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(toParse);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if(jsonObject != null){
+                            user = JSONParser.getUser(jsonObject);
+                            db.insertUser(user);
+                            setGameScreen();
+                        }
+                    }
+                } else {
+                    credentials.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    new AlertDialog.Builder(this)
+                            .setTitle("Error")
+                            .setMessage("Para ingresar por primera vez debe conectarse a Internet.")
+                            .setPositiveButton("Ok", null)
+                            .show();
+                }
             } else {
                 user.setLogged(true);
                 db.updateUser(user);
@@ -226,6 +262,19 @@ public class LoginActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, "Por favor ingrese el nombre de usuario y la contraseña", Toast.LENGTH_SHORT);
             toast.show();
         }
+    }
+
+    private void mostrarAlerta() {
+        new AlertDialog.Builder(this)
+                .setTitle("Alerta")
+                .setMessage("Debe registrarse en la página web para poder continuar. ¿Desea continuar a la página web?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     /**
@@ -383,6 +432,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         AppEventsLogger.activateApp(this);
+        credentials.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     /**
@@ -439,4 +490,21 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Muestra el activity de inicio del juego
+     */
+    public void setStartScreen() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Si se presiona el boton de atras, se devuelve a la pantalla principal
+     */
+    @Override
+    public void onBackPressed(){
+        setStartScreen();
+    }
+
 }
+

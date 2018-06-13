@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import org.json.JSONObject;
 import FileManager.FileManager;
+import SlidingTab.SlidingTabLayout;
 import SqlDatabase.LocalDB;
 import SqlEntities.User;
 

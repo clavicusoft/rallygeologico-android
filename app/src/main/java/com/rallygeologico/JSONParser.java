@@ -2,7 +2,8 @@ package com.rallygeologico;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
+
+import SqlEntities.User;
 
 /**
  * Clase para parsear los datos obtenidos del grafo de Facebook
@@ -22,6 +23,22 @@ public class JSONParser {
             e.printStackTrace();
         }
         return s1;
+    }
+
+    public static User getUser(JSONObject obj) {
+        User user = new User();
+        try {
+            user.setLogged(true);
+            user.setUserId(obj.getString("id"));
+            user.setUsername(obj.getString("username"));
+            user.setFirstName(obj.getString("first_name"));
+            user.setLastName(obj.getString("last_name"));
+            user.setEmail(obj.getString("email"));
+            user.setPhotoUrl(obj.getString("photo_url"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     public static String getEmail(JSONObject obj) {
