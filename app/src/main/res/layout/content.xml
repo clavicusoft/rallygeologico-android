@@ -64,7 +64,6 @@
                     android:id="@+id/spinner_rallies"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
                     android:textSize="25sp"
                     android:spinnerMode="dialog"/>
 
