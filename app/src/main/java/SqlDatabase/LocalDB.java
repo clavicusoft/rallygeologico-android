@@ -684,6 +684,28 @@ public class LocalDB{
         return rallyList;
     }
 
+    public int selectAllRalliesCountFromUser(String id){
+        String rawQuery = "SELECT COUNT(" + DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS + ") FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
+                " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
+                " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME + " c " +
+                " ON c." + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
+                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = ?";
+
+        String userId = "" + id;
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
+        int rallies = 0;
+        if(cursor.moveToFirst()){
+            // The Cursor is now set to the right position
+            if(cursor.moveToNext()){
+                rallies = cursor.getInt(0);
+            } else {
+                rallies = 0;
+            }
+        }
+        return rallies;
+    }
+
     public int selectAllRalliesPointsFromUser(String id){
         String rawQuery = "SELECT SUM(" + DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS + ") FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
                 " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
@@ -697,7 +719,11 @@ public class LocalDB{
         int points = 0;
         if(cursor.moveToFirst()){
                 // The Cursor is now set to the right position
+            if(cursor.moveToNext()){
                 points = cursor.getInt(0);
+            } else {
+                points = 0;
+            }
         }
         return points;
     }

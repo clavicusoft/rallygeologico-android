@@ -31,12 +31,9 @@ public class ProfileActivity extends AppCompatActivity {
     ScrollView scrollView;
     ImageView fotoPerfil;
     ImageView fotoFondo;
-    ImageView editar;
     TextView nombreUsuario;
     TextView lugar;
-    TextView recorridos;
     TextView recorridosTotal;
-    TextView puntos;
     TextView puntosTotal;
     PagerAdapter pagerAdapter;
     ViewPager viewPager;
@@ -59,11 +56,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         fotoFondo = findViewById(R.id.header_cover_image);
         fotoPerfil = findViewById(R.id.profile);
-        //editar = findViewById(R.id.edit);
         nombreUsuario = findViewById(R.id.nombre);
         lugar = findViewById(R.id.ubicacion);
-        recorridos = findViewById(R.id.rallies);
-        puntos = findViewById(R.id.points);
         recorridosTotal = findViewById(R.id.rallyCounter);
         puntosTotal = findViewById(R.id.pointsCounter);
 
@@ -79,41 +73,15 @@ public class ProfileActivity extends AppCompatActivity {
 
         FileManager fm = new FileManager();
 
-        // Si se esta conectado a Facebook se carga la informacion obtenida en login
-        /*boolean conectado = AccessToken.getCurrentAccessToken() != null;
-        Profile perfil = Profile.getCurrentProfile();
-        if (conectado && perfil != null) {
-            GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
-                    new GraphRequest.GraphJSONObjectCallback() {
-                        @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
-                            if (object != null) {
-                                Log.d("Request", object.toString());
-                                String name = JSONParser.getName(object);
-                                nombreUsuario.setText(name);
-                                String home = JSONParser.getEmail(object);
-                                lugar.setText(home);
-                            }
-                        }
-                    });
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,link,hometown,email");
-            request.setParameters(parameters);
-            request.executeAsync();
-        }
-        //Si esta conectado a google, obtiene los datos del perfil
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        if (account != null){
-            String name = account.getDisplayName();
-            nombreUsuario.setText(name);
-            String home = account.getEmail();
-            lugar.setText(home);
-        }*/
         User user = db.selectLoggedUser();
         String name = user.getFirstName() + " " + user.getLastName();
         nombreUsuario.setText(name);
         String email = user.getEmail();
         lugar.setText(email);
+        String points = "" + db.selectAllRalliesPointsFromUser(user.getUserId());
+        puntosTotal.setText(points);
+        String rallies = "" + db.selectAllRalliesCountFromUser(user.getUserId());
+        recorridosTotal.setText(rallies);
         //Si hay almacenamiento externo carga la imagen de perfil
         if (fm.hayAlmacenamientoExterno()) {
             fm.cargarImagenAlmacenamientoExterno("fotoPerfil", fotoPerfil);

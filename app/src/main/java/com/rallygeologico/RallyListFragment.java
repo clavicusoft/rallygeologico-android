@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,8 @@ public class RallyListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_rally_list, container, false);
         ListView listaRallies = (ListView) v.findViewById(R.id.rallyListView);
+        TextView emptyText = v.findViewById(android.R.id.empty);
+        listaRallies.setEmptyView(emptyText);
         LocalDB db = new LocalDB(getContext());
         // Obtiene todos los rallies asignados a un usuario
         User user = db.selectLoggedUser();
