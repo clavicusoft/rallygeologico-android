@@ -240,7 +240,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         if(jsonObject != null){
                             user = JSONParser.getUser(jsonObject);
-                            db.insertUser(user);
+                            long id = db.insertUser(user);
                             setGameScreen();
                         }
                     }

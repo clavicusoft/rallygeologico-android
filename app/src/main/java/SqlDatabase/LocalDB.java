@@ -686,12 +686,12 @@ public class LocalDB{
 
     public User selectUser(String userId){
         String rawQuery = "Select * FROM " + DBContract.UserEntry.TABLE_NAME + " a " +
-                " WHERE a." + DBContract.UserEntry.COLUMN_NAME_USERID + " = " + userId;
+                " WHERE a." + DBContract.UserEntry.COLUMN_NAME_USERID + " = ?";
 
-        Cursor cursor = database.rawQuery(rawQuery,null);
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
         User user = null;
 
-        if(cursor.moveToFirst() == false) {
+        if(cursor.moveToFirst()) {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 // The Cursor is now set to the right position
