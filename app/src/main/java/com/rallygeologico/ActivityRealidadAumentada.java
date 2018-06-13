@@ -59,6 +59,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     Button botonQR;
     Button botonInclinometro;
     Button botonBrujula;
+    Button botonInformacion;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,13 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
         setContentView(R.layout.main_realidadaumentada);
         setContentView(R.layout.activity_realidadaumentada);
+
+        /*Esconda el boton de informacion desde el inicio*/
+        botonInformacion= findViewById( R.id.informacion_realidadaumentada);
+
+        botonInformacion.setVisibility(View.GONE);
+        botonInformacion.setClickable(false);
+
 
         especialDialog=new Dialog(this);
 
@@ -113,6 +121,14 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
         /*Funcion a los botones*/
 
+
+        botonInformacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setInformacionActivity();
+            }
+        });
+
         botonMapa= findViewById( R.id.mapa_realidadaumentada);
         botonMapa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,13 +153,9 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             }
         });
 
-        botonQR= findViewById( R.id.qr_realidadaumentada);
-        botonQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setQRActivity();
-            }
-        });
+
+
+
     }
 
     public void setMapActivity()
@@ -168,7 +180,15 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     {
         Toast.makeText(this,"Llamar al activity inclinometro",Toast.LENGTH_SHORT).show();
 
+
+        }
+
+    public void setInformacionActivity()
+    {
+        Toast.makeText(this,"Multimedia en proceso",Toast.LENGTH_SHORT).show();
+
     }
+
 
 
 
@@ -242,6 +262,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         mWorld.setGeoPosition(location.getLatitude(), location.getLongitude());
 
         verificarPuntos();
+        verificarInformacion();
 
     }
 
@@ -257,6 +278,37 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
     @Override
     public void onProviderDisabled(String s) {
+
+    }
+
+    public void verificarInformacion(){
+
+        boolean noEncontre=true;
+
+        List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
+
+        int ite=0;
+
+        while ( ite < sites.size() && noEncontre) {
+
+            double lat = Double.parseDouble(sites.get(ite).getLatitud());
+            double lon = Double.parseDouble(sites.get(ite).getLongitud());
+
+            if (center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 1000.0) {
+
+                botonInformacion.setVisibility(View.VISIBLE);
+                botonInformacion.setClickable(true);
+                noEncontre=false;
+            }
+            ite++;
+            }
+
+            if (noEncontre)
+            {
+                botonInformacion.setVisibility(View.GONE);
+                botonInformacion.setClickable(false);
+             }
+
 
     }
 

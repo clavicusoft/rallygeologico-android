@@ -97,7 +97,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         rallyID= myIntent.getStringExtra("ID");
 
         //Copia el folder
-        //  CopyFolder.copyAssets(this);
+         CopyFolder.copyAssets(this);
 
         setContentView(R.layout.activity_maps);
 
@@ -142,7 +142,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         mapView.setUseDataConnection(false);
 
 
-       // mapView.setTileSource(new XYTileSource("tiles", 13, 16, 256, ".png", new String[0]));
+        mapView.setTileSource(new XYTileSource("tiles", 13, 16, 256, ".png", new String[0]));
 
 
         //Inicializa el controlador
