@@ -215,7 +215,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void manejarInicioSesion() {
-        String usuario = username.getText().toString();
+        String usuario = "";
+        if (username.getText().toString().contains(" ")) {
+            username.setError("No se permiten espacios");
+        } else {
+            usuario = username.getText().toString();
+        }
         String contrasena = password.getText().toString();
 
         if (!usuario.isEmpty() && !contrasena.isEmpty()) {

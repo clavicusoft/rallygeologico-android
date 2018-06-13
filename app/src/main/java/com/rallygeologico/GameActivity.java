@@ -121,6 +121,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         spinner = (Spinner) myLayout.findViewById(R.id.spinner_rallies);
         spinner.setOnItemSelectedListener(this);
         spinner.setPrompt("Seleccione un rally");
+
         ArrayList<Rally> rallies = db.selectAllRallies();
         ArrayAdapter<Rally> dataAdapter = new ArrayAdapter<Rally>(this, R.layout.rally_spinner_item, rallies){
             @Override
