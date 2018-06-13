@@ -2,6 +2,7 @@ package com.rallygeologico;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -45,17 +46,40 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     int numeroEspeciales;
     int numeroNoVisitados;
     int numeroVisitados;
-    Button botonobservar;
     TextView botoncerrar;
 
     MediaPlayer mp;
+
+    String rallyID;
+
+    /*botones*/
+
+
+    Button botonMapa;
+    Button botonQR;
+    Button botonInclinometro;
+    Button botonBrujula;
+    Button botonInformacion;
+
 
     protected void onCreate(Bundle savedInstanceState) {
 
 
         super.onCreate(savedInstanceState);
+
+        Intent myIntent = getIntent(); // gets the previously created intent
+
+        rallyID= myIntent.getStringExtra("ID");
+
         setContentView(R.layout.main_realidadaumentada);
         setContentView(R.layout.activity_realidadaumentada);
+
+        /*Esconda el boton de informacion desde el inicio*/
+        botonInformacion= findViewById( R.id.informacion_realidadaumentada);
+
+        botonInformacion.setVisibility(View.GONE);
+        botonInformacion.setClickable(false);
+
 
         especialDialog=new Dialog(this);
 
@@ -95,8 +119,78 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         mBeyondarFragment.setDistanceFactor(6);
         //  mBeyondarFragment.setPullCloserDistance (500);
 
+        /*Funcion a los botones*/
+
+
+        botonInformacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setInformacionActivity();
+            }
+        });
+
+        botonMapa= findViewById( R.id.mapa_realidadaumentada);
+        botonMapa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setMapActivity();
+            }
+        });
+
+        botonBrujula= findViewById( R.id.brujula_realidadaumentada);
+        botonBrujula.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setBrujulaActivity();
+                }
+        });
+
+        botonInclinometro= findViewById( R.id.inclinometro_realidadaumentada);
+        botonInclinometro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setInclinometroActivity();
+            }
+        });
+
+
+
 
     }
+
+    public void setMapActivity()
+    {
+       onBackPressed();
+
+    }
+
+    public void setBrujulaActivity()
+    {
+        Toast.makeText(this,"Llamar al activity compass",Toast.LENGTH_SHORT).show();
+
+    }
+
+       public void setQRActivity()
+    {
+        Toast.makeText(this,"Llamar al activity inclinometro",Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void setInclinometroActivity()
+    {
+        Toast.makeText(this,"Llamar al activity inclinometro",Toast.LENGTH_SHORT).show();
+
+
+        }
+
+    public void setInformacionActivity()
+    {
+        Toast.makeText(this,"Multimedia en proceso",Toast.LENGTH_SHORT).show();
+
+    }
+
+
+
 
     private void crearmundo() {
 
@@ -118,11 +212,11 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     }
 
     public void crearGeobjetos() {
-        List<Site> sites = localDB.selectAllSitesFromRally(1);
+        List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
 
         if (sites.size() == 0) {
             localDB.prueba();
-            sites = localDB.selectAllSitesFromRally(1);
+            sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
 
         }
 
@@ -168,6 +262,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         mWorld.setGeoPosition(location.getLatitude(), location.getLongitude());
 
         verificarPuntos();
+        verificarInformacion();
 
     }
 
@@ -186,28 +281,82 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
     }
 
+    public void verificarInformacion(){
+
+        boolean noEncontre=true;
+
+        List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
+
+        int ite=0;
+
+        while ( ite < sites.size() && noEncontre) {
+
+            double lat = Double.parseDouble(sites.get(ite).getLatitud());
+            double lon = Double.parseDouble(sites.get(ite).getLongitud());
+
+            if (center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 1000.0) {
+
+                botonInformacion.setVisibility(View.VISIBLE);
+                botonInformacion.setClickable(true);
+                noEncontre=false;
+            }
+            ite++;
+            }
+
+            if (noEncontre)
+            {
+                botonInformacion.setVisibility(View.GONE);
+                botonInformacion.setClickable(false);
+             }
+
+
+    }
+
     public void verificarPuntos() {
 
         int activoSonido=0;
 
         /*Recorro los markers*/
-        List<Site> sites = localDB.selectAllSitesFromRally(1);
+        List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
 
         for (int ite = 0; ite < sites.size(); ite++) {
 
             double lat = Double.parseDouble(sites.get(ite).getLatitud());
             double lon = Double.parseDouble(sites.get(ite).getLongitud());
 
-            if (sites.get(ite).getStatus() == 4 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 90.0) {
+            if (sites.get(ite).getStatus() == 4 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 50.0) {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(), 3);
                 verificarEspecial(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteTotalPoints()));
             activoSonido=1;
             }
 
-            if (sites.get(ite).getStatus() == 1 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 150.0) {
+            if (sites.get(ite).getStatus() == 1 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 20.0) {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(), 2);
-                 verificarNoVisitados(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteTotalPoints()));
-            activoSonido=2;
+
+                 /*Actualizo la vista*/
+                Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                v.vibrate(3000);
+
+
+                /*Quita el marcador pasado e inserta otro*/
+
+                mWorld.clearWorld();
+
+                numeroNoVisitados=0;
+                numeroVisitados=0;
+                numeroEspeciales=0;
+
+                crearGeobjetos();
+
+                /*Muestro la notificacion o termino*/
+
+                   if(numeroNoVisitados==0)
+                   {visiteTodos();}
+
+                   else {
+                       activoSonido=2;
+                       verificarNoVisitados(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteTotalPoints()));
+                   }
             }
 
         }
@@ -245,10 +394,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         TextView secreto = especialDialog.findViewById(R.id.tv_alerta_secreto2);
         secreto.setText("Has encontrado un secreto!");
 
-        TextView nom = especialDialog.findViewById(R.id.tv_alerta_valor2);
-        nom.setText(nombre);
-
-
         TextView valor = especialDialog.findViewById(R.id.tv_alerta_valor2);
         valor.setText(petrocoins + " Petrocoins");
 
@@ -273,15 +418,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             }
          });
 
-        botonobservar= especialDialog.findViewById( R.id.btn_observar2);
-
-        botonobservar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                especialDialog.hide();
-            }
-        });
-
         especialDialog.show();
 
     }
@@ -289,20 +425,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     public void verificarNoVisitados( double lat, double lon,String nombre, String petrocoins)
     {
         final GeoPoint esp=new GeoPoint(lat, lon);
-
-        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        v.vibrate(3000);
-
-
-        /*Quita el marcador pasado e inserta otro*/
-
-        mWorld.clearWorld();
-
-        numeroNoVisitados=0;
-        numeroVisitados=0;
-        numeroEspeciales=0;
-
-        crearGeobjetos();
 
         /*Llenar el activity*/
 
@@ -313,9 +435,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
         TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto2);
         secreto.setText("Bienvenido!");
-
-        TextView nom= especialDialog.findViewById( R.id.tv_alerta_valor2);
-        nom.setText(nombre);
 
 
         TextView valor= especialDialog.findViewById( R.id.tv_alerta_valor2);
@@ -343,18 +462,15 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             }
         });
 
-        botonobservar= especialDialog.findViewById( R.id.btn_observar2);
-
-        botonobservar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                especialDialog.hide();
-
-            }
-        });
 
         especialDialog.show();
     }
+
+    public void visiteTodos()
+    {
+        Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     protected void onStart() {
