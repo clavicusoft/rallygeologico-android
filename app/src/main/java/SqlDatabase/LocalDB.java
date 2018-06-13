@@ -630,7 +630,7 @@ public class LocalDB{
      * @param id Identificador del usuario del cual deseo obtener los rallies
      * @return una lista con los rallies asociados al usuario
      */
-    public List<Rally> selectAllRalliesFromUser(int id){
+    public ArrayList<Rally> selectAllRalliesFromUser(String id){
         String rawQuery = "Select * FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
                 " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
                 " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
@@ -640,9 +640,9 @@ public class LocalDB{
 
         String userId = "" + id;
         Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
-        List<Rally> rallyList = new ArrayList<Rally>();
+        ArrayList<Rally> rallyList = new ArrayList<Rally>();
 
-        if(cursor != null){
+        if(cursor.moveToFirst()){
             for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 // The Cursor is now set to the right position
                 int index;
@@ -682,6 +682,24 @@ public class LocalDB{
         }
 
         return rallyList;
+    }
+
+    public int selectAllRalliesPointsFromUser(String id){
+        String rawQuery = "SELECT SUM(" + DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS + ") FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
+                " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
+                " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME + " c " +
+                " ON c." + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
+                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = ?";
+
+        String userId = "" + id;
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
+        int points = 0;
+        if(cursor.moveToFirst()){
+                // The Cursor is now set to the right position
+                points = cursor.getInt(0);
+        }
+        return points;
     }
 
     public User selectUser(String userId){

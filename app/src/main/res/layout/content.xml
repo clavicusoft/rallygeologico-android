@@ -57,6 +57,7 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
                     android:textSize="25sp"
+                    android:textColor="#000000"
                     android:text="Rallies descargados:"/>
 
                 <Spinner
@@ -89,7 +90,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="@color/Gris_3" />
+                        android:background="@color/colorPrimaryDark" />
 
                     <TextView
                         android:id="@+id/name_rally_game_screen"
@@ -100,12 +101,13 @@
                         android:textAllCaps="true"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"/>
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/colorPrimaryDark"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="@color/Gris_3" />
+                        android:background="@color/colorPrimaryDark" />
 
                     <TextView
                         android:text="Descripción:"
@@ -113,6 +115,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:textColor="@color/colorPrimaryDark"
                         />
 
                     <TextView
@@ -124,7 +127,27 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="@color/Gris_3" />
+                        android:background="@color/colorPrimaryDark" />
+
+                    <TextView
+                        android:text="GeoPuntos obtenidos:"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/colorPrimaryDark"
+                        />
+
+                    <TextView
+                        android:id="@+id/points_rally_game_screen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/colorPrimaryDark" />
 
                     <TextView
                         android:text="Sitios:"
@@ -132,6 +155,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:textColor="@color/colorPrimaryDark"
                         />
 
                     <TextView
@@ -143,7 +167,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="@color/Gris_3" />
+                        android:background="@color/colorPrimaryDark" />
 
                     <ImageView
                         android:id="@+id/iv_rally_game_screen"
@@ -157,7 +181,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="@color/Gris_3" />
+                        android:background="@color/colorPrimaryDark" />
 
                 </LinearLayout>
 

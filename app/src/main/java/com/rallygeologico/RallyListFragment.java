@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import SqlDatabase.LocalDB;
 import SqlEntities.Rally;
+import SqlEntities.User;
 
 /**
  * Fragmento para manejar la lista de los logros obtenidos por el usuario
@@ -27,7 +28,8 @@ public class RallyListFragment extends Fragment {
         ListView listaRallies = (ListView) v.findViewById(R.id.rallyListView);
         LocalDB db = new LocalDB(getContext());
         // Obtiene todos los rallies asignados a un usuario
-        ArrayList<Rally> rallies = db.selectAllRallies();
+        User user = db.selectLoggedUser();
+        ArrayList<Rally> rallies = db.selectAllRalliesFromUser(user.getUserId());
         // Crea e adaptador para convertir el arreglo a vistas
         RallyListAdapter adapter = new RallyListAdapter(getContext(), rallies);
         // Agrega el adaptador a la list view
