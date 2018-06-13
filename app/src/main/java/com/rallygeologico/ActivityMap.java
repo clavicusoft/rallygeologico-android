@@ -532,7 +532,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 
 
-            if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0)
+            if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=50.0)
             {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),3);
                 verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
@@ -540,9 +540,33 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             }
 
             if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0)
-            {     localDB.updateSiteVisit(sites.get(ite).getSiteId(),2);
-                verificarNoVisitados(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
-            activosonido=2;
+            {
+                localDB.updateSiteVisit(sites.get(ite).getSiteId(),2);
+
+                /*Actualizo la vista*/
+
+                Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                v.vibrate(3000);
+
+
+                /*Quita el marcador pasado e inserta otro*/
+                final GeoPoint esp=new GeoPoint(lat,lon);
+                --numeroNoVisitados;
+                removeMarker(esp);
+                addMarker(esp,2,"2"); //Visitado
+
+                /*Muestro la notificacion o termino*/
+
+
+                if(numeroNoVisitados==0)
+                {
+                    visiteTodos();
+                }
+                else
+                {
+                    activosonido=2;
+                    verificarNoVisitados(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
+                }
             }
 
         }
@@ -558,6 +582,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     }
 
+
     /**
      * Despliega un mensaje al usuario indicando que encontro un punto especial
      * @param lat latitud del punto encontrado
@@ -568,7 +593,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * */
     public void verificarEspecial(double lat,double lon,String nombre, String petrocoins)
     {
-        final GeoPoint esp=new GeoPoint(lat,lon);
+         final GeoPoint esp=new GeoPoint(lat,lon);
 
         Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         v.vibrate(3000);
@@ -583,9 +608,9 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
 
         TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto);
-        secreto.setText("Has encontrado un secreto!");
+        secreto.setText("¡Has encontrado un secreto!");
 
-        TextView nom= especialDialog.findViewById( R.id.tv_alerta_valor);
+        TextView nom= especialDialog.findViewById( R.id.tv_alerta_nombre);
         nom.setText(nombre);
 
 
@@ -640,14 +665,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     {
         final GeoPoint esp=new GeoPoint(lat, lon);
 
-        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        v.vibrate(3000);
-
-
-            /*Quita el marcador pasado e inserta otro*/
-        --numeroNoVisitados;
-        removeMarker(esp);
-        addMarker(esp,2,"2"); //Visitado
 
             /*Llenar el activity*/
 
@@ -659,7 +676,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto);
         secreto.setText("Bienvenido!");
 
-        TextView nom= especialDialog.findViewById( R.id.tv_alerta_valor);
+        TextView nom= especialDialog.findViewById( R.id.tv_alerta_nombre);
         nom.setText(nombre);
 
 
@@ -740,6 +757,10 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         }
     }
 
+   public void visiteTodos()
+   {
+       Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
+   }
 
     @Override
     protected void onStart() {

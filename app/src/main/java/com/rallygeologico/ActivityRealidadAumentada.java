@@ -46,7 +46,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     int numeroEspeciales;
     int numeroNoVisitados;
     int numeroVisitados;
-    Button botonobservar;
     TextView botoncerrar;
 
     MediaPlayer mp;
@@ -273,16 +272,39 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             double lat = Double.parseDouble(sites.get(ite).getLatitud());
             double lon = Double.parseDouble(sites.get(ite).getLongitud());
 
-            if (sites.get(ite).getStatus() == 4 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 90.0) {
+            if (sites.get(ite).getStatus() == 4 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 50.0) {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(), 3);
                 verificarEspecial(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteTotalPoints()));
             activoSonido=1;
             }
 
-            if (sites.get(ite).getStatus() == 1 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 150.0) {
+            if (sites.get(ite).getStatus() == 1 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 20.0) {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(), 2);
-                 verificarNoVisitados(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteTotalPoints()));
-            activoSonido=2;
+
+                 /*Actualizo la vista*/
+                Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                v.vibrate(3000);
+
+
+                /*Quita el marcador pasado e inserta otro*/
+
+                mWorld.clearWorld();
+
+                numeroNoVisitados=0;
+                numeroVisitados=0;
+                numeroEspeciales=0;
+
+                crearGeobjetos();
+
+                /*Muestro la notificacion o termino*/
+
+                   if(numeroNoVisitados==0)
+                   {visiteTodos();}
+
+                   else {
+                       activoSonido=2;
+                       verificarNoVisitados(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteTotalPoints()));
+                   }
             }
 
         }
@@ -320,10 +342,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         TextView secreto = especialDialog.findViewById(R.id.tv_alerta_secreto2);
         secreto.setText("Has encontrado un secreto!");
 
-        TextView nom = especialDialog.findViewById(R.id.tv_alerta_valor2);
-        nom.setText(nombre);
-
-
         TextView valor = especialDialog.findViewById(R.id.tv_alerta_valor2);
         valor.setText(petrocoins + " Petrocoins");
 
@@ -348,15 +366,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             }
          });
 
-        botonobservar= especialDialog.findViewById( R.id.btn_observar2);
-
-        botonobservar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                especialDialog.hide();
-            }
-        });
-
         especialDialog.show();
 
     }
@@ -364,20 +373,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     public void verificarNoVisitados( double lat, double lon,String nombre, String petrocoins)
     {
         final GeoPoint esp=new GeoPoint(lat, lon);
-
-        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        v.vibrate(3000);
-
-
-        /*Quita el marcador pasado e inserta otro*/
-
-        mWorld.clearWorld();
-
-        numeroNoVisitados=0;
-        numeroVisitados=0;
-        numeroEspeciales=0;
-
-        crearGeobjetos();
 
         /*Llenar el activity*/
 
@@ -388,9 +383,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
         TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto2);
         secreto.setText("Bienvenido!");
-
-        TextView nom= especialDialog.findViewById( R.id.tv_alerta_valor2);
-        nom.setText(nombre);
 
 
         TextView valor= especialDialog.findViewById( R.id.tv_alerta_valor2);
@@ -418,18 +410,15 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             }
         });
 
-        botonobservar= especialDialog.findViewById( R.id.btn_observar2);
-
-        botonobservar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                especialDialog.hide();
-
-            }
-        });
 
         especialDialog.show();
     }
+
+    public void visiteTodos()
+    {
+        Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     protected void onStart() {
