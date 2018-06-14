@@ -623,6 +623,74 @@ public class LocalDB{
         return mArrayList;
     }
 
+    public Rally selectRallyFromId(String rallyId){
+        /**
+         * Se describen las columnas que va a devolver la consulta
+         */
+        String[] columnas = {
+                DBContract.RallyEntry.COLUMN_NAME_RALLYID,
+                DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE,
+                DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD,
+                DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION,
+                DBContract.RallyEntry.COLUMN_NAME_IMAGEURL,
+                DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED,
+                DBContract.RallyEntry.COLUMN_NAME_NAME
+        };
+
+        String selection = DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = ?";
+        String[] selectionArgs = { rallyId };
+
+        // Consulta
+        Cursor cursor = database.query(
+                DBContract.RallyEntry.TABLE_NAME,    // La tabla en la que se hace la consulta
+                columnas,                           // El arreglo de las columnas que queremos que devuelva
+                selection,                          // Las columnas para el WHERE
+                selectionArgs,                      // Los valores para cada una de las columnas
+                null,                       // La agrupación de las filas
+                null,                        // El parametro HAVING para agrupar las filas
+                null                          // The sort order
+        );
+        if(cursor != null)
+            cursor.moveToFirst();
+
+        Rally rally = null;
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            // The Cursor is now set to the right position
+            int index;
+            rally = new Rally();
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_RALLYID);
+            int id = cursor.getInt(index);
+            rally.setRallyId(id);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
+            String memoryUsage = cursor.getString(index);
+            rally.setMemoryUsage(memoryUsage);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
+            int temporatl = cursor.getInt(index);
+            boolean download = temporatl>0;
+            rally.setDownloaded(download);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION);
+            String description = cursor.getString(index);
+            rally.setDescription(description);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL);
+            String imageURL = cursor.getString(index);
+            rally.setImageURL(imageURL);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
+            int points = cursor.getInt(index);
+            rally.setPointsAwarded(points);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
+            String name = cursor.getString(index);
+            rally.setName(name);
+        }
+        return rally;
+    }
+
     public ArrayList<Rally> selectAllDownloadedRallies(){
         /**
          * Se describen las columnas que va a devolver la consulta
@@ -977,6 +1045,19 @@ public class LocalDB{
                 DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = " + rally.getRallyId(),
                 null
         );
+
+        long newRowId = 0;
+        //Revisa si hay que crear relaciones entre las tablas
+        if(rally.getSites().size()>0){
+            for(int i = 0; i < rally.getSites().size(); i++) {
+                try {
+                    newRowId+=this.insertSite(rally.getSites().get(i));
+                } catch (android.database.sqlite.SQLiteException e) {}
+                try {
+                    newRowId+=this.insertRally_Site(rally.getRallyId(),rally.getSites().get(i).getSiteId());
+                } catch (android.database.sqlite.SQLiteException e) {}
+            }
+        }
     }
 
     /**

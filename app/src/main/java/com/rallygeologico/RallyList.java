@@ -166,7 +166,6 @@ public class RallyList extends AppCompatActivity {
     }
 
     public void descargarSitiosRally(int rallyId){
-        User user = db.selectLoggedUser();
         if(tieneConexionInternet()){
             String resultado = obtenerSitios(rallyId);
             if (resultado.equalsIgnoreCase("null")) {
@@ -177,7 +176,7 @@ public class RallyList extends AppCompatActivity {
                         .show();
             } else {
                 String toParse = "";
-                for (int i = 1; i < resultado.length()-1; i++){
+                for (int i = 0; i < resultado.length(); i++){
                     toParse += resultado.charAt(i);
                 }
                 JSONObject jsonObject = null;
@@ -187,10 +186,11 @@ public class RallyList extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if(jsonObject != null){
-                    Rally rally = JSONParser.getRally(jsonObject);
-                    String url = "http://www.rallygeologico.ucr.ac.cr" + rally.getImageURL();
-                    new DownloadTask(this, 1, rally.getName(), url);
-                    long id = db.insertRally(rally);
+                    List<Site> listaSitios = JSONParser.getSitesFromRally(jsonObject);
+                    String id = "" + rallyId;
+                    Rally rally = db.selectRallyFromId(id);
+                    rally.setSites(listaSitios);
+                    db.updateRally(rally);
                 }
             }
         } else {
@@ -584,6 +584,7 @@ public class RallyList extends AppCompatActivity {
              */
             public void onClick(DialogInterface dialog, int id) {
                 int rallyid = changeRallyState(position);// User clicked OK button
+                descargarSitiosRally(rallyid);
                 List<Site> siteList = db.selectAllSitesFromRally(rallyid);
             }
         });

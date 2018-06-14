@@ -376,6 +376,28 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         super.onResume();
         rallies = db.selectAllDownloadedRallies();
         dataAdapter.notifyDataSetChanged();
+        dataAdapter = new ArrayAdapter<Rally>(this, R.layout.rally_spinner_item, rallies){
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                String colorHex;
+                if(position%2 == 1) {
+                    // Set the item background color
+                    colorHex = "#" + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.Gris_2) & 0x00ffffff);
+                    tv.setBackgroundColor(Color.parseColor(colorHex));
+                }
+                else {
+                    // Set the alternate item background color
+                    colorHex = "#" + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.Gris_3) & 0x00ffffff);
+                    tv.setBackgroundColor(Color.parseColor(colorHex));
+                }
+                return view;
+            }
+        };
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(R.layout.rally_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
     }
 
     @Override
@@ -383,6 +405,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         super.onStart();
         rallies = db.selectAllDownloadedRallies();
         dataAdapter.notifyDataSetChanged();
+        spinner.setAdapter(dataAdapter);
     }
 
 }
