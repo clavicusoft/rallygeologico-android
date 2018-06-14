@@ -2,29 +2,41 @@
 package com.rallygeologico;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import FileManager.DownloadTask;
 import SqlDatabase.LocalDB;
 import SqlEntities.Rally;
 import SqlEntities.Site;
+import SqlEntities.User;
+
 
 /**
  * Clase para manejar la pantalla con una lista de rallies
@@ -35,6 +47,8 @@ public class RallyList extends AppCompatActivity {
     //Variables
     private ArrayList<Rally> rallies_descargados = new ArrayList<Rally>();
     private ArrayList<Rally> rallies_sin_descargar = new ArrayList<Rally>();
+
+    Toolbar toolbar;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -51,6 +65,12 @@ public class RallyList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rallylist);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Rally Geológico");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         //Initialize the RecyclerView
         recyclerView = (RecyclerView)findViewById(R.id.mi_lista);
@@ -79,11 +99,146 @@ public class RallyList extends AppCompatActivity {
         });*/
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            // action with ID action_refresh was selected
+            case R.id.action_refresh:
+                actualizarRallies();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    public void actualizarRallies(){
+        User user = db.selectLoggedUser();
+        if(tieneConexionInternet()){
+            String resultado = obtenerRallies(user.getUserId());
+            if (resultado.equalsIgnoreCase("null")) {
+                new android.support.v7.app.AlertDialog.Builder(this)
+                        .setTitle("Atención")
+                        .setMessage("No se ha inscrito en ningún rally. ¿Desea continuar a la página web para inscribirse?")
+                        .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                setWebActivity();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else {
+                String toParse = "";
+                for (int i = 1; i < resultado.length()-1; i++){
+                    toParse += resultado.charAt(i);
+                }
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(toParse);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(jsonObject != null){
+                    Rally rally = JSONParser.getRally(jsonObject);
+                    String url = "http://www.rallygeologico.ucr.ac.cr" + rally.getImageURL();
+                    new DownloadTask(this, 1, rally.getName(), url);
+                    long id = db.insertRally(rally);
+                }
+            }
+        } else {
+            new android.support.v7.app.AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage("Debe conectarse a internet para actualizar los rallies en los que se ha inscrito.")
+                    .setPositiveButton("Ok", null)
+                    .show();
+        }
+        mDynamicListAdapter.notifyDataSetChanged();
+    }
+
+    public void descargarSitiosRally(int rallyId){
+        User user = db.selectLoggedUser();
+        if(tieneConexionInternet()){
+            String resultado = obtenerSitios(rallyId);
+            if (resultado.equalsIgnoreCase("null")) {
+                new android.support.v7.app.AlertDialog.Builder(this)
+                        .setTitle("Atención")
+                        .setMessage("Este rally aún no tiene sitios asignados.")
+                        .setPositiveButton("Ok", null)
+                        .show();
+            } else {
+                String toParse = "";
+                for (int i = 1; i < resultado.length()-1; i++){
+                    toParse += resultado.charAt(i);
+                }
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(toParse);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(jsonObject != null){
+                    Rally rally = JSONParser.getRally(jsonObject);
+                    String url = "http://www.rallygeologico.ucr.ac.cr" + rally.getImageURL();
+                    new DownloadTask(this, 1, rally.getName(), url);
+                    long id = db.insertRally(rally);
+                }
+            }
+        } else {
+            new android.support.v7.app.AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage("Debe conectarse a internet para descargar el rally.")
+                    .setPositiveButton("Ok", null)
+                    .show();
+        }
+        mDynamicListAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Revisa si el dispositivo tiene acceso a internet
+     *
+     * @return Verdadero si esta conectado, sino falso
+     */
+    public boolean tieneConexionInternet() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String obtenerRallies(String userId) {
+        String resultado = "JORGE";
+        String idConsultaValor = "1";
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        resultado = backgroundWorker.doInBackground(idConsultaValor, userId);
+        return resultado;
+    }
+
+    public String obtenerSitios(int id) {
+        String resultado = "JORGE";
+        String rallyId = "" + id;
+        String idConsultaValor = "2";
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        resultado = backgroundWorker.doInBackground(idConsultaValor, rallyId);
+        return resultado;
+    }
+
     /**
      * Permite inicializar la informacion de los rallies
      */
     private void initializeData() {
-
         List<Rally> rallyListTemp = db.selectAllRallies();
         for(int i = 0; i < rallyListTemp.size(); i++){
             if(rallyListTemp.get(i).getIsDownloaded()) {
@@ -200,7 +355,6 @@ public class RallyList extends AppCompatActivity {
              * @param pos posicion de la vista con la que estamos trabajando
              */
             public void bindViewSecondList(int pos) {
-
                 if (rallies_descargados == null) pos = pos - 1;
                 else {
                     if (rallies_descargados.size() == 0) pos = pos - 1;
@@ -219,6 +373,7 @@ public class RallyList extends AppCompatActivity {
                      */
                     @Override
                     public void onClick(View view) {
+
                         //Toast.makeText(view.getContext(), "position = " + getLayoutPosition(), Toast.LENGTH_SHORT).show();
                         downloadClick(view,getLayoutPosition());
                     }
@@ -538,6 +693,11 @@ public class RallyList extends AppCompatActivity {
 
     public void updateRallyList(View view){
         mDynamicListAdapter.notifyDataSetChanged();
+    }
+
+    public void setWebActivity() {
+        Intent intent = new Intent(this, WebActivity.class);
+        startActivity(intent);
     }
 
 

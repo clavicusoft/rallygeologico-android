@@ -623,6 +623,79 @@ public class LocalDB{
         return mArrayList;
     }
 
+    public ArrayList<Rally> selectAllDownloadedRallies(){
+        /**
+         * Se describen las columnas que va a devolver la consulta
+         */
+        String[] columnas = {
+                DBContract.RallyEntry.COLUMN_NAME_RALLYID,
+                DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE,
+                DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD,
+                DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION,
+                DBContract.RallyEntry.COLUMN_NAME_IMAGEURL,
+                DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED,
+                DBContract.RallyEntry.COLUMN_NAME_NAME
+        };
+
+        // Como queremos que esten ordenados los resultados
+        String sortOrder = DBContract.RallyEntry.COLUMN_NAME_NAME + " ASC";
+
+        String selection = DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD + " = ?";
+        String[] selectionArgs = { "1" };
+
+        // La consulta en si
+        Cursor cursor = database.query(
+                DBContract.RallyEntry.TABLE_NAME,    // La tabla en la que se hace la consulta
+                columnas,                           // El arreglo de las columnas que queremos que devuelva
+                selection,                          // Las columnas para el WHERE
+                selectionArgs,                      // Los valores para cada una de las columnas
+                null,                       // La agrupación de las filas
+                null,                        // El parametro HAVING para agrupar las filas
+                sortOrder                          // The sort order
+        );
+        if(cursor != null)
+            cursor.moveToFirst();
+
+        ArrayList<Rally> mArrayList = new ArrayList<Rally>();
+        for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            // The Cursor is now set to the right position
+            int index;
+            Rally rally = new Rally();
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_RALLYID);
+            int rallyId = cursor.getInt(index);
+            rally.setRallyId(rallyId);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
+            String memoryUsage = cursor.getString(index);
+            rally.setMemoryUsage(memoryUsage);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
+            int temporatl = cursor.getInt(index);
+            boolean download = temporatl>0;
+            rally.setDownloaded(download);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION);
+            String description = cursor.getString(index);
+            rally.setDescription(description);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL);
+            String imageURL = cursor.getString(index);
+            rally.setImageURL(imageURL);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
+            int points = cursor.getInt(index);
+            rally.setPointsAwarded(points);
+
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
+            String name = cursor.getString(index);
+            rally.setName(name);
+
+            mArrayList.add(rally);
+        }
+        return mArrayList;
+    }
+
     /**
      * Metodo para devolver todos los rallies asociados a un usuario
      * @param id Identificador del usuario del cual deseo obtener los rallies
@@ -771,10 +844,10 @@ public class LocalDB{
 
     public User selectUserByUsername(String username, String contrasena){
         String rawQuery = "Select * FROM " + DBContract.UserEntry.TABLE_NAME +
-                " WHERE " + DBContract.UserEntry.COLUMN_NAME_USERNAME + " = ?";// +
-                //" AND a." + DBContract.UserEntry.COLUMN_NAME_CONTRASENA + " = " + contrasena;
+                " WHERE " + DBContract.UserEntry.COLUMN_NAME_USERNAME + " = ?" +
+                " AND " + DBContract.UserEntry.COLUMN_NAME_PASSWORD + " = ?";
 
-        Cursor cursor = database.rawQuery(rawQuery,new String[]{username});
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{username, contrasena});
 
         User user = null;
 
