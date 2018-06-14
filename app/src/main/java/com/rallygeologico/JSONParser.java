@@ -1,9 +1,14 @@
 package com.rallygeologico;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import SqlEntities.Rally;
+import SqlEntities.Site;
 import SqlEntities.User;
 
 /**
@@ -59,6 +64,38 @@ public class JSONParser {
             e.printStackTrace();
         }
         return rally;
+    }
+
+    public static LinkedList<Site> getSitesFromRally(JSONObject obj) {
+        LinkedList<Site> listaSitios = new LinkedList<Site>();
+        Site sitio;
+        int valor;
+        int cantidad = 0;
+        String pos = "" + cantidad;
+        try {
+            JSONArray sitesJson = (JSONArray) obj.getJSONArray("site");
+            JSONObject specificSiteJson = (JSONObject) sitesJson.get(cantidad);
+            while(specificSiteJson != null){
+                sitio = new Site();
+                valor = Integer.parseInt(specificSiteJson.getString("id"));
+                sitio.setSiteId(valor);
+                sitio.setSiteName(specificSiteJson.getString("name"));
+                sitio.setSiteDescription(specificSiteJson.getString("description"));
+                sitio.setLatitud(specificSiteJson.getString("latitude"));
+                sitio.setLongitud(specificSiteJson.getString("longitude"));
+                valor = Integer.parseInt(specificSiteJson.getString("points"));
+                sitio.setSiteTotalPoints(valor);
+                sitio.setSitePointsAwarded(0);
+                listaSitios.add(sitio);
+
+                cantidad++;
+                pos = "" + cantidad;
+                specificSiteJson = (JSONObject) sitesJson.get(cantidad);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return listaSitios;
     }
 
     public static String getEmail(JSONObject obj) {
