@@ -2,15 +2,11 @@
 <menu
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item
-        android:id="@+id/jugar"
-        android:title="@string/menu_rally_jugar"></item>
     <item
         android:id="@+id/eliminar"
         android:title="@string/menu_rally_eliminar"></item>
     <item
-        android:id="@+id/subir_resultados"
-        android:title="@string/menu_rally_subir_resultados"></item>
+        android:id="@+id/resultados"
+        android:title="@string/menu_rally_resultados"></item>
 
 </menu>

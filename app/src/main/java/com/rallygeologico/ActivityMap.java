@@ -686,10 +686,9 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     private void insertarPuntos() {
         List <Site> sites= localDB.selectAllSitesFromRally(1);
         if (sites.size()==0)
-        {localDB.prueba();
+        /*{localDB.prueba();
             sites= localDB.selectAllSitesFromRally(1);
-
-        }
+        }*/
 
         for (int i=0; i<sites.size();i++) {
             Location nuevo = new Location("dummyprovider");

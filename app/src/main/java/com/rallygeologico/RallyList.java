@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,8 @@ public class RallyList extends AppCompatActivity {
 
     private DynamicListAdapter mDynamicListAdapter;
 
+    LocalDB db;
+
     /**
      *
      * @param savedInstanceState Estado del programa
@@ -55,7 +58,11 @@ public class RallyList extends AppCompatActivity {
         //Set the Layout Manager
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Set the View
+        View myLayout = findViewById( R.id.content);
+
         //Get the data
+        db  = new LocalDB(this.getApplicationContext());
         initializeData();
 
         mDynamicListAdapter = new DynamicListAdapter();
@@ -63,14 +70,20 @@ public class RallyList extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mDynamicListAdapter);
 
-
+        //ImageButton imageButton = myLayout.findViewById( R.id.botonRecargarListaRallies);
+        /*imageButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                mDynamicListAdapter.notifyDataSetChanged();
+            }
+        });*/
     }
 
     /**
      * Permite inicializar la informacion de los rallies
      */
     private void initializeData() {
-        LocalDB db = new LocalDB(this.getApplicationContext());
+
         List<Rally> rallyListTemp = db.selectAllRallies();
         for(int i = 0; i < rallyListTemp.size(); i++){
             if(rallyListTemp.get(i).getIsDownloaded()) {
@@ -417,11 +430,6 @@ public class RallyList extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 int rallyid = changeRallyState(position);// User clicked OK button
                 List<Site> siteList = db.selectAllSitesFromRally(rallyid);
-                String mensaje = "Los sitios son:\n";
-                for(int i = 0; i < siteList.size(); i++){
-                    mensaje += siteList.get(i).getSiteName() + " - Latitud: " + siteList.get(i).getLatitud() + " Longitud: " + siteList.get(i).getLongitud() + "\n";
-                }
-                Toast.makeText(v.getContext(), mensaje, Toast.LENGTH_LONG).show();
             }
         });
         alert_builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -458,10 +466,6 @@ public class RallyList extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.jugar:
-                        /*Intent intent = new Intent(v.getContext(), ActivityMap.class);
-                        startActivity(intent);*/
-                        break;
                     case R.id.eliminar:
                         AlertDialog.Builder alert_builder = new AlertDialog.Builder(v.getContext());
                         alert_builder.setMessage("Seguro que quiere eliminar el rally").setTitle("Desea eliminar el rally con id: "+" ");
@@ -488,7 +492,7 @@ public class RallyList extends AppCompatActivity {
                         AlertDialog alert = alert_builder.create();
                         alert.show();
                         break;
-                    case R.id.subir_resultados:
+                    case R.id.resultados:
                         //Intent intent = new Intent(v.getContext(),InformacionRally.class);
                         //startActivity(intent);
                         break;
@@ -527,7 +531,14 @@ public class RallyList extends AppCompatActivity {
             rallyTemp.setDownloaded(true);
             rallies_descargados.add(rallyTemp);
         }
+        db.updateRally(rallyTemp);
         mDynamicListAdapter.notifyDataSetChanged();
         return rallyId;
     }
+
+    public void updateRallyList(View view){
+        mDynamicListAdapter.notifyDataSetChanged();
+    }
+
+
 }

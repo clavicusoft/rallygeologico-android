@@ -121,7 +121,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         List<Site> sites = localDB.selectAllSitesFromRally(1);
 
         if (sites.size() == 0) {
-            localDB.prueba();
+            //localDB.prueba();
             sites = localDB.selectAllSitesFromRally(1);
 
         }

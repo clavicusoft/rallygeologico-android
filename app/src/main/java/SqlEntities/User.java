@@ -10,8 +10,7 @@ import java.util.List;
 
 public class User {
     private String userId;
-    private String facebookId;
-    private String googleId;
+    private String password;
     private String username;
     private String firstName;
     private String lastName;
@@ -37,35 +36,19 @@ public class User {
     }
 
     /**
-     * Devuelve el identificador de Facebook para el usuario
-     * @return el identificador de Facebook para el usuario
+     * Devuelve la contraseña del usuario
+     * @return la contraseña del usuario
      */
-    public String getFacebookId() {
-        return facebookId;
+    public String getPassword() {
+        return password;
     }
 
     /**
-     * Asigna el identificador de Facebook para el usuario
-     * @param facebookId el identificador de Facebook para el usuario
+     * Asigna la contraseña para el usuario
+     * @param password la contraseña para el usuario
      */
-    public void setFacebookId(String facebookId) {
-        this.facebookId = facebookId;
-    }
-
-    /**
-     * Devuelve el identificador de Google para el usuario
-     * @return el identificador de Google para el usuario
-     */
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    /**
-     * Asigna el identificador de Google para el usuario
-     * @param googleId el identificador de Google para el usuario
-     */
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**
@@ -191,8 +174,7 @@ public class User {
     /**
      * Constructor de la clase con parametros
      * @param userId Identificador del usuario dentro de la apliacion
-     * @param facebookId identificador de Facebook para el usuario
-     * @param googleId identificador de Google para el usuario
+     * @param password contraseña del usuario
      * @param username Username
      * @param firstName nombre de usuario
      * @param lastName apellido del usuario
@@ -200,10 +182,9 @@ public class User {
      * @param photoUrl URL donde esta almacenada la imagen de usuario
      * @param isLogged variable para saber si el usuario se encuentra activo en el dispositivo
      */
-    public User(String userId, String facebookId, String googleId, String username, String firstName, String lastName, String email, String photoUrl, boolean isLogged) {
+    public User(String userId, String password,  String username, String firstName, String lastName, String email, String photoUrl, boolean isLogged) {
         this.userId = userId;
-        this.facebookId = facebookId;
-        this.googleId = googleId;
+        this.password = password;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
