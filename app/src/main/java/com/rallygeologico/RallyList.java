@@ -153,6 +153,11 @@ public class RallyList extends AppCompatActivity {
                     String url = "http://www.rallygeologico.ucr.ac.cr" + rally.getImageURL();
                     new DownloadTask(this, 1, rally.getName(), url);
                     long id = db.insertRally(rally);
+                    new android.support.v7.app.AlertDialog.Builder(this)
+                            .setTitle("Descarga")
+                            .setMessage("Se han descargado los rallies con éxito.")
+                            .setPositiveButton("Ok", null)
+                            .show();
                 }
             }
         } else {

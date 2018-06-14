@@ -252,6 +252,7 @@ public class LoginActivity extends AppCompatActivity {
                             setGameScreen();
                         }
                     }
+
                 } else {
                     credentials.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);

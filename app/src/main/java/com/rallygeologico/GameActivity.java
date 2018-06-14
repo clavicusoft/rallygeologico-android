@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     LocalDB db;
     DrawerLayout drawerLayout;
     NavigationView navView;
+    ScrollView scrollView;
     Toolbar appbar;
     Spinner spinner;
     ArrayAdapter<Rally> dataAdapter;
@@ -101,6 +103,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         //Busca el boton de jugar en la vista y le asigna una funcion
         // de click para cambiar a la actividad del mapa
         View myLayout = findViewById( R.id.content);
+        scrollView = myLayout.findViewById(R.id.layout2);
         imgRally = myLayout.findViewById( R.id.iv_rally_game_screen);
         nombreRally = myLayout.findViewById( R.id.name_rally_game_screen);
         descRally = myLayout.findViewById( R.id.description_rally_game_screen);
@@ -127,6 +130,16 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         spinner.setPrompt("Seleccione un rally");
 
         rallies = db.selectAllDownloadedRallies();
+        if (rallies.isEmpty()) {
+            scrollView.setVisibility(View.GONE);
+            new AlertDialog.Builder(this)
+                    .setTitle("Alerta")
+                    .setMessage("No ha descargado ningún rally.")
+                    .setPositiveButton("Ok", null)
+                    .show();
+        } else {
+            scrollView.setVisibility(View.VISIBLE);
+        }
         dataAdapter = new ArrayAdapter<Rally>(this, R.layout.rally_spinner_item, rallies){
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -375,6 +388,16 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     public void onResume(){
         super.onResume();
         rallies = db.selectAllDownloadedRallies();
+        if (rallies.isEmpty()) {
+            scrollView.setVisibility(View.GONE);
+            new AlertDialog.Builder(this)
+                    .setTitle("Alerta")
+                    .setMessage("No ha descargado ningún rally.")
+                    .setPositiveButton("Ok", null)
+                    .show();
+        } else {
+            scrollView.setVisibility(View.VISIBLE);
+        }
         dataAdapter.notifyDataSetChanged();
         dataAdapter = new ArrayAdapter<Rally>(this, R.layout.rally_spinner_item, rallies){
             @Override
