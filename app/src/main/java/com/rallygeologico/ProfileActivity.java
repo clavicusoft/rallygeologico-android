@@ -74,14 +74,17 @@ public class ProfileActivity extends AppCompatActivity {
         FileManager fm = new FileManager();
 
         User user = db.selectLoggedUser();
-        String name = user.getFirstName() + " " + user.getLastName();
-        nombreUsuario.setText(name);
-        String email = user.getEmail();
-        lugar.setText(email);
-        String points = "" + db.selectAllRalliesPointsFromUser(user.getUserId());
-        puntosTotal.setText(points);
-        String rallies = "" + db.selectAllRalliesCountFromUser(user.getUserId());
-        recorridosTotal.setText(rallies);
+        if(user != null){
+            String name = user.getFirstName() + " " + user.getLastName();
+            nombreUsuario.setText(name);
+            String email = user.getEmail();
+            lugar.setText(email);
+            String points = "" + db.selectAllRalliesPointsFromUser(user.getUserId());
+            puntosTotal.setText(points);
+            String rallies = "" + db.selectAllRalliesCountFromUser(user.getUserId());
+            recorridosTotal.setText(rallies);
+        }
+
         //Si hay almacenamiento externo carga la imagen de perfil
         if (fm.hayAlmacenamientoExterno()) {
             fm.cargarImagenAlmacenamientoExterno("fotoPerfil", fotoPerfil);

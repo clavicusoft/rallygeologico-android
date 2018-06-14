@@ -245,6 +245,9 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         if(jsonObject != null){
                             user = JSONParser.getUser(jsonObject);
+                            user.setPassword(contrasena);
+                            String url = "http://www.rallygeologico.ucr.ac.cr" + user.getPhotoUrl();
+                            new DownloadTask(context, 1, "fotoPerfil", url);
                             long id = db.insertUser(user);
                             setGameScreen();
                         }
@@ -254,7 +257,7 @@ public class LoginActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     new AlertDialog.Builder(this)
                             .setTitle("Error")
-                            .setMessage("Para ingresar por primera vez debe conectarse a Internet.")
+                            .setMessage("Nombre de usuario o contraseña incorrectos.\nSi es la primera vez que ingresa, debe conectarse a Internet.")
                             .setPositiveButton("Ok", null)
                             .show();
                 }
@@ -272,13 +275,13 @@ public class LoginActivity extends AppCompatActivity {
     private void mostrarAlerta() {
         new AlertDialog.Builder(this)
                 .setTitle("Alerta")
-                .setMessage("Debe registrarse en la página web para poder continuar. ¿Desea continuar a la página web?")
-                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                .setMessage("Nombre de usuario o contraseña incorrectos.\nSi no se ha registrado, puede hacerlo en la página web.")
+                .setPositiveButton("Ir a página web", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
+                        setWebActivity();
                     }
                 })
-                .setNegativeButton("No", null)
+                .setNegativeButton("Cancelar", null)
                 .show();
     }
 
@@ -485,7 +488,7 @@ public class LoginActivity extends AppCompatActivity {
      *
      * @return Verdadero si esta conectado, sino falso
      */
-    private boolean tieneConexionInternet() {
+    public boolean tieneConexionInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -500,6 +503,14 @@ public class LoginActivity extends AppCompatActivity {
      */
     public void setStartScreen() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Muestra el activity de la pagina web
+     */
+    public void setWebActivity() {
+        Intent intent = new Intent(this, WebActivity.class);
         startActivity(intent);
     }
 

@@ -3,6 +3,7 @@ package com.rallygeologico;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import SqlEntities.Rally;
 import SqlEntities.User;
 
 /**
@@ -39,6 +40,25 @@ public class JSONParser {
             e.printStackTrace();
         }
         return user;
+    }
+
+    public static Rally getRally(JSONObject obj) {
+        Rally rally = new Rally();
+        int valor;
+        try {
+            JSONObject rallyJson = (JSONObject) obj.get("rally");
+            valor = Integer.parseInt(rallyJson.getString("id"));
+            rally.setRallyId(valor);
+            rally.setName(rallyJson.getString("name"));
+            rally.setDescription(rallyJson.getString("description"));
+            rally.setDownloaded(false);
+            rally.setImageURL(rallyJson.getString("image_url"));
+            valor = Integer.parseInt(rallyJson.getString("points_awarded"));
+            rally.setPointsAwarded(valor);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return rally;
     }
 
     public static String getEmail(JSONObject obj) {

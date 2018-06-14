@@ -16,8 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +59,9 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     NavigationView navView;
     Toolbar appbar;
     Spinner spinner;
+    ArrayAdapter<Rally> dataAdapter;
+    ArrayList<Rally> rallies;
+
     ImageView imgRally;
     TextView nombreRally;
     TextView descRally;
@@ -125,8 +126,8 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         spinner.setOnItemSelectedListener(this);
         spinner.setPrompt("Seleccione un rally");
 
-        ArrayList<Rally> rallies = db.selectAllRallies();
-        ArrayAdapter<Rally> dataAdapter = new ArrayAdapter<Rally>(this, R.layout.rally_spinner_item, rallies){
+        rallies = db.selectAllDownloadedRallies();
+        dataAdapter = new ArrayAdapter<Rally>(this, R.layout.rally_spinner_item, rallies){
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
@@ -204,10 +205,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         while (st.hasMoreTokens()) {
             seleccTockenizer=st.nextToken();
         }
-
         seleccionado= seleccTockenizer;
-
-
         Toast.makeText(parent.getContext(), "Seleccionado: " + seleccionado, Toast.LENGTH_LONG).show();
         nombreRally.setText(item.getName());
         descRally.setText(item.getDescription());
@@ -224,6 +222,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
+        Toast.makeText(this, "No ha descargado ningún rally", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -246,13 +245,10 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
      * Solicita permisos al usuario si la version de android es superior a 6
      * @return Booleano despues de solicitar los permisos
      */
-    private boolean solicitarPermisos()
-    {
+    private boolean solicitarPermisos() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M){
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
-            {
-                ActivityCompat.requestPermissions(this,new String []{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.CAMERA},
-                        SOLICITUD_TODOS);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
+                ActivityCompat.requestPermissions(this,new String []{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.CAMERA}, SOLICITUD_TODOS);
             }
         }
         return true;
@@ -270,9 +266,8 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case SOLICITUD_TODOS:
-                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-        }
+                if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                }
                 return;
         }
     }
@@ -315,14 +310,11 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     public void setMapScreen() {
         LocationManager locationManager= (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if ((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
-
-
             if(!seleccionado.equals("-1")) {
                 Intent intent = new Intent(this, ActivityMap.class);
                 intent.putExtra("ID",seleccionado);
                 startActivity(intent);
             }
-
             else {
                 Toast.makeText(this,"Seleccione un Rally",Toast.LENGTH_SHORT).show();
             }
@@ -377,6 +369,20 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
                 })
                 .setNegativeButton("No", null)
                 .show();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        rallies = db.selectAllDownloadedRallies();
+        dataAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        rallies = db.selectAllDownloadedRallies();
+        dataAdapter.notifyDataSetChanged();
     }
 
 }

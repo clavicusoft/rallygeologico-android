@@ -36,26 +36,35 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
         if (SDK_INT > 8) {
 
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
 
             String id_consulta = params[0];
-            String login_url = "http://rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/login.json";
+            String login_url = "";
             String post_data = "";
             try {
                 if (id_consulta.equals("0")) {
+                    login_url = "http://rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/login.json";
                     String username = params[1];
                     String password = params[2];
                     String login_api = "3";
                     post_data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8") + "&"
                             + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8") + "&"
                             + URLEncoder.encode("login_api", "UTF-8") + "=" + URLEncoder.encode(login_api, "UTF-8");
+                } else if (id_consulta.equals("1")) {
+                    String userId = params[1];
+                    //login_url = "http://rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
+                    //        "competitionStatistics/currentCompetitions/" + userId + ".json";
+                    login_url = "http://www.rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
+                            "competition/getUserActiveCompetitions/"+ userId +".json";
+                } else if (id_consulta.equals("2")) {
+                    String rallyId = params[1];
+                    login_url = "http://www.rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
+                            "rally/view/"+ rallyId +".json";
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-
             try {
                 URL url = new URL(login_url);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
