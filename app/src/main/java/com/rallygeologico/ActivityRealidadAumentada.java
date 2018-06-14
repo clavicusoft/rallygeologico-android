@@ -41,6 +41,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     private BeyondarFragmentSupport mBeyondarFragment;
     private World mWorld;
     private int ID;
+    MediaPlayer mp;
     LocalDB localDB;
     LocationManager locationManager; //Escuchador de la ubicacion actual
     GeoPoint center;
@@ -50,8 +51,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     int numeroNoVisitados;
     int numeroVisitados;
     TextView botoncerrar;
-
-    MediaPlayer mp;
 
     String rallyID;
 
@@ -90,14 +89,12 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
         localDB = new LocalDB(this);
         ID = 0;
-
         numeroEspeciales=0;
         numeroNoVisitados=0;
         numeroVisitados=0;
 
         /*Ubicacion*/
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
         } catch (SecurityException e) {
@@ -105,7 +102,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         }
 
         /*Fin de ubicación*/
-
         mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(R.id.beyondarFragment);
         mWorld = new World(this);
         mBeyondarFragment.setOnClickBeyondarObjectListener(this);
