@@ -5,7 +5,8 @@
     <string name="boton_descargar">Descargar</string>
     <string name="menu_rally_jugar">Jugar</string>
     <string name="menu_rally_eliminar">Eliminar</string>
-    <string name="menu_rally_subir_resultados">Subir Resultados</string>
+    <string name="menu_rally_resultados">Resultados</string>
+    <string name="boton_refrescar">Recargar</string>
 
     <array name="rally_images">
         <item>@drawable/img_rally_predet</item>

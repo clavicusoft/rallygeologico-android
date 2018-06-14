@@ -187,7 +187,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     public void crearGeobjetos() {
         List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
         if (sites.size() == 0) {
-            localDB.prueba();
+            //localDB.prueba();
             sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
         }
         for (int i = 0; i < sites.size(); i++) {

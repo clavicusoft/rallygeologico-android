@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LocalDB localDB = new LocalDB(getApplicationContext());
-        localDB.prueba();
+        //localDB.prueba();
         setContentView(R.layout.activity_main);
         start = findViewById(R.id.btn_inicio);
         logo = findViewById(R.id.iv_logoucr);
@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
                     irAJuego(view);
                     //irALogin(view);
                 }else{
-                    irALogin(view);
+                    irAJuego(view);
+                    //irALogin(view);
                 }
             }
         });

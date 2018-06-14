@@ -729,7 +729,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         if (sites.size()==0)
         {localDB.prueba();
             sites= localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
-
         }
 
         for (int i=0; i<sites.size();i++) {

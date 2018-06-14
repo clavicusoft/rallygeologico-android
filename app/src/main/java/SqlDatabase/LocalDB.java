@@ -51,9 +51,8 @@ public class LocalDB{
         ContentValues values = new ContentValues();
         values.put(DBContract.UserEntry.COLUMN_NAME_USERNAME,user.getUsername());
         values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
-        values.put(DBContract.UserEntry.COLUMN_NAME_FACEBOOKID, user.getFacebookId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_PASSWORD, user.getPassword());
         values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
-        values.put(DBContract.UserEntry.COLUMN_NAME_GOOGLEID, user.getGoogleId());
         values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
         values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
         values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
@@ -451,16 +450,16 @@ public class LocalDB{
         return newRowId;
     }
 
-    /**
+    /*
      * Metodo para haer pruebas en la base de datos
      */
-    public void prueba(){
+    /*public void prueba(){
         database.execSQL("delete from "+ DBContract.Rally_SiteEntry.TABLE_NAME);
         //database.execSQL("delete from "+ DBContract.UserEntry.TABLE_NAME);
         database.execSQL("delete from "+ DBContract.SiteEntry.TABLE_NAME);
         database.execSQL("delete from "+ DBContract.RallyEntry.TABLE_NAME);
-        User user1 = new User("1","Face1","Google1","Usuario 1","Pablo ","Madrigal"," Correo 1","Foto 1",false);
-        User user2 = new User("2","Face2","Google2","Usuario 2","Marco ","Madrigal"," Correo 2","Foto 2",false);
+        User user1 = new User("1","password1","Usuario 1","Pablo ","Madrigal"," Correo 1","Foto 1",false);
+        User user2 = new User("2","password2","Usuario 2","Marco ","Madrigal"," Correo 2","Foto 2",false);
         long prueba1 = this.insertUser(user1);
         long prueba2 = this.insertUser(user2);
 
@@ -499,7 +498,7 @@ public class LocalDB{
         rally2.addSite(site8);
         this.insertRally(rally1);
         this.insertRally(rally2);
-    }
+    }*/
 
     /**
      * Metodo para recuperar todos los usuarios de la base de datos
@@ -515,8 +514,7 @@ public class LocalDB{
                 DBContract.UserEntry.COLUMN_NAME_FIRSTNAME,
                 DBContract.UserEntry.COLUMN_NAME_LASTNAME,
                 DBContract.UserEntry.COLUMN_NAME_EMAIL,
-                DBContract.UserEntry.COLUMN_NAME_GOOGLEID,
-                DBContract.UserEntry.COLUMN_NAME_FACEBOOKID,
+                DBContract.UserEntry.COLUMN_NAME_PASSWORD,
                 DBContract.UserEntry.COLUMN_NAME_PHOTOURL,
                 DBContract.UserEntry.COLUMN_NAME_ISLOGGED
         };
@@ -871,9 +869,8 @@ public class LocalDB{
         ContentValues values = new ContentValues();
         values.put(DBContract.UserEntry.COLUMN_NAME_USERNAME,user.getUsername());
         values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
-        values.put(DBContract.UserEntry.COLUMN_NAME_FACEBOOKID, user.getFacebookId());
+        values.put(DBContract.UserEntry.COLUMN_NAME_PASSWORD, user.getPassword());
         values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
-        values.put(DBContract.UserEntry.COLUMN_NAME_GOOGLEID, user.getGoogleId());
         values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
         values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
         values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
@@ -883,6 +880,28 @@ public class LocalDB{
                 DBContract.UserEntry.TABLE_NAME,
                 values,
                 DBContract.UserEntry.COLUMN_NAME_USERID + " = " + user.getUserId(),
+                null
+        );
+    }
+
+    /**
+     * Actualiza un rally en la base de datos
+     * @param rally que queremos actualizar en la base de datos
+     */
+    public void updateRally(Rally rally){
+        ContentValues values = new ContentValues();
+        values.put(DBContract.RallyEntry.COLUMN_NAME_RALLYID,rally.getRallyId());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED,rally.getPointsAwarded());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE, rally.getMemoryUsage());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL, rally.getImageURL());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD, rally.getIsDownloaded());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION, rally.getDescription());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_NAME, rally.getName());
+
+        database.update(
+                DBContract.RallyEntry.TABLE_NAME,
+                values,
+                DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = " + rally.getRallyId(),
                 null
         );
     }
@@ -1162,8 +1181,7 @@ public class LocalDB{
         public class UserEntry implements BaseColumns {
             public static final String TABLE_NAME = "USERS";
             public static final String COLUMN_NAME_USERID = "userId";
-            public static final String COLUMN_NAME_FACEBOOKID = "facebookId";
-            public static final String COLUMN_NAME_GOOGLEID = "googleId";
+            public static final String COLUMN_NAME_PASSWORD = "password";
             public static final String COLUMN_NAME_USERNAME = "username";
             public static final String COLUMN_NAME_FIRSTNAME = "firstName";
             public static final String COLUMN_NAME_LASTNAME = "lastName";
@@ -1288,8 +1306,7 @@ public class LocalDB{
         private static final String USER_TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS " + DBContract.UserEntry.TABLE_NAME + "(" +
                         DBContract.UserEntry.COLUMN_NAME_USERID + " INTEGER PRIMARY KEY," +
-                        DBContract.UserEntry.COLUMN_NAME_FACEBOOKID + " TEXT," +
-                        DBContract.UserEntry.COLUMN_NAME_GOOGLEID + " TEXT," +
+                        DBContract.UserEntry.COLUMN_NAME_PASSWORD + " TEXT," +
                         DBContract.UserEntry.COLUMN_NAME_USERNAME + " TEXT UNIQUE NOT NULL," +
                         DBContract.UserEntry.COLUMN_NAME_FIRSTNAME + " TEXT," +
                         DBContract.UserEntry.COLUMN_NAME_LASTNAME + " TEXT," +
