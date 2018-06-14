@@ -76,12 +76,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".VisitasActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".ActivityMap"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".ActivityRealidadAumentada"
             android:label="@string/app_name"
             android:parentActivityName=".ActivityMap"
@@ -120,11 +114,6 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".InclinationActivity"
-            android:label="@string/title_activity_inclination"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SensorsActivity" />
     </application>
 
 </manifest>
