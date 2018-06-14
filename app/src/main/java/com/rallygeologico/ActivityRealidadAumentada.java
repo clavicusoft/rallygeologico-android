@@ -62,6 +62,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
     FragmentManager fragmentManager = getFragmentManager();
     Fragment fragmentBrujula;
+    Fragment fragmentInclinometro;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,10 +79,13 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
         /*Inicializar fragment de brujula*/
         fragmentBrujula = fragmentManager.findFragmentById(R.id.fragmentCompass);
+        fragmentInclinometro = fragmentManager.findFragmentById(R.id.fragmentSensors);
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         ft.hide(fragmentBrujula);
+        ft.hide(fragmentInclinometro);
         ft.commit();
+        addShowHideListener(R.id.inclinometro_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentSensors));
         addShowHideListener(R.id.brujula_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentCompass));
 
         especialDialog=new Dialog(this);
@@ -126,13 +130,13 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             }
         });
 
-        botonInclinometro= findViewById( R.id.inclinometro_realidadaumentada);
+        /*botonInclinometro= findViewById( R.id.inclinometro_realidadaumentada);
         botonInclinometro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setInclinometroActivity();
             }
-        });
+        });*/
 
     }
 
@@ -157,7 +161,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     }
 
     public void setQRActivity() {
-        Toast.makeText(this,"Llamar al activity inclinometro",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Llamar al activity QR",Toast.LENGTH_SHORT).show();
     }
 
     public void setInclinometroActivity() {

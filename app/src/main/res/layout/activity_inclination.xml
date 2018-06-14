@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    tools:context="com.rallygeologico.InclinationActivity" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:ignore="MissingConstraints">
+    <TextView
+        android:id="@+id/orientation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="Orientation"
+        android:textSize="40dp"
+        android:textColor="@color/colorPrimary"/>
 
-        <TextView
-            android:id="@+id/Inclinacion1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/Otro2"
-            android:layout_below="@+id/Otro2"
-            android:layout_marginTop="15dp"
-            android:text="TextView" />
+    <ImageView
+        android:id="@+id/pointer"
+        android:layout_width="225dp"
+        android:layout_height="225dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/compass_arrow" />
 
-        <TextView
-            android:id="@+id/Otro2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="154dp"
-            android:text="TextView" />
+    <ImageView
+        android:id="@+id/compassBorder"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/compass_border" />
 
-    </RelativeLayout>
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

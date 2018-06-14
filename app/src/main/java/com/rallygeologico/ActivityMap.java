@@ -3,6 +3,7 @@ package com.rallygeologico;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -240,8 +241,21 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     public void metodoPausa()
     {
-        Toast.makeText(this,"Pausa en trabajo",Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(this)
+                .setTitle("Pausar rally")
+                .setMessage("Seguro que desea pausar el rally? Posteriormente puede reanudarlo conservando su progreso.")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        volveraListaRallies();
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
+    }
 
+
+    public void volveraListaRallies(){
+        Intent intent = new Intent(this, GameActivity.class);
+        startActivity(intent);
     }
 
     public void irRealidadAumentada() {
@@ -726,10 +740,11 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * */
     private void insertarPuntos() {
         List <Site> sites= localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
-        if (sites.size()==0) {
-            //localDB.prueba();
+
+        if (sites.size()==0)
+        /*{localDB.prueba();
             sites= localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
-        }
+        }*/
 
         for (int i=0; i<sites.size();i++) {
             Location nuevo = new Location("dummyprovider");

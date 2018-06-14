@@ -17,6 +17,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <fragment
+        android:name="com.rallygeologico.SensorsActivity"
+        android:id="@+id/fragmentSensors"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
