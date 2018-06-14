@@ -14,7 +14,6 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import static android.content.Context.SENSOR_SERVICE;
 
 public class CompassActivity extends Fragment implements SensorEventListener {
