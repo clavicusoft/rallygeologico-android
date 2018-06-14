@@ -654,8 +654,7 @@ public class RallyList extends AppCompatActivity {
                         alert.show();
                         break;
                     case R.id.resultados:
-                        //Intent intent = new Intent(v.getContext(),InformacionRally.class);
-                        //startActivity(intent);
+                        displayResultsview();
                         break;
                 }
                 return false;
@@ -664,6 +663,12 @@ public class RallyList extends AppCompatActivity {
         //displaying the popup
         popup.show();
     }
+
+    public void displayResultsview(){
+        Intent intent = new Intent(this,finishRallyActivity.class);
+        startActivity(intent);
+    }
+
 
     public int changeRallyState(int position){
         position --; //Le quitamos el encabezado de la primera lista que siempre tiene la posicion 0
