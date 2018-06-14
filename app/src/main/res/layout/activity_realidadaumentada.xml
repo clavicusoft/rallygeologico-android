@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/parentFrameLayout" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentFrameLayout">
 
     <fragment
         android:id="@+id/beyondarFragment"
@@ -10,47 +11,52 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <fragment
+        android:name="com.rallygeologico.CompassActivity"
+        android:id="@+id/fragmentCompass"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
         android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <RelativeLayout
+            android:id="@+id/layout_botones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/qr_realidadaumentada"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/qr" />
+
+            <Button
+                android:id="@+id/informacion_realidadaumentada"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/informacion"
+                android:layout_alignParentLeft="true"
+
+                />
+        </RelativeLayout>
 
         <Button
-            android:id="@+id/qr_realidadaumentada"
+            android:id="@+id/brujula_realidadaumentada"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:background="@drawable/qr"
-            />
-
-        <Button
-            android:id="@+id/informacion_realidadaumentada"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/informacion"
-            android:layout_marginLeft="515dp"
-
-            />
-    </LinearLayout>
-
-
-        <Button
-           android:id="@+id/brujula_realidadaumentada"
-           android:layout_width="50dp"
-                   android:layout_height="50dp"
             android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@+id/layout_botones"
+            app:layout_constraintRight_toRightOf="parent"
             android:background="@drawable/brujula"
-                   android:layout_marginTop="19dp"
-            android:layout_marginLeft="20dp"
-
-
+            android:layout_marginTop="20dp"
             />
 
         <Button
@@ -58,26 +64,24 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@+id/brujula_realidadaumentada"
+            app:layout_constraintRight_toRightOf="parent"
             android:background="@drawable/inclinometro"
-            android:layout_marginTop="19dp"
-            android:layout_marginLeft="20dp"
-
-
+            android:layout_marginTop="20dp"
             />
+
         <Button
             android:id="@+id/mapa_realidadaumentada"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@+id/inclinometro_realidadaumentada"
+            app:layout_constraintRight_toRightOf="parent"
             android:background="@drawable/mapaboton"
-            android:layout_marginTop="19dp"
-            android:layout_marginLeft="20dp"
-
-
+            android:layout_marginTop="20dp"
             />
 
 
-    </LinearLayout>
-
+    </android.support.constraint.ConstraintLayout>
 
 </FrameLayout>
