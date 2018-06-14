@@ -1,4 +1,4 @@
-package com.rallygeologico;
+package SlidingTab;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -40,8 +40,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import SqlDatabase.LocalDB;
+import SqlEntities.Activity;
 import SqlEntities.Rally;
 import SqlEntities.Site;
 import SqlEntities.User;
@@ -63,6 +65,8 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     TextView nombreRally;
     TextView descRally;
     TextView sitesRally;
+    Bundle mBundle;
+    String seleccionado;
 
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -82,6 +86,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         setContentView(R.layout.activity_game);
         db = new LocalDB(this);
 
+        seleccionado="-1"; //Rally default
         //Inicia las misma variables que en el login para controlar si el usuario desea salir de la sesion
         /*gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -119,6 +124,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         spinner = (Spinner) myLayout.findViewById(R.id.spinner_rallies);
         spinner.setOnItemSelectedListener(this);
         spinner.setPrompt("Seleccione un rally");
+
         ArrayList<Rally> rallies = db.selectAllRallies();
         ArrayAdapter<Rally> dataAdapter = new ArrayAdapter<Rally>(this, R.layout.rally_spinner_item, rallies){
             @Override
@@ -167,10 +173,10 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
                             case R.id.menu_puntuacion:
                                 break;
                             case R.id.menu_ajustes:
-                                Log.i("NavigationView", "Pulsada opcion 1");
+                                setHowToPlayScreen();
                                 break;
                             case R.id.menu_info:
-                                Log.i("NavigationView", "Pulsada opcion 2");
+                                setAboutUsScreen();
                                 break;
                             case R.id.menu_salir:
                                 showAlertLogout();
@@ -187,10 +193,25 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         // On selecting a spinner item
         Rally item = (Rally) parent.getItemAtPosition(position);
+        mBundle = new Bundle();
         // Showing selected spinner item
-        Toast.makeText(parent.getContext(), "Seleccionado: " + item.toString(), Toast.LENGTH_LONG).show();
+
+        String prueba=item.toString();
+        String seleccTockenizer="";
+
+        /*Agarrar el id del rally*/
+        StringTokenizer st = new StringTokenizer(prueba);
+        while (st.hasMoreTokens()) {
+            seleccTockenizer=st.nextToken();
+        }
+
+        seleccionado= seleccTockenizer;
+
+
+        Toast.makeText(parent.getContext(), "Seleccionado: " + seleccionado, Toast.LENGTH_LONG).show();
         nombreRally.setText(item.getName());
         descRally.setText(item.getDescription());
+        mBundle.putInt("rallyId", item.getRallyId());
         List<Site> sitios = db.selectAllSitesFromRally(item.getRallyId());
         Iterator iterator = sitios.iterator();
         String sitesList = "";
@@ -203,7 +224,6 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
-        // TODO Auto-generated method stub
     }
 
     /**
@@ -266,6 +286,22 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     }
 
     /**
+     * Comienza la actividad de sobre nosotros
+     */
+    public void setAboutUsScreen() {
+        Intent intent = new Intent(this, AboutUsActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Comienza la actividad de como jugar
+     */
+    public void setHowToPlayScreen() {
+        Intent intent = new Intent(this, HowToPlayActivity.class);
+        startActivity(intent);
+    }
+
+    /**
      * Comienza la actividad de la lista de rallies
      */
     public void setRallyListScreen() {
@@ -279,9 +315,17 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     public void setMapScreen() {
         LocationManager locationManager= (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if ((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
-            //Intent intent = new Intent(this, ActivityMap.class);
-            Intent intent = new Intent(this, ActivityMap.class);
-            startActivity(intent);
+
+
+            if(!seleccionado.equals("-1")) {
+                Intent intent = new Intent(this, ActivityMap.class);
+                intent.putExtra("ID",seleccionado);
+                startActivity(intent);
+            }
+
+            else {
+                Toast.makeText(this,"Seleccione un Rally",Toast.LENGTH_SHORT).show();
+            }
         }
         else {
             Toast.makeText(this,"Active el GPS",Toast.LENGTH_SHORT).show();
@@ -324,9 +368,9 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
      */
     private void showAlertLogout() {
         new AlertDialog.Builder(this)
-                .setTitle("Cerrar sesion")
-                .setMessage("Seguro que desea salir?")
-                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                .setTitle("Cerrar sesión")
+                .setMessage("¿Seguro que desea salir?")
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         manejarCierreSesion();
                     }

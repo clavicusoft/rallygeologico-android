@@ -10,13 +10,16 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <!--  BeyondAR needs the following features-->
+    <!-- BeyondAR needs the following features -->
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.sensor.accelerometer" />
     <uses-feature android:name="android.hardware.sensor.compass" />
 
 
     <application
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
+
         android:allowBackup="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
@@ -62,23 +65,41 @@
         <activity
             android:name=".ActivityMap"
             android:label="@string/app_name"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".GameActivity"
             android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".VisitasActivity"
             android:label="@string/app_name"
             android:parentActivityName=".ActivityMap"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"></activity>
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".VisitasActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".ActivityMap"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ActivityRealidadAumentada"
-            android:parentActivityName=".ActivityMap"
-            android:theme="@style/AppTheme"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"></activity>
+            android:parentActivityName=".ActivityMap"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".HowToPlayActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".GameActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".AboutUsActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".GameActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -100,6 +121,11 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".InclinationActivity"
+            android:label="@string/title_activity_inclination"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SensorsActivity" />
     </application>
 
 </manifest>

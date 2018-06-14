@@ -455,7 +455,7 @@ public class LocalDB{
      */
     /*public void prueba(){
         database.execSQL("delete from "+ DBContract.Rally_SiteEntry.TABLE_NAME);
-        database.execSQL("delete from "+ DBContract.UserEntry.TABLE_NAME);
+        //database.execSQL("delete from "+ DBContract.UserEntry.TABLE_NAME);
         database.execSQL("delete from "+ DBContract.SiteEntry.TABLE_NAME);
         database.execSQL("delete from "+ DBContract.RallyEntry.TABLE_NAME);
         User user1 = new User("1","password1","Usuario 1","Pablo ","Madrigal"," Correo 1","Foto 1",false);
@@ -492,7 +492,7 @@ public class LocalDB{
 
         String descripcionSitio7 = "Desde este mirador. Se observa La isla Los Muñecos. Localice visualmente el muñeco de la isla, que es un monolito de piedra caliza (relicto de erosión) en el extremo izquierdo de la isla. Active la brújula. Dirija la brújula hacia el “muñeco” y acepte el azimuth. Esta isla está compuesta por calizas, que son rocas ricas en carbonato de calcio (CaCO3).  Estas rocas se disuelven con el agua y forman hermosas “esculturas” como El Muñeco.  Anteriormente eran 2 muñecos, pero hace unos años el muñeco más grande, que llamaban Nefertiti desapareció.  Las rocas calizas que conforman esta isla fueron originados por construcciones de arrecifes de coral que se formaron hace unos 30 millones de años. ";
         String descripcionSitio8 = "Estas rocas se formaron hace unos 35 millones de años, son muy parecidas a las de la playa 4x4.  Se pueden observar algunos troncos. y espectaculares bioturbaciones destacadas con líneas punteadas y flechas. ";
-        Site site7 = new Site(7,"El mirador",descripcionSitio7,"10.5775","-85.4186",2,15,0);
+        Site site7 = new Site(7,"El mirador",descripcionSitio7,"10.5775","-85.4186",1,15,0);
         Site site8 = new Site(8,"La Islita",descripcionSitio8,"10.5783","-85.4176",1,25,0);
         rally2.addSite(site7);
         rally2.addSite(site8);
@@ -566,7 +566,7 @@ public class LocalDB{
          *  Como queremos que esten ordenados los resultados
          */
         String sortOrder =
-                DBContract.RallyEntry.COLUMN_NAME_NAME + " DESC";
+                DBContract.RallyEntry.COLUMN_NAME_NAME + " ASC";
 
         /**
          * La consulta en si
@@ -628,7 +628,7 @@ public class LocalDB{
      * @param id Identificador del usuario del cual deseo obtener los rallies
      * @return una lista con los rallies asociados al usuario
      */
-    public List<Rally> selectAllRalliesFromUser(int id){
+    public ArrayList<Rally> selectAllRalliesFromUser(String id){
         String rawQuery = "Select * FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
                 " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
                 " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
@@ -638,9 +638,9 @@ public class LocalDB{
 
         String userId = "" + id;
         Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
-        List<Rally> rallyList = new ArrayList<Rally>();
+        ArrayList<Rally> rallyList = new ArrayList<Rally>();
 
-        if(cursor != null){
+        if(cursor.moveToFirst()){
             for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 // The Cursor is now set to the right position
                 int index;
@@ -682,14 +682,58 @@ public class LocalDB{
         return rallyList;
     }
 
+    public int selectAllRalliesCountFromUser(String id){
+        String rawQuery = "SELECT COUNT(" + DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS + ") FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
+                " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
+                " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME + " c " +
+                " ON c." + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
+                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = ?";
+
+        String userId = "" + id;
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
+        int rallies = 0;
+        if(cursor.moveToFirst()){
+            // The Cursor is now set to the right position
+            if(cursor.moveToNext()){
+                rallies = cursor.getInt(0);
+            } else {
+                rallies = 0;
+            }
+        }
+        return rallies;
+    }
+
+    public int selectAllRalliesPointsFromUser(String id){
+        String rawQuery = "SELECT SUM(" + DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS + ") FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
+                " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
+                " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
+                " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME + " c " +
+                " ON c." + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
+                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = ?";
+
+        String userId = "" + id;
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
+        int points = 0;
+        if(cursor.moveToFirst()){
+                // The Cursor is now set to the right position
+            if(cursor.moveToNext()){
+                points = cursor.getInt(0);
+            } else {
+                points = 0;
+            }
+        }
+        return points;
+    }
+
     public User selectUser(String userId){
         String rawQuery = "Select * FROM " + DBContract.UserEntry.TABLE_NAME + " a " +
-                " WHERE a." + DBContract.UserEntry.COLUMN_NAME_USERID + " = " + userId;
+                " WHERE a." + DBContract.UserEntry.COLUMN_NAME_USERID + " = ?";
 
-        Cursor cursor = database.rawQuery(rawQuery,null);
+        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
         User user = null;
 
-        if(cursor.moveToFirst() == false) {
+        if(cursor.moveToFirst()) {
 
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 // The Cursor is now set to the right position

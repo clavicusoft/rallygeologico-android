@@ -94,4 +94,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
+
 }

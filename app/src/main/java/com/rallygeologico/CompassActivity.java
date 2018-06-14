@@ -1,17 +1,23 @@
 package com.rallygeologico;
 
+import android.app.Fragment;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CompassActivity extends AppCompatActivity implements SensorEventListener {
+import static android.content.Context.SENSOR_SERVICE;
+
+public class CompassActivity extends Fragment implements SensorEventListener {
 
     private ImageView mPointer;
     private TextView tvOrientation;
@@ -33,25 +39,20 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     private float[] mOrientation = new float[3];
     private float mCurrentDegree = 0f;
     private boolean haveGravity;
-    private boolean haveAccelerometer;
-    private boolean haveMagnetometer;
     private boolean haveRotation;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_compass);
-        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.activity_compass, container, false);
+        mSensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         mRotation = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        mPointer = (ImageView) findViewById(R.id.pointer);
-        tvOrientation = (TextView) findViewById(R.id.orientation);
+        mPointer = (ImageView) v.findViewById(R.id.pointer);
+        tvOrientation = (TextView) v.findViewById(R.id.orientation);
 
         this.haveGravity = this.mSensorManager.registerListener( this, this.mGravity, SensorManager.SENSOR_DELAY_GAME );
-        this.haveAccelerometer = this.mSensorManager.registerListener( this, this.mAccelerometer, SensorManager.SENSOR_DELAY_GAME );
-        this.haveMagnetometer = this.mSensorManager.registerListener( this, this.mMagnetometer, SensorManager.SENSOR_DELAY_GAME );
         this.haveRotation = this.mSensorManager.registerListener( this, this.mRotation, SensorManager.SENSOR_DELAY_GAME );
 
         if (this.haveRotation) {
@@ -61,9 +62,10 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         } else if( this.haveGravity ) {
             this.mSensorManager.unregisterListener( this, this.mAccelerometer );
         }
+        return v;
     }
 
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mGravity, SensorManager.SENSOR_DELAY_GAME);
@@ -71,7 +73,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         mSensorManager.registerListener(this, mRotation, SensorManager.SENSOR_DELAY_GAME);
     }
 
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this, mAccelerometer);
         mSensorManager.unregisterListener(this, mGravity);
@@ -102,7 +104,7 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
         if (mLastRotationSet) {
             SensorManager.getOrientation(mR, mOrientation);
             float azimuthInRadians = mOrientation[0];
-            float azimuthInDegress = (float)(Math.toDegrees(azimuthInRadians)+360)%360;
+            float azimuthInDegress = (float)(Math.toDegrees(azimuthInRadians)+90)%360;
             RotateAnimation ra = new RotateAnimation(mCurrentDegree, -azimuthInDegress, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             ra.setDuration(250);
             ra.setFillAfter(true);
@@ -162,8 +164,6 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // TODO Auto-generated method stub
-
     }
 
 }
