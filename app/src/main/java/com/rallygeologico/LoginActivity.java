@@ -214,6 +214,9 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Maneja el inicio de sesion con la base de datos remota
+     */
     public void manejarInicioSesion() {
         String usuario = "";
         if (username.getText().toString().contains(" ")) {
@@ -223,18 +226,23 @@ public class LoginActivity extends AppCompatActivity {
         }
         String contrasena = password.getText().toString();
 
+        // Verifica que ambos campos esten llenos
         if (!usuario.isEmpty() && !contrasena.isEmpty()) {
             credentials.setVisibility(GONE);
             progressBar.setVisibility(View.VISIBLE);
             user = db.selectUserByUsername(usuario, contrasena);
+            // Si no encuentra al usuario localmente, consulta en la base remota
             if (user == null) {
+                // Revisa si hay conexion a internet
                 if(tieneConexionInternet()){
+                    // Realiza la solicitud al servidor
                     String resultado = validarCredencialesWeb(usuario, contrasena);
                     if (resultado.equalsIgnoreCase("null")) {
                         credentials.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.GONE);
                         mostrarAlerta();
                     } else {
+                        // Obtiene al usuario y lo arregla para que el formato sea correcto
                         String toParse = resultado.replace("]","");
                         toParse = toParse.replace("[","");
                         JSONObject jsonObject = null;
@@ -243,6 +251,7 @@ public class LoginActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        // Si no es nulo, inserta al usuario en la base
                         if(jsonObject != null){
                             user = JSONParser.getUser(jsonObject);
                             user.setPassword(contrasena);
@@ -273,6 +282,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Muestra una alerta que redirige o no a la pagina web para registrarse
+     */
     private void mostrarAlerta() {
         new AlertDialog.Builder(this)
                 .setTitle("Alerta")

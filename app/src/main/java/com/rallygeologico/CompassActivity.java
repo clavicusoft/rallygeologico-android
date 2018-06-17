@@ -16,32 +16,53 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import static android.content.Context.SENSOR_SERVICE;
 
+/**
+ * Fragmento que se encarga de mostrar la brujula en la pantalla de realidad aumentada
+ */
 public class CompassActivity extends Fragment implements SensorEventListener {
 
-    private ImageView mPointer;
-    private TextView tvOrientation;
-    private int intDegrees;
+    private ImageView mPointer; // Imagen del apuntador de la brujula
+    private TextView tvOrientation; // Texto que indica la orientacion de la brujula
+    private int intDegrees; // Cacula los grados del azimut
 
+    // Variables para trabajar con los sensores
     private String stringOrinetation;
     private SensorManager mSensorManager;
+
+    // Sensores del dispositivo
     private Sensor mAccelerometer;
     private Sensor mGravity;
     private Sensor mMagnetometer;
     private Sensor mRotation;
+
+    // Guarda los valores del vector de orientacion
     private float[] mLastAccelerometer = new float[3];
     private float[] mLastMagnetometer = new float[3];
+
+    // Booleanos que indican si ya se uso el sensor respectivo
     private boolean mLastAccelerometerSet = false;
     private boolean mLastGravitySet = false;
     private boolean mLastMagnetometerSet = false;
     private boolean mLastRotationSet = false;
+
     private float[] mR = new float[9];
     private float[] mOrientation = new float[3];
     private float mCurrentDegree = 0f;
+
+    // Indica si el dispositivo posee los respectivos sensores
     private boolean haveGravity;
     private boolean haveRotation;
 
+    /**
+     * Crea la vista del fragmento con la brujula y su aguja
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return La vista del fragmento
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //Inicializa las variables y los sensores respectivos
         View v = inflater.inflate(R.layout.activity_compass, container, false);
         mSensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -54,16 +75,20 @@ public class CompassActivity extends Fragment implements SensorEventListener {
         this.haveGravity = this.mSensorManager.registerListener( this, this.mGravity, SensorManager.SENSOR_DELAY_GAME );
         this.haveRotation = this.mSensorManager.registerListener( this, this.mRotation, SensorManager.SENSOR_DELAY_GAME );
 
+        // Si tiene sensor de vector de rotacion, desactiva los demas
         if (this.haveRotation) {
             mSensorManager.unregisterListener(this, mAccelerometer);
             mSensorManager.unregisterListener(this, mGravity);
             mSensorManager.unregisterListener(this, mMagnetometer);
-        } else if( this.haveGravity ) {
+        } else if( this.haveGravity ) { // Si tiene sensor de gravedad, desactiva el acelerometro
             this.mSensorManager.unregisterListener( this, this.mAccelerometer );
         }
         return v;
     }
 
+    /**
+     * Si se reanuda el fragmento se vueven a registrar los sensores
+     */
     public void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
@@ -72,6 +97,9 @@ public class CompassActivity extends Fragment implements SensorEventListener {
         mSensorManager.registerListener(this, mRotation, SensorManager.SENSOR_DELAY_GAME);
     }
 
+    /**
+     * Si se pausa el fragmento, se desactivan los sensores
+     */
     public void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this, mAccelerometer);
@@ -80,8 +108,13 @@ public class CompassActivity extends Fragment implements SensorEventListener {
         mSensorManager.unregisterListener(this, mRotation);
     }
 
+    /**
+     * Maneja los cambios de sensores y de orientacion
+     * @param event Evento que obtiene el resultado del sensor mas reciente
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
+        // Dependiendo de cual sensor se use, se copian los valores en un arreglo
         if (event.sensor == mAccelerometer) {
             System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
             mLastAccelerometerSet = true;
@@ -95,19 +128,24 @@ public class CompassActivity extends Fragment implements SensorEventListener {
             mLastRotationSet = true;
         }
 
+        // Si los resultados son del vector de rotacion, hay que obtener los valores por separado
         if( event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR ){
             // calculate th rotation matrix
             SensorManager.getRotationMatrixFromVector( mR, event.values );
         }
 
+        // Si se esta usando el vector de rotacion, se actualiza la brujula con sus valores
         if (mLastRotationSet) {
+            // Se obtiene la orientacion del sensor en radianes y se pasa a grados
             SensorManager.getOrientation(mR, mOrientation);
             float azimuthInRadians = mOrientation[0];
             float azimuthInDegress = (float)(Math.toDegrees(azimuthInRadians)+90)%360;
+            // Se hace una animacion que gire la aguja con respecto a la orientacion actual
             RotateAnimation ra = new RotateAnimation(mCurrentDegree, -azimuthInDegress, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             ra.setDuration(250);
             ra.setFillAfter(true);
             intDegrees = (int) azimuthInDegress;
+            // Se asocia la orientacion de la aguja dependiendo del valor del azimut
             if(intDegrees == 0 || intDegrees == 360){
                 stringOrinetation = "N " + intDegrees + "°";
             } else if(intDegrees > 0 && intDegrees < 90){
@@ -129,15 +167,19 @@ public class CompassActivity extends Fragment implements SensorEventListener {
             mPointer.startAnimation(ra);
             mCurrentDegree = azimuthInDegress;
         }
+        // Si se usan los otros sensores, entonces se usa la brujula con esos valores
         else if ((mLastAccelerometerSet || mLastGravitySet) && mLastMagnetometerSet) {
+            // Se obtiene la orientacion del sensor en radianes y se pasa a grados
             SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
             SensorManager.getOrientation(mR, mOrientation);
             float azimuthInRadians = mOrientation[0];
             float azimuthInDegress = (float)(Math.toDegrees(azimuthInRadians)+360)%360;
+            // Se hace una animacion que gire la aguja con respecto a la orientacion actual
             RotateAnimation ra = new RotateAnimation(mCurrentDegree, -azimuthInDegress, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             ra.setDuration(250);
             ra.setFillAfter(true);
             intDegrees = (int) azimuthInDegress;
+            // Se asocia la orientacion de la aguja dependiendo del valor del azimut
             if(intDegrees == 0 || intDegrees == 360){
                 stringOrinetation = "N " + intDegrees + "°";
             } else if(intDegrees > 0 && intDegrees < 90){

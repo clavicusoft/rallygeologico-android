@@ -31,6 +31,11 @@ public class JSONParser {
         return s1;
     }
 
+    /**
+     * Recibe un json y devuelve un usuario con su informacion y para agregarlo a la base
+     * @param obj json con la info del usuario
+     * @return user con su informacion asignada
+     */
     public static User getUser(JSONObject obj) {
         User user = new User();
         try {
@@ -47,6 +52,11 @@ public class JSONParser {
         return user;
     }
 
+    /**
+     * Recibe un json y devuelve un rally con su informacion y para agregarlo a la base
+     * @param obj json con la info del rally
+     * @return rally con su informacion asignada
+     */
     public static Rally getRally(JSONObject obj) {
         Rally rally = new Rally();
         int valor;
@@ -66,6 +76,11 @@ public class JSONParser {
         return rally;
     }
 
+    /**
+     * Recibe un json de un rally con todos sus sitios y devuelve una lista para agregarlos a la bd local
+     * @param obj Objeto json a parsear
+     * @return la lista de los sitios asociados a un rally
+     */
     public static LinkedList<Site> getSitesFromRally(JSONObject obj) {
         LinkedList<Site> listaSitios = new LinkedList<Site>();
         Site sitio;
@@ -86,6 +101,7 @@ public class JSONParser {
                 valor = Integer.parseInt(specificSiteJson.getString("points"));
                 sitio.setSiteTotalPoints(valor);
                 sitio.setSitePointsAwarded(0);
+                sitio.setStatus(1);
                 listaSitios.add(sitio);
 
                 cantidad++;
@@ -98,6 +114,11 @@ public class JSONParser {
         return listaSitios;
     }
 
+    /**
+     * Obtiene el email del login de facebook
+     * @param obj objeto json devuelto por el grafo de faceboook
+     * @return string con el email
+     */
     public static String getEmail(JSONObject obj) {
         String s1 = "";
         try {
@@ -139,36 +160,4 @@ public class JSONParser {
         return s1;
     }
 
-   /* public static ArrayList<String> getFavAthletes(JSONObject obj) {
-        favAthletes.clear();
-        try {
-            JSONArray arr = obj.getJSONArray("favorite_athletes");
-            String s;
-            for (int i = 0; i < arr.length(); i++) {
-                obj = arr.getJSONObject(i);
-                s = obj.getString("name");
-                favAthletes.add(s);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return favAthletes;
-    }
-
-    public static ArrayList<String> getFavTeams(JSONObject obj) {
-        favTeams.clear();
-        try {
-            JSONArray arr = obj.getJSONArray("favorite_teams");
-            String s;
-            for (int i = 0; i < arr.length(); i++) {
-                obj = arr.getJSONObject(i);
-                s = obj.getString("name");
-                favTeams.add(s);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return favTeams;
-    }*/
 }
