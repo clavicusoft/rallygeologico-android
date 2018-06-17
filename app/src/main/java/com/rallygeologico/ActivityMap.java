@@ -239,6 +239,11 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     }
 
+
+    /**
+     * Se encarga de pausar el juego cuando el usuario lo desee
+     * */
+
     public void metodoPausa()
     {
         new AlertDialog.Builder(this)
@@ -253,11 +258,18 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     }
 
 
+    /**
+     * Vuelve al activity de juego, donde se selecciona el rally
+     * */
+
     public void volveraListaRallies(){
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Inicia la realidad aumentada, envia el id del rally seleccionado por el usuario
+     * */
     public void irRealidadAumentada() {
         Intent intent = new Intent(this,ActivityRealidadAumentada.class);
         intent.putExtra("ID",rallyID);
@@ -771,10 +783,17 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         }
     }
 
+    /**
+     * Indica al usuario cuando ya ha visitado todos los sitios de un rally
+     * */
    public void visiteTodos()
    {
        Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
    }
+
+   /**
+    * Cuando viene de otro activity se actualiza los sitios segun la base de datos
+    * */
 
     @Override
     protected void onStart() {
@@ -795,11 +814,17 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     }
 
+    /**
+     * Se pasa al activity que contiene la brujula
+     * */
   public void irABrujula(View view) {
         Intent intent = new Intent(this, CompassActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Cuando me paso de activity se deja de escuchar la ubicacion
+     * */
 
     @Override
     protected void onStop() {
