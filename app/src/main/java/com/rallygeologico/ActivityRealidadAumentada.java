@@ -83,7 +83,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent myIntent = getIntent(); // gets the previously created intent
-        rallyID= myIntent.getStringExtra("ID");
+        rallyID= "" + myIntent.getIntExtra("rallyId",0);
 
         setContentView(R.layout.main_realidadaumentada);
         setContentView(R.layout.activity_realidadaumentada);
@@ -145,15 +145,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
                 setMapActivity();
             }
         });
-
-        /*botonInclinometro= findViewById( R.id.inclinometro_realidadaumentada);
-        botonInclinometro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setInclinometroActivity();
-            }
-        });*/
-
     }
 
     /**
@@ -191,17 +182,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         Toast.makeText(this,"Llamar al activity QR",Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * Llama a la actividad del inclinometro
-     * */
-    public void setInclinometroActivity() {
-        Toast.makeText(this,"Llamar al activity inclinometro",Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Llama a la actividad que tiene la informacion sobre un sitio
-     * Se dispara al presionar el boton que solo aparece cuando el jugador esta cerca del punto
-     * */
     public void setInformacionActivity() {
         Toast.makeText(this,"Multimedia en proceso",Toast.LENGTH_SHORT).show();
     }
@@ -214,11 +194,11 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         // Finally we add the Wold data in to the fragment
         mBeyondarFragment.setWorld(mWorld);
     }
-/**
- * Metodo que se dispara al tocar un objeto de la realidad aumentada
- * Muestra el nombre del sitio y la distancia a la que se encuentra
- * @param beyondarObjects lista de lo objetos de la realidad aumentada creados
- */
+    /**
+     * Metodo que se dispara al tocar un objeto de la realidad aumentada
+     * Muestra el nombre del sitio y la distancia a la que se encuentra
+     * @param beyondarObjects lista de lo objetos de la realidad aumentada creados
+     */
     @Override
     public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
         // The first element in the array belongs to the closest BeyondarObject
@@ -236,7 +216,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     public void crearGeobjetos() {
         List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
         if (sites.size() == 0) {
-            //localDB.prueba();
             sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
         }
         for (int i = 0; i < sites.size(); i++) {
