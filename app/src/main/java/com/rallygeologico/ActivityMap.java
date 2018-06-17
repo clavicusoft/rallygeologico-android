@@ -57,7 +57,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     Button botonQR;
     Button botonPausa;
 
-
     Marker me;
 
     //Dialogo
@@ -76,8 +75,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     Site interes;
     MediaPlayer mp;
 
-    String rallyID;
-
+    int rallyId;
 
     /**
      * Se ejecuta cuando se crea la vista
@@ -88,34 +86,23 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * Inicializa el escuchador
      * @param savedInstanceState Estado actual de la aplicacion
      */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Intent myIntent = getIntent(); // gets the previously created intent
-
-        rallyID= myIntent.getStringExtra("ID");
+        rallyId= myIntent.getIntExtra("rallyId",0);
 
         //Copia el folder
-         CopyFolder.copyAssets(this);
-
+        CopyFolder.copyAssets(this);
         setContentView(R.layout.activity_maps);
-
         especialDialog=new Dialog(this);
-
-
         especialDialog.setContentView(R.layout.alertaespecial);
 
-
-
         //Actualiza el cuadrado del mapa para generar un rango de validas
-
         //arribaDerecha=new GeoPoint(10.57,-85.3);
         //abajoIzquierda=new GeoPoint(  10.50,-85.5);
-
         arribaDerecha=new GeoPoint(11.15, -85.1);
-        abajoIzquierda=new GeoPoint(  10.42, -85.6);
+        abajoIzquierda=new GeoPoint(  10.42, -85.7);
 
         lastKnown=false;
 
@@ -127,13 +114,9 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
          /*Base de datos*/
         localDB= new LocalDB(this);
 
-
         mapView = (MapView) findViewById(R.id.mapview);
-
-
         mapView.setClickable(false);
         mapView.setMultiTouchControls(false);
-
 
         crearBorde();
 
@@ -141,25 +124,16 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         mapView.setBuiltInZoomControls(false);
         mapView.setMultiTouchControls(true);
         mapView.setUseDataConnection(false);
-
-
         mapView.setTileSource(new XYTileSource("tiles", 13, 16, 256, ".png", new String[0]));
-
 
         //Inicializa el controlador
         mc = (MapController) mapView.getController();
-
         mc.setZoom(14);
         mc.animateTo( boundingBox.getCenter());
-
-
-
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         /*Programar botones*/
-
-
         botonLocalizacion= findViewById( R.id.mylocation);
         botonLocalizacion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,12 +168,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         botonCam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 irRealidadAumentada();
-
-                //Toast.makeText(getApplicationContext(),"Realidad Aumentada en Trabajo",Toast.LENGTH_SHORT).show();
-                //irABrujula(view);
-
             }
         });
 
@@ -208,7 +177,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(),"Codigo QR en Trabajo",Toast.LENGTH_SHORT).show();
-
             }
         });
 
@@ -216,31 +184,21 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         botonPausa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 metodoPausa();
-
             }
         });
 
-
-
-        //Pruebas
         /*Anade puntos*/
         insertarPuntos();
-
-
         try{
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
         }
         catch(SecurityException e){
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
-    public void metodoPausa()
-    {
+    public void metodoPausa() {
         new AlertDialog.Builder(this)
                 .setTitle("Pausar rally")
                 .setMessage("Seguro que desea pausar el rally? Posteriormente puede reanudarlo conservando su progreso.")
@@ -260,18 +218,16 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
     public void irRealidadAumentada() {
         Intent intent = new Intent(this,ActivityRealidadAumentada.class);
-        intent.putExtra("ID",rallyID);
+        String id = "" + rallyId;
+        intent.putExtra("rallyId",id);
         startActivity(intent);
     }
-
 
     /**
      * Remueve un marcador del mapa
      * @param loc  ubicacion donde se encuentra el marcador a elminar
      */
-
-    public void removeMarker(GeoPoint loc)
-    {
+    public void removeMarker(GeoPoint loc) {
         int i=0;
         boolean noEncontrado=true;
         while (i<mapView.getOverlays().size() && noEncontrado)
@@ -290,9 +246,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * @param ite Numero de cluster que se le da al marcador
      * @param titulo Titulo que se le asocia al marcador
      */
-
-    public void addMarker(GeoPoint loc,int ite,String titulo)
-    {
+    public void addMarker(GeoPoint loc,int ite,String titulo) {
         Marker marker=new Marker(mapView);
         marker.setPosition(loc);
         marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
@@ -300,21 +254,18 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         if (ite==0) {
             marker.setIcon(getResources().getDrawable(R.drawable.currentlocation));
             marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-
                 /**
                  * Metodo que se dispara al tocar un marcador
                  * Llama a un metodo que despliega la informacion
                  * @param marker marcador que fue tocado
                  * @param mapView mapa donde se encuentra el marcador
                  * */
-
                 @Override
                 public boolean onMarkerClick(Marker marker, MapView mapView) {
                     return true;
                 }
             });
             me=marker;
-
         }
         else {
             if (ite==1) {
@@ -331,92 +282,68 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 ++numeroEspeciales;
             }
             marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
-
                 /**
                  * Metodo que se dispara al tocar un marcador
                  * Llama a un metodo que despliega la informacion
                  * @param marker marcador que fue tocado
                  * @param mapView mapa donde se encuentra el marcador
                  * */
-
                 @Override
                 public boolean onMarkerClick(Marker marker, MapView mapView) {
                     informacionMarcador(marker.getPosition(),marker.getTitle());
                     return true;
                 }
             });
-
         }
         mapView.getOverlays().add(marker);
         mapView.invalidate();
     }
-
-
 
     /**
      * Meotodo que se dispara cuando hay una nueva localizacion
      * Si la nueva actualizacion se encuentra dentro del rango elimina la anterior y agrega la nueva al mapa
      * @param location localizacion nueva
      * */
-
     @Override
     public void onLocationChanged(Location location) {
-
-        if (location != null)
-        {
-
-
+        if (location != null) {
             if (estaAdentro(location)) {
-
-
-
                 GeoPoint newLocation = new GeoPoint(location.getLatitude(), location.getLongitude());
                 if (lastKnown) {
                     mapView.getOverlays().remove(me);
                     center=newLocation;
                     addMarker(newLocation, 0, "Aca estoy");
-
                 }
                 else {
                     lastKnown=true;
                     center=newLocation;
                     addMarker(newLocation, 0, "Aca estoy");
                     mc.animateTo(center);
-
                 }
-
                 verificarPuntos();
-
             }
-
             else
             {Toast.makeText(this,"Te saliste del mapa",Toast.LENGTH_LONG).show();}
-
         }
-
-
-
     }
+
     /**
      * Se dispara cuando hay un cambio de estado del proveedor
      * @param s Proveedor
      * @param i Estado en el que se encuentra
      * @param bundle Estado de la aplicacion
      * */
-
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
-
     }
+
     /**
      * Se dispara cuando se activa el proveedor
      * @param s Proveedor
      * */
     @Override
     public void onProviderEnabled(String s) {
-
         Toast.makeText(this,"Se activo la ubicacion",Toast.LENGTH_SHORT).show();
-
     }
 
     /**
@@ -435,40 +362,29 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * Como aun no esta implementada la base, se tuvo que inventar los datos
      * @param punto Punto del cual deseo informacion
      * @param tipo Estado del punto, si es visitado, no visitado o especial
-     * */
-
-    public void informacionMarcador(GeoPoint punto, String tipo)
-    {
+     */
+    public void informacionMarcador(GeoPoint punto, String tipo) {
         boolean noEncontre=true;
-
-        List <Site> sites= localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
-
+        List <Site> sites= localDB.selectAllSitesFromRally(rallyId);
         int ite=0;
         while (ite<sites.size() && noEncontre) {
             double lat=Double.parseDouble(sites.get(ite).getLatitud());
             double lon=Double.parseDouble(sites.get(ite).getLongitud());
-
-            if (lat==punto.getLatitude() && lon==punto.getLongitude())
-            {
+            if (lat==punto.getLatitude() && lon==punto.getLongitude()) {
                 interes=sites.get(ite);
                 noEncontre=false;
             }
             ite++;
         }
-
         Intent i = new Intent(this, VisitasActivity.class);
-
         String Distancia;
-
-        if (center!=null)
-        {Distancia=String.format("%.1f",center.distanceToAsDouble(punto)) +" metros de distancia";}
-
-        else
-        {Distancia="No estas dentro del mapa de juego";}
-
+        if (center!=null) {
+            Distancia=String.format("%.1f",center.distanceToAsDouble(punto)) +" metros de distancia";
+        } else {
+            Distancia="No estas dentro del mapa de juego";
+        }
         // if (Condicion con la base de Datos)//Visitado
-        switch (Integer.parseInt(tipo))
-        {
+        switch (Integer.parseInt(tipo)) {
             case 1:
                 i.putExtra("Tipo","No Visitado");
                 i.putExtra("Imagen","sitio"+interes.getSiteId());
@@ -495,24 +411,17 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 i.putExtra("Informacion",interes.getSiteDescription());
                 break;
         }
-
         startActivity(i);//Inicia la actividad
-
     }
-
 
     /**
      * Verifica si la localizacion se encuentra dentro del area de juego
      * @param location localizacion que se chequea si esta adentro
      */
-
-    public boolean estaAdentro(Location location)
-    {
-        if((abajoIzquierda.getLongitude()<location.getLongitude()  && location.getLongitude()<arribaDerecha.getLongitude()) && (arribaDerecha.getLatitude()>location.getLatitude()  && location.getLatitude()>abajoIzquierda.getLatitude()))
-        {
+    public boolean estaAdentro(Location location) {
+        if((abajoIzquierda.getLongitude()<location.getLongitude()  && location.getLongitude()<arribaDerecha.getLongitude()) && (arribaDerecha.getLatitude()>location.getLatitude()  && location.getLatitude()>abajoIzquierda.getLatitude())) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -521,47 +430,34 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * Establece el borde del area de juego para que no se observe lo gris,
      * tambien se establece el nivel minimo y maximo de zoom
      * */
-    public void crearBorde()
-    {
+    public void crearBorde() {
         boundingBox=new BoundingBox(arribaDerecha.getLatitude(),arribaDerecha.getLongitude(),abajoIzquierda.getLatitude(),abajoIzquierda.getLongitude());
         mapView.setMinZoomLevel(13.0);
         mapView.setMaxZoomLevel(20.0);
         mapView.setScrollableAreaLimitDouble(boundingBox);
-        }
+    }
 
     /**
      * Este metodo se encarga agarrar todos los sitios de la base de datos y chequear si estamos cerca de un no visitado o uno especial
      * */
-    public void verificarPuntos()
-    {
-
-/*Recorro los markers*/
+    public void verificarPuntos() {
+        /*Recorro los markers*/
         List <Site> sites= localDB.selectAllSitesFromRally(1);
         int activosonido=0;
-
         for (int ite=0;ite<sites.size();ite++) {
-
             double lat=Double.parseDouble(sites.get(ite).getLatitud());
             double lon=Double.parseDouble(sites.get(ite).getLongitud());
-
-
-
-            if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=50.0)
-            {
+            if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=50.0) {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),3);
                 verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
-            activosonido=1;
+                activosonido=1;
             }
-
-            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0)
-            {
+            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0) {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),2);
 
                 /*Actualizo la vista*/
-
                 Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                 v.vibrate(3000);
-
 
                 /*Quita el marcador pasado e inserta otro*/
                 final GeoPoint esp=new GeoPoint(lat,lon);
@@ -570,32 +466,23 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 addMarker(esp,2,"2"); //Visitado
 
                 /*Muestro la notificacion o termino*/
-
-
-                if(numeroNoVisitados==0)
-                {
+                if(numeroNoVisitados==0) {
                     visiteTodos();
-                }
-                else
-                {
+                } else {
                     activosonido=2;
                     verificarNoVisitados(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
                 }
             }
-
         }
-        if(activosonido==1)
-        {//Sonido de Alerta
+        if(activosonido==1) {//Sonido de Alerta
             mp = MediaPlayer.create(this,R.raw.alertadesonido);
-            mp.start();}
-
-        if(activosonido==2)
-        {//Sonido normal
+            mp.start();
+        }
+        if(activosonido==2) {//Sonido normal
             mp = MediaPlayer.create(this,R.raw.alertadesonidonormal);
-            mp.start();}
-
+            mp.start();
+        }
     }
-
 
     /**
      * Despliega un mensaje al usuario indicando que encontro un punto especial
@@ -605,28 +492,21 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * @param petrocoins valor del punto en petrocoins para el usuario
      *
      * */
-    public void verificarEspecial(double lat,double lon,String nombre, String petrocoins)
-    {
-         final GeoPoint esp=new GeoPoint(lat,lon);
-
+    public void verificarEspecial(double lat,double lon,String nombre, String petrocoins) {
+        final GeoPoint esp=new GeoPoint(lat,lon);
         Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         v.vibrate(3000);
-
         addMarker(esp,3,"3"); //Especial
 
-             /*Llenar el activity*/
-
+        /*Llenar el activity*/
         ImageView imagen= especialDialog.findViewById(R.id.iv_alerta_imagen);
-
         imagen.setImageResource(getResources().getIdentifier( "dorado", "drawable", getPackageName()));
-
 
         TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto);
         secreto.setText("¡Has encontrado un secreto!");
 
         TextView nom= especialDialog.findViewById( R.id.tv_alerta_nombre);
         nom.setText(nombre);
-
 
         TextView valor= especialDialog.findViewById( R.id.tv_alerta_valor);
         valor.setText(petrocoins+ " Petrocoins");
@@ -640,11 +520,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         TextView novisitados= especialDialog.findViewById( R.id.tv_alerta_novisitados);
         novisitados.setText(Integer.toString(numeroNoVisitados));
 
-
-             /*Asigna los botones*/
-
+        /*Asigna los botones*/
         botoncerrar= especialDialog.findViewById( R.id.btn_close);
-
         botoncerrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -653,7 +530,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         });
 
         botonobservar= especialDialog.findViewById( R.id.btn_observar);
-
         botonobservar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -664,7 +540,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         });
 
         especialDialog.show();
-
     }
 
     /**
@@ -675,17 +550,12 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * @param petrocoins valor del punto en petrocoins
      *
      * */
-    public void verificarNoVisitados( double lat, double lon,String nombre, String petrocoins)
-    {
+    public void verificarNoVisitados( double lat, double lon,String nombre, String petrocoins) {
         final GeoPoint esp=new GeoPoint(lat, lon);
 
-
-            /*Llenar el activity*/
-
+        /*Llenar el activity*/
         ImageView imagen= especialDialog.findViewById(R.id.iv_alerta_imagen);
-
         imagen.setImageResource(getResources().getIdentifier( "visitado", "drawable", getPackageName()));
-
 
         TextView secreto= especialDialog.findViewById( R.id.tv_alerta_secreto);
         secreto.setText("Bienvenido!");
@@ -693,10 +563,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         TextView nom= especialDialog.findViewById( R.id.tv_alerta_nombre);
         nom.setText(nombre);
 
-
         TextView valor= especialDialog.findViewById( R.id.tv_alerta_valor);
         valor.setText(petrocoins+ " Petrocoins");
-
 
         TextView especial= especialDialog.findViewById( R.id.tv_alerta_especial);
         especial.setText(Integer.toString(numeroEspeciales));
@@ -707,11 +575,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         TextView novisitados= especialDialog.findViewById( R.id.tv_alerta_novisitados);
         novisitados.setText(Integer.toString(numeroNoVisitados));
 
-
-            /*Asigna los botones*/
-
+        /*Asigna los botones*/
         botoncerrar= especialDialog.findViewById( R.id.btn_close);
-
         botoncerrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -720,7 +585,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         });
 
         botonobservar= especialDialog.findViewById( R.id.btn_observar);
-
         botonobservar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -731,20 +595,13 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         });
 
         especialDialog.show();
-
-
     }
 
     /**
      * Este metodo se encarga de poner los marcadores en el mapa, con los sitios recibidos en la base de datos
      * */
     private void insertarPuntos() {
-        List <Site> sites= localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
-
-        if (sites.size()==0)
-        /*{localDB.prueba();
-            sites= localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
-        }*/
+        List <Site> sites= localDB.selectAllSitesFromRally(rallyId);
 
         for (int i=0; i<sites.size();i++) {
             Location nuevo = new Location("dummyprovider");
@@ -752,54 +609,38 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             nuevo.setLongitude(Double.parseDouble(sites.get(i).getLongitud()));
 
             if (estaAdentro(nuevo)) {
-
                 if (sites.get(i).getStatus() == 1) {
                     addMarker(new GeoPoint(nuevo.getLatitude(), nuevo.getLongitude()), 1, "1");
                 }
                 if (sites.get(i).getStatus() == 2) {
                     addMarker(new GeoPoint(nuevo.getLatitude(), nuevo.getLongitude()), 2, "2");
                 }
-
-
                 if (sites.get(i).getStatus()==3){
                     addMarker(new GeoPoint(nuevo.getLatitude(), nuevo.getLongitude()), 3, "3");
                 }
-
-
             }
-
         }
     }
 
-   public void visiteTodos()
-   {
-       Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
-   }
+    public void visiteTodos() {
+        Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         mapView.getOverlays().clear();
         numeroNoVisitados=0;
         numeroVisitados=0;
         numeroEspeciales=0;
         insertarPuntos();
-
         try{
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
         }
         catch(SecurityException e){
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
         }
-
     }
-
-  public void irABrujula(View view) {
-        Intent intent = new Intent(this, CompassActivity.class);
-        startActivity(intent);
-    }
-
 
     @Override
     protected void onStop() {

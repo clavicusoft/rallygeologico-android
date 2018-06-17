@@ -67,7 +67,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent myIntent = getIntent(); // gets the previously created intent
-        rallyID= myIntent.getStringExtra("ID");
+        rallyID= "" + myIntent.getIntExtra("rallyId",0);
 
         setContentView(R.layout.main_realidadaumentada);
         setContentView(R.layout.activity_realidadaumentada);
@@ -129,15 +129,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
                 setMapActivity();
             }
         });
-
-        /*botonInclinometro= findViewById( R.id.inclinometro_realidadaumentada);
-        botonInclinometro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setInclinometroActivity();
-            }
-        });*/
-
     }
 
     public void setMapActivity() {
@@ -164,10 +155,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         Toast.makeText(this,"Llamar al activity QR",Toast.LENGTH_SHORT).show();
     }
 
-    public void setInclinometroActivity() {
-        Toast.makeText(this,"Llamar al activity inclinometro",Toast.LENGTH_SHORT).show();
-    }
-
     public void setInformacionActivity() {
         Toast.makeText(this,"Multimedia en proceso",Toast.LENGTH_SHORT).show();
     }
@@ -191,7 +178,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     public void crearGeobjetos() {
         List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
         if (sites.size() == 0) {
-            //localDB.prueba();
             sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
         }
         for (int i = 0; i < sites.size(); i++) {
