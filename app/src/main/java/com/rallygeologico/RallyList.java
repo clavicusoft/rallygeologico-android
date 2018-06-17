@@ -90,13 +90,6 @@ public class RallyList extends AppCompatActivity {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(mDynamicListAdapter);
 
-        //ImageButton imageButton = myLayout.findViewById( R.id.botonRecargarListaRallies);
-        /*imageButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                mDynamicListAdapter.notifyDataSetChanged();
-            }
-        });*/
     }
 
     @Override
@@ -106,14 +99,20 @@ public class RallyList extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Acciones a realizar cuando se clickea un boton de la barra superior de ayuda
+     * @param item opcion seleccionada
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                // vuelve a la pantalla anterior
                 onBackPressed();
                 break;
-            // action with ID action_refresh was selected
             case R.id.action_refresh:
+                // desgarga la informacion de los rallies
                 actualizarRallies();
                 break;
             default:
@@ -122,6 +121,9 @@ public class RallyList extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Descarga la informacion de los rallies en los que esta inscrito el usuario
+     */
     public void actualizarRallies(){
         User user = db.selectLoggedUser();
         if(tieneConexionInternet()){
@@ -159,6 +161,8 @@ public class RallyList extends AppCompatActivity {
                             .setPositiveButton("Ok", null)
                             .show();
                 }
+                initializeData();
+                mDynamicListAdapter.notifyDataSetChanged();
             }
         } else {
             new android.support.v7.app.AlertDialog.Builder(this)
@@ -170,6 +174,10 @@ public class RallyList extends AppCompatActivity {
         mDynamicListAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Descarga todos los sitios asociados a un rally y los guarda en la base de datos local
+     * @param rallyId
+     */
     public void descargarSitiosRally(int rallyId){
         if(tieneConexionInternet()){
             String resultado = obtenerSitios(rallyId);
@@ -223,6 +231,11 @@ public class RallyList extends AppCompatActivity {
         }
     }
 
+    /**
+     * Obtiene un json en forma de string de la base de datos remota con un rally
+     * @param userId id del rally
+     * @return
+     */
     public String obtenerRallies(String userId) {
         String resultado = "JORGE";
         String idConsultaValor = "1";
@@ -231,6 +244,11 @@ public class RallyList extends AppCompatActivity {
         return resultado;
     }
 
+    /**
+     * Obtiene un json en forma de string de la base de datos remota con los sitios de un rally
+     * @param id id del rally
+     * @return
+     */
     public String obtenerSitios(int id) {
         String resultado = "JORGE";
         String rallyId = "" + id;

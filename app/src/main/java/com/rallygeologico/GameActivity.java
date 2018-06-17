@@ -28,11 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
@@ -42,7 +38,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import SqlDatabase.LocalDB;
-import SqlEntities.Activity;
 import SqlEntities.Rally;
 import SqlEntities.Site;
 import SqlEntities.User;
@@ -68,8 +63,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     TextView nombreRally;
     TextView descRally;
     TextView sitesRally;
-    Bundle mBundle;
-    String seleccionado;
+    int seleccionado;
 
     GoogleSignInOptions gso;
     GoogleSignInClient mGoogleSignInClient;
@@ -89,7 +83,6 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         setContentView(R.layout.activity_game);
         db = new LocalDB(this);
 
-        seleccionado="-1"; //Rally default
         //Inicia las misma variables que en el login para controlar si el usuario desea salir de la sesion
         /*gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -100,6 +93,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         fbSignIn = enableButtons && profile != null;
         googleSignIn = account != null;*/
 
+        seleccionado = -1;
         //Busca el boton de jugar en la vista y le asigna una funcion
         // de click para cambiar a la actividad del mapa
         View myLayout = findViewById( R.id.content);
@@ -129,17 +123,15 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         spinner.setOnItemSelectedListener(this);
         spinner.setPrompt("Seleccione un rally");
 
+        // Selecciona los rallies descargados y los muestra al usuario
         rallies = db.selectAllDownloadedRallies();
         if (rallies.isEmpty()) {
             scrollView.setVisibility(View.GONE);
-            new AlertDialog.Builder(this)
-                    .setTitle("Alerta")
-                    .setMessage("No ha descargado ningún rally.")
-                    .setPositiveButton("Ok", null)
-                    .show();
+            Toast.makeText(this, "No ha descargado ningún rally", Toast.LENGTH_LONG).show();
         } else {
             scrollView.setVisibility(View.VISIBLE);
         }
+        // Adaptador que se actualiza con la lista de rallies descargados
         dataAdapter = new ArrayAdapter<Rally>(this, R.layout.rally_spinner_item, rallies){
             @Override
             public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -147,19 +139,19 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
                 TextView tv = (TextView) view;
                 String colorHex;
                 if(position%2 == 1) {
-                    // Set the item background color
+                    // Pone el color de fondo en gris
                     colorHex = "#" + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.Gris_2) & 0x00ffffff);
                     tv.setBackgroundColor(Color.parseColor(colorHex));
                 }
                 else {
-                    // Set the alternate item background color
+                    // Pone el color de fondo del otro item en un gris mas oscuro
                     colorHex = "#" + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.Gris_3) & 0x00ffffff);
                     tv.setBackgroundColor(Color.parseColor(colorHex));
                 }
                 return view;
             }
         };
-        // Drop down layout style - list view with radio button
+        // Estilo que se le aplica al dropdown
         dataAdapter.setDropDownViewResource(R.layout.rally_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
 
@@ -179,20 +171,25 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.menu_perfil:
+                                // Va al perfil del usuario
                                 setProfileScreen();
                                 break;
                             case R.id.menu_rally:
+                                // Va a la lista de rallies
                                 setRallyListScreen();
                                 break;
                             case R.id.menu_puntuacion:
                                 break;
                             case R.id.menu_ajustes:
+                                // Va a las instrucciones de como jugar
                                 setHowToPlayScreen();
                                 break;
                             case R.id.menu_info:
+                                // Va a la pantalla de informacion de nosotros
                                 setAboutUsScreen();
                                 break;
                             case R.id.menu_salir:
+                                // Maneja el cierre de sesion
                                 showAlertLogout();
                                 break;
                         }
@@ -205,24 +202,13 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // On selecting a spinner item
+        // Obtiene el rally seleccionado
         Rally item = (Rally) parent.getItemAtPosition(position);
-        mBundle = new Bundle();
-        // Showing selected spinner item
 
-        String prueba=item.toString();
-        String seleccTockenizer="";
-
-        /*Agarrar el id del rally*/
-        StringTokenizer st = new StringTokenizer(prueba);
-        while (st.hasMoreTokens()) {
-            seleccTockenizer=st.nextToken();
-        }
-        seleccionado= seleccTockenizer;
-        Toast.makeText(parent.getContext(), "Seleccionado: " + seleccionado, Toast.LENGTH_LONG).show();
+        // Guarda el id del rally seleccionado y carga los sitios asociados
         nombreRally.setText(item.getName());
         descRally.setText(item.getDescription());
-        mBundle.putInt("rallyId", item.getRallyId());
+        seleccionado = item.getRallyId();
         List<Site> sitios = db.selectAllSitesFromRally(item.getRallyId());
         Iterator iterator = sitios.iterator();
         String sitesList = "";
@@ -233,6 +219,10 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         sitesRally.setText(sitesList);
     }
 
+    /**
+     * Accion que se realiza cuando no se selecciona nada en el spinner
+     * @param arg0
+     */
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
         Toast.makeText(this, "No ha descargado ningún rally", Toast.LENGTH_LONG).show();
@@ -323,9 +313,9 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
     public void setMapScreen() {
         LocationManager locationManager= (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if ((locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))) {
-            if(!seleccionado.equals("-1")) {
+            if(seleccionado != -1) {
                 Intent intent = new Intent(this, ActivityMap.class);
-                intent.putExtra("ID",seleccionado);
+                intent.putExtra("rallyId",seleccionado);
                 startActivity(intent);
             }
             else {
@@ -384,17 +374,16 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
                 .show();
     }
 
+    /**
+     * Cuando se regresa a la pantalla vuelve a revisar si hay o no rallies descargados
+     */
     @Override
     public void onResume(){
         super.onResume();
         rallies = db.selectAllDownloadedRallies();
         if (rallies.isEmpty()) {
             scrollView.setVisibility(View.GONE);
-            new AlertDialog.Builder(this)
-                    .setTitle("Alerta")
-                    .setMessage("No ha descargado ningún rally.")
-                    .setPositiveButton("Ok", null)
-                    .show();
+            Toast.makeText(this, "No ha descargado ningún rally", Toast.LENGTH_LONG).show();
         } else {
             scrollView.setVisibility(View.VISIBLE);
         }
@@ -406,19 +395,16 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
                 TextView tv = (TextView) view;
                 String colorHex;
                 if(position%2 == 1) {
-                    // Set the item background color
                     colorHex = "#" + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.Gris_2) & 0x00ffffff);
                     tv.setBackgroundColor(Color.parseColor(colorHex));
                 }
                 else {
-                    // Set the alternate item background color
                     colorHex = "#" + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.Gris_3) & 0x00ffffff);
                     tv.setBackgroundColor(Color.parseColor(colorHex));
                 }
                 return view;
             }
         };
-        // Drop down layout style - list view with radio button
         dataAdapter.setDropDownViewResource(R.layout.rally_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
     }
