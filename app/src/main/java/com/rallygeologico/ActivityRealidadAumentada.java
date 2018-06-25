@@ -456,7 +456,8 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
      * Indica al usuario cuando ya ha visitado todos los sitios de un rally
      * */
     public void visiteTodos() {
-        Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, finishRallyActivity.class);
+        startActivity(intent);
     }
 
     /**
