@@ -116,6 +116,8 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         /*Ubicacion*/
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         try {
+            if(center!=null)
+            {verificarPuntos();}
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
         } catch (SecurityException e) {
             Toast.makeText(this, "No pedi el permiso bien", Toast.LENGTH_SHORT).show();
@@ -466,6 +468,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         numeroEspeciales=0;
         crearGeobjetos();
         try{
+
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
         }
         catch(SecurityException e){
