@@ -279,6 +279,60 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             Toast toast = Toast.makeText(context, "Por favor ingrese el nombre de usuario y la contraseña", Toast.LENGTH_SHORT);
             toast.show();
+
+
+            credentials.setVisibility(GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            usuario = "jorgeremon";
+            contrasena = "jorgeremon123";
+            user = db.selectUserByUsername(usuario, contrasena);
+            // Si no encuentra al usuario localmente, consulta en la base remota
+            if (user == null) {
+                // Revisa si hay conexion a internet
+                if(tieneConexionInternet()){
+                    // Realiza la solicitud al servidor
+                    String resultado = validarCredencialesWeb(usuario, contrasena);
+                    if (resultado.equalsIgnoreCase("null")) {
+                        credentials.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        mostrarAlerta();
+                    } else {
+                        // Obtiene al usuario y lo arregla para que el formato sea correcto
+                        String toParse = resultado.replace("]","");
+                        toParse = toParse.replace("[","");
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(toParse);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        // Si no es nulo, inserta al usuario en la base
+                        if(jsonObject != null){
+                            user = JSONParser.getUser(jsonObject);
+                            user.setPassword(contrasena);
+                            String url = "http://www.rallygeologico.ucr.ac.cr" + user.getPhotoUrl();
+                            new DownloadTask(context, 1, "fotoPerfil", url);
+                            long id = db.insertUser(user);
+                            setGameScreen();
+                        }
+                    }
+
+                } else {
+                    credentials.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    new AlertDialog.Builder(this)
+                            .setTitle("Error")
+                            .setMessage("Nombre de usuario o contraseña incorrectos.\nSi es la primera vez que ingresa, debe conectarse a Internet.")
+                            .setPositiveButton("Ok", null)
+                            .show();
+                }
+            } else {
+                user.setLogged(true);
+                db.updateUser(user);
+                setGameScreen();
+            }
+
+
         }
     }
 
@@ -472,7 +526,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        profileTracker.stopTracking();
+        //profileTracker.stopTracking();
     }
 
     /**

@@ -101,8 +101,8 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         ft.hide(fragmentBrujula);
         ft.hide(fragmentInclinometro);
         ft.commit();
-        addShowHideListener(R.id.inclinometro_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentSensors));
-        addShowHideListener(R.id.brujula_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentCompass));
+        addShowHideListener(R.id.inclinometro_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentSensors), fragmentManager.findFragmentById(R.id.fragmentCompass));
+        addShowHideListener(R.id.brujula_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentCompass), fragmentManager.findFragmentById(R.id.fragmentSensors));
 
         especialDialog=new Dialog(this);
         especialDialog.setContentView(R.layout.alertarealidadaumentada);
@@ -159,13 +159,16 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
      * @param buttonId boton victima que se debe esconde o mostrar
      * @param fragment fragmento utilizado
      * */
-   public void addShowHideListener(int buttonId, final Fragment fragment) {
+   public void addShowHideListener(int buttonId, final Fragment fragment, final Fragment fragment2) {
         final Button button = (Button) findViewById(buttonId);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
                 if (fragment.isHidden()) {
+                    if(!fragment2.isHidden()){
+                        ft.hide(fragment2);
+                    }
                     ft.show(fragment);
                 } else {
                     ft.hide(fragment);
