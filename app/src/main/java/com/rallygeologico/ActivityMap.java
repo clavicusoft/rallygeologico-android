@@ -56,6 +56,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     Button botonCam;
     Button botonQR;
     Button botonPausa;
+    Button botonFinalizar;
 
     Marker me;
 
@@ -188,6 +189,14 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             }
         });
 
+        botonFinalizar = findViewById(R.id.btn_stop);
+        botonFinalizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finalizarRally();
+            }
+        });
+
         /*Anade puntos*/
         insertarPuntos();
         try{
@@ -205,13 +214,31 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
         new AlertDialog.Builder(this)
                 .setTitle("Pausar rally")
-                .setMessage("Seguro que desea pausar el rally? Posteriormente puede reanudarlo conservando su progreso.")
+                .setMessage("¿Seguro que desea pausar el rally? Posteriormente puede reanudarlo conservando su progreso.")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         volveraListaRallies();
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    public void finalizarRally() {
+        new AlertDialog.Builder(this)
+                .setTitle("Finalizar rally")
+                .setMessage("¿Seguro que desea finalizar el rally sin haber visitado todos los puntos?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        guardarCompetencia();
+                        volveraListaRallies();
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
+
+    }
+
+    public void guardarCompetencia(){
+
     }
 
     /**
