@@ -102,8 +102,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         //Actualiza el cuadrado del mapa para generar un rango de validas
         //arribaDerecha=new GeoPoint(10.57,-85.3);
         //abajoIzquierda=new GeoPoint(  10.50,-85.5);
-        arribaDerecha=new GeoPoint(11.15, -85.1);
-        abajoIzquierda=new GeoPoint(  10.42, -85.7);
+        arribaDerecha=new GeoPoint(11.1,-85.5);
+        abajoIzquierda=new GeoPoint(  10.75,-85.8);
 
         lastKnown=false;
 
@@ -200,11 +200,15 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         /*Anade puntos*/
         insertarPuntos();
         try{
+            if(center!=null)
+            {verificarPuntos();}
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
         }
         catch(SecurityException e){
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
     /**
@@ -479,7 +483,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * */
     public void verificarPuntos() {
         /*Recorro los markers*/
-        List <Site> sites= localDB.selectAllSitesFromRally(1);
+        List <Site> sites= localDB.selectAllSitesFromRally(rallyId);
         int activosonido=0;
         for (int ite=0;ite<sites.size();ite++) {
             double lat=Double.parseDouble(sites.get(ite).getLatitud());
@@ -489,7 +493,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
                 activosonido=1;
             }
-            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0) {
+            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=1000.0) {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),2);
 
                 /*Actualizo la vista*/
@@ -641,6 +645,12 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         List <Site> sites= localDB.selectAllSitesFromRally(rallyId);
 
         for (int i=0; i<sites.size();i++) {
+            Toast.makeText(this,String.valueOf(sites.get(i).getStatus()),Toast.LENGTH_SHORT ).show();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             Location nuevo = new Location("dummyprovider");
             nuevo.setLatitude(Double.parseDouble(sites.get(i).getLatitud()));
             nuevo.setLongitude(Double.parseDouble(sites.get(i).getLongitud()));
