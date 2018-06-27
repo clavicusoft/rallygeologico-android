@@ -25,6 +25,7 @@ public class WebActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, final String url) {
             }
         });
-        myWebView.loadUrl("http://rallygeologico.ucr.ac.cr");
+        String url = getIntent().getExtras().getString("URL");
+        myWebView.loadUrl(url);
     }
 }

@@ -726,6 +726,7 @@ public class RallyList extends AppCompatActivity {
 
     public void setWebActivity() {
         Intent intent = new Intent(this, WebActivity.class);
+        intent.putExtra("URL", "http://rallygeologico.ucr.ac.cr");
         startActivity(intent);
     }
 
