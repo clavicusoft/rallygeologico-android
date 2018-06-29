@@ -15,7 +15,7 @@ public class Site {
     private String latitud;
     private String longitud;
     private int status;
-    private int siteTotalPoints;
+    private int siteVisitedPoints;
     private int sitePointsAwarded;
     private List<Term> termList;
     private List<Activity> activityList;
@@ -120,16 +120,16 @@ public class Site {
      * Devuelve el total de puntos de un sitio
      * @return el total de puntos de un sitio
      */
-    public int getSiteTotalPoints() {
-        return siteTotalPoints;
+    public int getSiteVisitedPoints() {
+        return siteVisitedPoints;
     }
 
     /**
      * Asigna el total de puntos de un sitio
-     * @param siteTotalPoints el total de puntos de un sitio
+     * @param siteVisitedPoints el total de puntos de un sitio
      */
-    public void setSiteTotalPoints(int siteTotalPoints) {
-        this.siteTotalPoints = siteTotalPoints;
+    public void setSiteVisitedPoints(int siteVisitedPoints) {
+        this.siteVisitedPoints = siteVisitedPoints;
     }
 
     /**
@@ -204,17 +204,17 @@ public class Site {
      * @param latitud del sitio
      * @param longitud del sitio
      * @param status status de un sitio
-     * @param siteTotalPoints total de puntos de un sitio
+     * @param siteVisitedPoints total de puntos de un sitio
      * @param sitePointsAwarded puntos obtenidos en el sitio
      */
-    public Site(int siteId, String siteName, String siteDescription, String latitud, String longitud, int status, int siteTotalPoints, int sitePointsAwarded) {
+    public Site(int siteId, String siteName, String siteDescription, String latitud, String longitud, int status, int siteVisitedPoints, int sitePointsAwarded) {
         this.siteId = siteId;
         this.siteName = siteName;
         this.siteDescription = siteDescription;
         this.latitud = latitud;
         this.longitud = longitud;
         this.status = status;
-        this.siteTotalPoints = siteTotalPoints;
+        this.siteVisitedPoints = siteVisitedPoints;
         this.sitePointsAwarded = sitePointsAwarded;
         this.termList = new ArrayList<Term>();
         this.activityList = new ArrayList<Activity>();

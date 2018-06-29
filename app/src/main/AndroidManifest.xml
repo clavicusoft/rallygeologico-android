@@ -29,6 +29,7 @@
             android:theme="@style/MainTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -66,9 +67,9 @@
         <activity
             android:name=".VisitasActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
             android:parentActivityName=".ActivityMap"
-            android:theme="@style/AppTheme"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ActivityRealidadAumentada"
             android:label="@string/app_name"
@@ -91,12 +92,12 @@
             android:name=".WebActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".finishRallyActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

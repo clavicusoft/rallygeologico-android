@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import SqlEntities.Rally;
 import SqlEntities.Site;
@@ -99,7 +98,7 @@ public class JSONParser {
                 sitio.setLatitud(specificSiteJson.getString("latitude"));
                 sitio.setLongitud(specificSiteJson.getString("longitude"));
                 valor = Integer.parseInt(specificSiteJson.getString("points"));
-                sitio.setSiteTotalPoints(valor);
+                sitio.setSiteVisitedPoints(valor);
                 sitio.setSitePointsAwarded(0);
                 sitio.setStatus(1);
                 listaSitios.add(sitio);
