@@ -63,7 +63,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:padding="1dp"
-            android:text="GeoPuntos:"
+            android:text="Petrocoins:"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/tag_est"
             app:layout_constraintLeft_toLeftOf="parent"
