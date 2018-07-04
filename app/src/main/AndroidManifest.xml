@@ -91,7 +91,7 @@
             android:name=".WebActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/MainTheme" />
         <activity
             android:name=".finishRallyActivity"
             android:label="@string/app_name"
@@ -103,12 +103,10 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".ActivityRealidadAumentada"
             android:theme="@style/AppTheme" />
-
         <activity
             android:name=".ActivityQR"
             android:screenOrientation="portrait"
-            android:theme="@style/MainTheme"
-        />
+            android:theme="@style/MainTheme" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
