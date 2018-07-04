@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -489,11 +490,17 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             double lat=Double.parseDouble(sites.get(ite).getLatitud());
             double lon=Double.parseDouble(sites.get(ite).getLongitud());
             if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=50.0) {
+                /*Contador de puntos*/
+                localDB.updatePointsAwarded(sites.get(ite).getSiteId());
+
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),3);
                 verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
                 activosonido=1;
             }
             if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=1000.0) {
+                /*Contador de puntos*/
+                localDB.updatePointsAwarded(sites.get(ite).getSiteId());
+
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),2);
 
                 /*Actualizo la vista*/
@@ -645,12 +652,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         List <Site> sites= localDB.selectAllSitesFromRally(rallyId);
 
         for (int i=0; i<sites.size();i++) {
-            Toast.makeText(this,String.valueOf(sites.get(i).getStatus()),Toast.LENGTH_SHORT ).show();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             Location nuevo = new Location("dummyprovider");
             nuevo.setLatitude(Double.parseDouble(sites.get(i).getLatitud()));
             nuevo.setLongitude(Double.parseDouble(sites.get(i).getLongitud()));
@@ -683,27 +685,29 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     * Cuando viene de otro activity se actualiza los sitios segun la base de datos
     * */
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mapView.getOverlays().clear();
-        numeroNoVisitados=0;
-        numeroVisitados=0;
-        numeroEspeciales=0;
-        insertarPuntos();
-        try{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
-        }
-        catch(SecurityException e){
-            Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
-        }
-    }
+   @Override
+   protected void  onStart()
+   {
+       super.onStart();
+       mapView.getOverlays().clear();
+       numeroNoVisitados=0;
+       numeroVisitados=0;
+       numeroEspeciales=0;
+       insertarPuntos();
+       try{
+           locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
+       }
+       catch(SecurityException e){
+           Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
+       }
 
-    /**
-     * Cuando me paso de activity se deja de escuchar la ubicacion
-     * */
+   }
+
+
+
     @Override
-    protected void onStop() {
+    protected void onStop()
+    {
         super.onStop();
         try{
             locationManager.removeUpdates(this);
@@ -712,4 +716,5 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
         }
     }
+
 }

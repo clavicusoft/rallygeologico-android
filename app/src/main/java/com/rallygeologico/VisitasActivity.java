@@ -5,6 +5,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ public class VisitasActivity extends AppCompatActivity {
     String geopuntos;
     String informacion;
 
+    Toolbar toolbar;
 
     /**
      * Se ejecuta cuando se crea la vista
@@ -35,6 +38,14 @@ public class VisitasActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visitas);
+
+/*Toolbar*/
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Rally Geológico");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         Intent myIntent = getIntent(); // gets the previously created intent
 
@@ -99,4 +110,22 @@ public class VisitasActivity extends AppCompatActivity {
         }
 
     }
+
+    /**
+     * Acciones a realizar cuando se clickea un boton de la barra superior de ayuda
+     * @param item opcion seleccionada
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // vuelve a la pantalla anterior
+                onBackPressed();
+                break;
+        }
+        return true;
+    }
+
+
 }

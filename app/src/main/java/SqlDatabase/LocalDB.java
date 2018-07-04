@@ -1080,6 +1080,12 @@ public class LocalDB{
         }
     }
 
+    /*Contador de puntos*/
+    public void updatePointsAwarded(int siteID)
+    {
+
+    }
+
     /**
      * Metodo para actualizar el estatus de un sitio en la base de datos local
      * @param siteId identificador del sitio a modificar
@@ -1090,9 +1096,11 @@ public class LocalDB{
         ContentValues values = new ContentValues();
         values.put(DBContract.SiteEntry.COLUMN_NAME_STATUS,newStatus);
 
-        /**
-         *
+        /*
+            Asocia los puntos
          */
+
+
         String selection = DBContract.SiteEntry.COLUMN_NAME_ID + " = ?";
         String[] selectionArgs = {String.valueOf(siteId)};
         int count = database.update(
