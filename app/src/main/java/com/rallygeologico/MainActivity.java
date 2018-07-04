@@ -24,7 +24,9 @@ import SqlEntities.User;
  */
 public class MainActivity extends AppCompatActivity {
 
-    ImageView logo;
+    ImageView logo_ucr;
+    ImageView logo_sinac;
+    ImageView logo_acg;
     Button start;
     boolean fbSignIn;
     boolean googleSignIn;
@@ -44,7 +46,30 @@ public class MainActivity extends AppCompatActivity {
         //localDB.prueba();
         setContentView(R.layout.activity_main);
         start = findViewById(R.id.btn_inicio);
-        logo = findViewById(R.id.iv_logoucr);
+
+        logo_ucr = findViewById(R.id.iv_logoucr);
+        logo_ucr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setWebActivity("https://www.ucr.ac.cr/");
+            }
+        });
+
+        logo_acg = findViewById(R.id.iv_logoarea);
+        logo_acg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setWebActivity("https://www.acguanacaste.ac.cr/");
+            }
+        });
+
+        logo_sinac = findViewById(R.id.iv_logoci);
+        logo_sinac.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setWebActivity("http://www.sinac.go.cr/ES/Paginas/default.aspx");
+            }
+        });
 
         /*account = GoogleSignIn.getLastSignedInAccount(this);
         enableButtons = AccessToken.getCurrentAccessToken() != null;
@@ -82,6 +107,12 @@ public class MainActivity extends AppCompatActivity {
      */
     public void irALogin(View view) {
         Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    public void setWebActivity(String url) {
+        Intent intent = new Intent(this, WebActivity.class);
+        intent.putExtra("URL", url);
         startActivity(intent);
     }
 

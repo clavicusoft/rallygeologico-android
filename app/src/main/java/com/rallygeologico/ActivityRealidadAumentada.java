@@ -90,8 +90,10 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
         /*Esconda el boton de informacion desde el inicio*/
         botonInformacion= findViewById(R.id.informacion_realidadaumentada);
-        botonInformacion.setVisibility(View.GONE);
-        botonInformacion.setClickable(false);
+
+        /*Descomentar*/
+        //botonInformacion.setVisibility(View.GONE);
+        //botonInformacion.setClickable(false);
 
         /*Inicializar fragment de brujula*/
         fragmentBrujula = fragmentManager.findFragmentById(R.id.fragmentCompass);
@@ -188,7 +190,8 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     }
 
     public void setInformacionActivity() {
-        Toast.makeText(this,"Multimedia en proceso",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, media_activity.class);
+        startActivity(intent);
     }
 
     /**
@@ -315,8 +318,9 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             ite++;
         }
         if (noEncontre) {
-            botonInformacion.setVisibility(View.GONE);
-            botonInformacion.setClickable(false);
+            /*Descomentar*/
+           // botonInformacion.setVisibility(View.GONE);
+            //botonInformacion.setClickable(false);
          }
     }
 
@@ -456,7 +460,8 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
      * Indica al usuario cuando ya ha visitado todos los sitios de un rally
      * */
     public void visiteTodos() {
-        Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, finishRallyActivity.class);
+        startActivity(intent);
     }
 
     /**

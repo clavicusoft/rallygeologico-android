@@ -4,9 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import SqlEntities.Competition;
 import SqlEntities.Rally;
 import SqlEntities.Site;
 import SqlEntities.User;
@@ -76,6 +80,55 @@ public class JSONParser {
         return rally;
     }
 
+    public static Competition getCompetition(JSONObject obj) {
+        Competition competition = new Competition();
+        Rally rally = new Rally();
+        int valor;
+        try {
+            // Obtener la informacion de la competencia del usuario
+            competition.setCompetitionId(obj.getString("id"));
+            String active = obj.getString("is_active");
+            if (active.equalsIgnoreCase("1")) {
+                competition.setActive(true);
+            } else {
+                competition.setActive(false);
+            }
+            competition.setName(obj.getString("name"));
+            String dateStr = obj.getString("starting_date");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = null;
+            try {
+                date = sdf.parse(dateStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            competition.setStartingDate(date);
+            dateStr = obj.getString("finishing_date");
+            date = null;
+            try {
+                date = sdf.parse(dateStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            competition.setFinichingDate(date);
+
+            // Obtener la informacion del rally de la competencia
+            JSONObject rallyJson = (JSONObject) obj.get("rally");
+            valor = Integer.parseInt(rallyJson.getString("id"));
+            rally.setRallyId(valor);
+            rally.setName(rallyJson.getString("name"));
+            rally.setDescription(rallyJson.getString("description"));
+            rally.setDownloaded(false);
+            rally.setImageURL(rallyJson.getString("image_url"));
+            valor = Integer.parseInt(rallyJson.getString("points_awarded"));
+            rally.setPointsAwarded(valor);
+            competition.setRally(rally);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return competition;
+    }
+
     /**
      * Recibe un json de un rally con todos sus sitios y devuelve una lista para agregarlos a la bd local
      * @param obj Objeto json a parsear
@@ -90,6 +143,7 @@ public class JSONParser {
         try {
             JSONArray sitesJson = (JSONArray) obj.getJSONArray("site");
             JSONObject specificSiteJson = (JSONObject) sitesJson.get(cantidad);
+            String especial;
             while(specificSiteJson != null){
                 sitio = new Site();
                 valor = Integer.parseInt(specificSiteJson.getString("id"));
@@ -101,6 +155,12 @@ public class JSONParser {
                 valor = Integer.parseInt(specificSiteJson.getString("points"));
                 sitio.setSiteTotalPoints(valor);
                 sitio.setSitePointsAwarded(0);
+                especial = specificSiteJson.getString("is_easter_egg");
+                if (especial.equalsIgnoreCase("0")) {
+                    sitio.setStatus(1);
+                } else {
+                    sitio.setStatus(4);
+                }
                 sitio.setStatus(1);
                 listaSitios.add(sitio);
 
