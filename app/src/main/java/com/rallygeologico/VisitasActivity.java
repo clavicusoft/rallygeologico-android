@@ -60,6 +60,8 @@ public class VisitasActivity extends AppCompatActivity {
             informacion = myIntent.getStringExtra("Informacion");
         }
 
+        /*Descomentar*/
+        /*
         ImageView imagenNoVisitado= (ImageView)     findViewById(R.id.imagenPunto);
 
         Resources res = getResources();
@@ -67,7 +69,7 @@ public class VisitasActivity extends AppCompatActivity {
         int resourceId = res.getIdentifier( nombreImagen, "drawable", getPackageName() );
 
         imagenNoVisitado.setImageResource( resourceId );
-
+*/
 
         TextView nombrePuntoNoVisitado=(TextView) findViewById(R.id.nombrePunto);
         nombrePuntoNoVisitado.setText(nombre);
