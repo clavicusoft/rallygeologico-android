@@ -149,6 +149,19 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
                 setMapActivity();
             }
         });
+
+        botonQR= findViewById( R.id.qr_realidadaumentada);
+        botonQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                irQR();
+            }
+        });
+    }
+
+    public void irQR() {
+        Intent intent = new Intent(this,ActivityQR.class);
+        startActivity(intent);
     }
 
     /**

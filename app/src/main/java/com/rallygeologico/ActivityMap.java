@@ -178,7 +178,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         botonQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Codigo QR en Trabajo",Toast.LENGTH_SHORT).show();
+                irQR();
             }
         });
 
@@ -262,6 +262,13 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         Intent intent = new Intent(this,ActivityRealidadAumentada.class);
         String id = "" + rallyId;
         intent.putExtra("rallyId",id);
+        startActivity(intent);
+    }
+
+    public void irQR()
+    {
+
+        Intent intent = new Intent(this,ActivityQR.class);
         startActivity(intent);
     }
 
@@ -364,8 +371,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 }
                 verificarPuntos();
             }
-            else
-            {Toast.makeText(this,"Te saliste del mapa",Toast.LENGTH_LONG).show();}
+
         }
     }
 
@@ -474,7 +480,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * */
     public void crearBorde() {
         boundingBox=new BoundingBox(arribaDerecha.getLatitude(),arribaDerecha.getLongitude(),abajoIzquierda.getLatitude(),abajoIzquierda.getLongitude());
-        mapView.setMinZoomLevel(13.0);
+        mapView.setMinZoomLevel(13.5);
         mapView.setMaxZoomLevel(20.0);
         mapView.setScrollableAreaLimitDouble(boundingBox);
     }

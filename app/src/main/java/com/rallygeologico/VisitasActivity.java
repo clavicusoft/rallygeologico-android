@@ -77,6 +77,7 @@ public class VisitasActivity extends AppCompatActivity implements terminoImagen.
 
         FileManager fm = new FileManager();
 
+
         TextView nombrePuntoNoVisitado=(TextView) findViewById(R.id.nombrePunto);
         nombrePuntoNoVisitado.setText(nombre);
 
