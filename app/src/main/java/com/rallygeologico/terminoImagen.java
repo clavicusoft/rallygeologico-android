@@ -1,8 +1,6 @@
 package com.rallygeologico;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,16 +15,16 @@ import FileManager.FileManager;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link termino.OnFragmentInteractionListener} interface
+ * {@link terminoImagen.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class termino extends Fragment {
+public class terminoImagen extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
     ImageView mediaPunto;
 
-    public termino() {
+    public terminoImagen() {
         // Required empty public constructor
     }
 
@@ -35,8 +33,8 @@ public class termino extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View v = inflater.inflate(R.layout.fragment_termino, container, false);
-        mediaPunto = v.findViewById(R.id.media_imagenPunto);
+        View v = inflater.inflate(R.layout.fragment_termino2, container, false);
+        mediaPunto = v.findViewById(R.id.imagen_termino);
         if (getArguments() != null) {
             String name = getArguments().getString("IMAGE_NAME");
             setImage(name);

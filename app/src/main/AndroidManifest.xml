@@ -101,6 +101,7 @@
             android:name=".media_activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:parentActivityName=".ActivityRealidadAumentada"
             android:theme="@style/AppTheme" />
 
         <meta-data
