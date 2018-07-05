@@ -35,28 +35,7 @@ public class Site {
 
         return status;
     }
-
-    public void setStatus(int status) {
-        this.status = status;
-        switch (status){
-            case 1:
-                is_visited = false;
-                is_easter_egg = false;
-                break;
-            case 2:
-                is_visited = true;
-                is_easter_egg = false;
-                break;
-            case 3:
-                is_visited = true;
-                is_easter_egg = true;
-                break;
-            case 4:
-                is_visited = false;
-                is_easter_egg = true;
-                break;
-        }
-    }
+    
 
     public int getPointsForVisit() {
         return pointsForVisit;

@@ -1156,6 +1156,11 @@ public class LocalDB{
                 int siteVIsitedPoints = cursor.getInt(index);
                 site.setPointsForVisit(siteVIsitedPoints);
 
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ID);
+                int siteId2 = cursor.getInt(index);
+                site.setSiteId(siteId2);
+
                 index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ISVISITED);
                 int temporal2 = cursor.getInt(index);
                 boolean visited = temporal2>0;
@@ -1218,7 +1223,7 @@ public class LocalDB{
 
                 index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_POINTSFORVISIT);
                 int siteVIsitedPoints = cursor.getInt(index);
-                site.setSiteId(siteVIsitedPoints);
+                site.setPointsForVisit(siteVIsitedPoints);
 
                 index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ISVISITED);
                 int temporal2 = cursor.getInt(index);

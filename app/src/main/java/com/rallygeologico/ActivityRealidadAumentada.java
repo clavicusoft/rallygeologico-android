@@ -344,12 +344,16 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             double lat = Double.parseDouble(sites.get(ite).getLatitud());
             double lon = Double.parseDouble(sites.get(ite).getLongitud());
             if (sites.get(ite).getStatus() == 4 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 50.0) {
-                localDB.updateSiteVisit(sites.get(ite).getSiteId(), 3);
+              //  localDB.updateSiteVisit(sites.get(ite).getSiteId(), 3);
+                localDB.updateSiteVisit(sites.get(ite).getSiteId());
                 verificarEspecial(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getPointsForVisit()));
             activoSonido=1;
             }
             if (sites.get(ite).getStatus() == 1 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 20.0) {
-                localDB.updateSiteVisit(sites.get(ite).getSiteId(), 2);
+
+                //localDB.updateSiteVisit(sites.get(ite).getSiteId(), 2);
+                localDB.updateSiteVisit(sites.get(ite).getSiteId());
+
                  /*Actualizo la vista*/
                 Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
                 v.vibrate(3000);
@@ -359,6 +363,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
                 numeroVisitados=0;
                 numeroEspeciales=0;
                 crearGeobjetos();
+
                 /*Muestro la notificacion o termino*/
                 if(numeroNoVisitados==0) {
                    visiteTodos();
@@ -470,6 +475,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
      * */
     public void visiteTodos() {
         Intent intent = new Intent(this, finishRallyActivity.class);
+        intent.putExtra("rallyId",rallyID);
         startActivity(intent);
     }
 
