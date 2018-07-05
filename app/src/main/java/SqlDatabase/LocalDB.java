@@ -908,7 +908,7 @@ public class LocalDB{
                 user.setPhotoUrl(photo);
 
                 index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERID);
-                String id = cursor.getString(index);
+                int id = cursor.getInt(index);
                 user.setUserId(id);
 
                 index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERNAME);
@@ -953,7 +953,7 @@ public class LocalDB{
                 user.setPhotoUrl(photo);
 
                 index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERID);
-                String id = cursor.getString(index);
+                int id = cursor.getInt(index);
                 user.setUserId(id);
 
                 index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERNAME);
@@ -1004,7 +1004,7 @@ public class LocalDB{
                 user.setPhotoUrl(photo);
 
                 index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERID);
-                String id = cursor.getString(index);
+                int id = cursor.getInt(index);
                 user.setUserId(id);
 
                 index = cursor.getColumnIndexOrThrow(DBContract.UserEntry.COLUMN_NAME_USERNAME);

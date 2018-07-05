@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public class User {
-    private String userId;
+    private int userId;
     private String password;
     private String username;
     private String firstName;
@@ -23,7 +23,7 @@ public class User {
      * Devuelve el identificador del usuario dentro de la apliacion
      * @return el identificador del usuario dentro de la apliacion
      */
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
@@ -31,7 +31,7 @@ public class User {
      * Asigna un identificador para el usuario dentro de la apliacion
      * @param userId el identificador del usuario dentro de la apliacion
      */
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -182,7 +182,7 @@ public class User {
      * @param photoUrl URL donde esta almacenada la imagen de usuario
      * @param isLogged variable para saber si el usuario se encuentra activo en el dispositivo
      */
-    public User(String userId, String password,  String username, String firstName, String lastName, String email, String photoUrl, boolean isLogged) {
+    public User(int userId, String password,  String username, String firstName, String lastName, String email, String photoUrl, boolean isLogged) {
         this.userId = userId;
         this.password = password;
         this.username = username;
