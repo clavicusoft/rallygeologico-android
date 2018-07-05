@@ -25,6 +25,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -234,7 +235,7 @@ public class RallyList extends AppCompatActivity {
             if (resultado.equalsIgnoreCase("null")) {
                 new android.support.v7.app.AlertDialog.Builder(this)
                         .setTitle("Atención")
-                        .setMessage("Este rally aún no tiene sitios asignados.")
+                        .setMessage("Este rally aún no tiene actividades asignados.")
                         .setPositiveButton("Ok", null)
                         .show();
             } else {
@@ -242,9 +243,9 @@ public class RallyList extends AppCompatActivity {
                 for (int i = 0; i < resultado.length(); i++){
                     toParse += resultado.charAt(i);
                 }
-                JSONObject jsonObject = null;
+                JSONArray jsonObject = null;
                 try {
-                    jsonObject = new JSONObject(toParse);
+                    jsonObject = new JSONArray(toParse);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -258,7 +259,7 @@ public class RallyList extends AppCompatActivity {
             if (resultado.equalsIgnoreCase("null")) {
                 new android.support.v7.app.AlertDialog.Builder(this)
                         .setTitle("Atención")
-                        .setMessage("Este rally aún no tiene sitios asignados.")
+                        .setMessage("Este rally aún no tiene términos asignados.")
                         .setPositiveButton("Ok", null)
                         .show();
             } else {
@@ -266,9 +267,9 @@ public class RallyList extends AppCompatActivity {
                 for (int i = 0; i < resultado.length(); i++){
                     toParse += resultado.charAt(i);
                 }
-                JSONObject jsonObject = null;
+                JSONArray jsonObject = null;
                 try {
-                    jsonObject = new JSONObject(toParse);
+                    jsonObject = new JSONArray(toParse);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
