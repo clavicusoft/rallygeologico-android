@@ -14,11 +14,35 @@ public class Site {
     private String siteDescription;
     private String latitud;
     private String longitud;
-    private int status;
-    private int siteVisitedPoints;
-    private int sitePointsAwarded;
+    private int pointsForVisit;
+    private boolean is_visited;
+    private boolean is_easter_egg;
     private List<Term> termList;
     private List<Activity> activityList;
+
+    public int getPointsForVisit() {
+        return pointsForVisit;
+    }
+
+    public void setPointsForVisit(int pointsForVisit) {
+        this.pointsForVisit = pointsForVisit;
+    }
+
+    public boolean is_visited() {
+        return is_visited;
+    }
+
+    public void set_visited(boolean is_visited) {
+        this.is_visited = is_visited;
+    }
+
+    public boolean is_easter_egg() {
+        return is_easter_egg;
+    }
+
+    public void setIs_easter_egg(boolean is_easter_egg) {
+        this.is_easter_egg = is_easter_egg;
+    }
 
     /**
      * Devuelve el identificador del sitio
@@ -101,54 +125,6 @@ public class Site {
     }
 
     /**
-     * Devuelve el status de un sitio
-     * @return el status de un sitio
-     */
-    public int getStatus() {
-        return status;
-    }
-
-    /**
-     * Asigna el status de un sitio
-     * @param status el status de un sitio
-     */
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    /**
-     * Devuelve el total de puntos de un sitio
-     * @return el total de puntos de un sitio
-     */
-    public int getSiteVisitedPoints() {
-        return siteVisitedPoints;
-    }
-
-    /**
-     * Asigna el total de puntos de un sitio
-     * @param siteVisitedPoints el total de puntos de un sitio
-     */
-    public void setSiteVisitedPoints(int siteVisitedPoints) {
-        this.siteVisitedPoints = siteVisitedPoints;
-    }
-
-    /**
-     * Devuelve los puntos obtenidos en el sitio
-     * @return los puntos obtenidos en el sitio
-     */
-    public int getSitePointsAwarded() {
-        return sitePointsAwarded;
-    }
-
-    /**
-     * Asigna los puntos obtenidos en el sitio
-     * @param sitePointsAwarded los puntos obtenidos en el sitio
-     */
-    public void setSitePointsAwarded(int sitePointsAwarded) {
-        this.sitePointsAwarded = sitePointsAwarded;
-    }
-
-    /**
      * Devuelve la lista de terminos asociados al sitio
      * @return la lista de terminos asociados al sitio
      */
@@ -203,21 +179,21 @@ public class Site {
      * @param siteDescription la descripcion del sitio
      * @param latitud del sitio
      * @param longitud del sitio
-     * @param status status de un sitio
-     * @param siteVisitedPoints total de puntos de un sitio
-     * @param sitePointsAwarded puntos obtenidos en el sitio
+     * @param is_visited status de un sitio
+     * @param is_easter_egg verifica si es un sitio especial
+     * @param pointsForVisit puntos obtenidos en el sitio
      */
-    public Site(int siteId, String siteName, String siteDescription, String latitud, String longitud, int status, int siteVisitedPoints, int sitePointsAwarded) {
+    public Site(int siteId, String siteName, String siteDescription, String latitud, String longitud, int pointsForVisit, boolean is_visited, boolean is_easter_egg, List<Term> termList, List<Activity> activityList) {
         this.siteId = siteId;
         this.siteName = siteName;
         this.siteDescription = siteDescription;
         this.latitud = latitud;
         this.longitud = longitud;
-        this.status = status;
-        this.siteVisitedPoints = siteVisitedPoints;
-        this.sitePointsAwarded = sitePointsAwarded;
-        this.termList = new ArrayList<Term>();
-        this.activityList = new ArrayList<Activity>();
+        this.pointsForVisit = pointsForVisit;
+        this.is_visited = is_visited;
+        this.is_easter_egg = is_easter_egg;
+        this.termList = termList;
+        this.activityList = activityList;
     }
 
     /**

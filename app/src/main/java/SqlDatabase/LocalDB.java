@@ -82,8 +82,8 @@ public class LocalDB{
         values.put(DBContract.CompetitionEntry.COLUMN_NAME_STARTINGDATE, competition.getStartingDate().toString());
         values.put(DBContract.CompetitionEntry.COLUMN_NAME_FINISHINGDATE, competition.getFinichingDate().toString());
         values.put(DBContract.CompetitionEntry.COLUMN_NAME_ISPUBLIC, competition.isPublic());
+        values.put(DBContract.CompetitionEntry.COLUMN_NAME_DESCRIPTION, competition.getDescription());
         values.put(DBContract.CompetitionEntry.COLUMN_NAME_NAME, competition.getName());
-        values.put(DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS, competition.getTotalPoints());
         values.put(DBContract.CompetitionEntry.COLUMN_NAME_RALLYID, competition.getRally().getRallyId());
 
         /**
@@ -116,11 +116,9 @@ public class LocalDB{
         ContentValues values = new ContentValues();
         values.put(DBContract.RallyEntry.COLUMN_NAME_RALLYID, rally.getRallyId());
         values.put(DBContract.RallyEntry.COLUMN_NAME_NAME, rally.getName());
+        values.put(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL, rally.getImageURL());
         values.put(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION, rally.getDescription());
         values.put(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD, rallyDownloaded);
-        values.put(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL, rally.getImageURL());
-        values.put(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE, rally.getMemoryUsage());
-        values.put(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED, rally.getPointsAwarded());
 
         /**
          * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
@@ -180,9 +178,11 @@ public class LocalDB{
          */
         ContentValues values = new ContentValues();
         values.put(DBContract.ActivityEntry.COLUMN_NAME_ID, activity.getActivityId());
-        values.put(DBContract.ActivityEntry.COLUMN_NAME_TYPE, activity.getGetActivityType());
+        values.put(DBContract.ActivityEntry.COLUMN_NAME_NAME, activity.getActivityName());
+        values.put(DBContract.ActivityEntry.COLUMN_NAME_DESCRIPTION, activity.getActivityDescription());
         values.put(DBContract.ActivityEntry.COLUMN_NAME_POINTS, activity.getActivityPoints());
-        values.put(DBContract.ActivityEntry.COLUMN_NAME_STATUS, activity.getActivityStatus());
+        values.put(DBContract.ActivityEntry.COLUMN_NAME_TYPE, activity.getGetActivityType());
+        values.put(DBContract.ActivityEntry.COLUMN_NAME_VISITED, activity.is_visited());
 
         /**
          * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
@@ -218,12 +218,12 @@ public class LocalDB{
         ContentValues values = new ContentValues();
         values.put(DBContract.SiteEntry.COLUMN_NAME_ID, site.getSiteId());
         values.put(DBContract.SiteEntry.COLUMN_NAME_NAME, site.getSiteName());
-        values.put(DBContract.SiteEntry.COLUMN_NAME_POINTSAWARDED, site.getSitePointsAwarded());
-        values.put(DBContract.SiteEntry.COLUMN_NAME_STATUS, site.getStatus());
         values.put(DBContract.SiteEntry.COLUMN_NAME_DESCRIPTION, site.getSiteDescription());
         values.put(DBContract.SiteEntry.COLUMN_NAME_LATITUD, site.getLatitud());
         values.put(DBContract.SiteEntry.COLUMN_NAME_LONGITUD, site.getLongitud());
-        values.put(DBContract.SiteEntry.COLUMN_NAME_VISITEDPOINTS, site.getSiteVisitedPoints());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_POINTSFORVISIT, site.getPointsForVisit());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_ISVISITED, site.is_visited());
+        values.put(DBContract.SiteEntry.COLUMN_NAME_ISEASTEREGG, site.is_easter_egg());
         /**
          * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
          */
@@ -502,11 +502,9 @@ public class LocalDB{
          */
         String[] columnas = {
                 DBContract.RallyEntry.COLUMN_NAME_RALLYID,
-                DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE,
                 DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD,
                 DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION,
                 DBContract.RallyEntry.COLUMN_NAME_IMAGEURL,
-                DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED,
                 DBContract.RallyEntry.COLUMN_NAME_NAME
         };
 
@@ -541,30 +539,22 @@ public class LocalDB{
             int rallyId = cursor.getInt(index);
             rally.setRallyId(rallyId);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
-            String memoryUsage = cursor.getString(index);
-            rally.setMemoryUsage(memoryUsage);
-
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
-            int temporatl = cursor.getInt(index);
-            boolean download = temporatl>0;
-            rally.setDownloaded(download);
-
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION);
-            String description = cursor.getString(index);
-            rally.setDescription(description);
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
+            String name = cursor.getString(index);
+            rally.setName(name);
 
             index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL);
             String imageURL = cursor.getString(index);
             rally.setImageURL(imageURL);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
-            int points = cursor.getInt(index);
-            rally.setPointsAwarded(points);
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION);
+            String description = cursor.getString(index);
+            rally.setDescription(description);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
-            String name = cursor.getString(index);
-            rally.setName(name);
+            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
+            int temporatl = cursor.getInt(index);
+            boolean download = temporatl>0;
+            rally.setDownloaded(download);
 
             mArrayList.add(rally);
         }
@@ -577,12 +567,10 @@ public class LocalDB{
          */
         String[] columnas = {
                 DBContract.RallyEntry.COLUMN_NAME_RALLYID,
-                DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE,
-                DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD,
-                DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION,
+                DBContract.RallyEntry.COLUMN_NAME_NAME,
                 DBContract.RallyEntry.COLUMN_NAME_IMAGEURL,
-                DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED,
-                DBContract.RallyEntry.COLUMN_NAME_NAME
+                DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION,
+                DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD
         };
 
         String selection = DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = ?";
@@ -611,10 +599,6 @@ public class LocalDB{
             int id = cursor.getInt(index);
             rally.setRallyId(id);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
-            String memoryUsage = cursor.getString(index);
-            rally.setMemoryUsage(memoryUsage);
-
             index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
             int temporatl = cursor.getInt(index);
             boolean download = temporatl>0;
@@ -627,10 +611,6 @@ public class LocalDB{
             index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL);
             String imageURL = cursor.getString(index);
             rally.setImageURL(imageURL);
-
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
-            int points = cursor.getInt(index);
-            rally.setPointsAwarded(points);
 
             index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
             String name = cursor.getString(index);
@@ -645,11 +625,9 @@ public class LocalDB{
          */
         String[] columnas = {
                 DBContract.RallyEntry.COLUMN_NAME_RALLYID,
-                DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE,
                 DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD,
                 DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION,
                 DBContract.RallyEntry.COLUMN_NAME_IMAGEURL,
-                DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED,
                 DBContract.RallyEntry.COLUMN_NAME_NAME
         };
 
@@ -682,10 +660,6 @@ public class LocalDB{
             int rallyId = cursor.getInt(index);
             rally.setRallyId(rallyId);
 
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
-            String memoryUsage = cursor.getString(index);
-            rally.setMemoryUsage(memoryUsage);
-
             index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
             int temporatl = cursor.getInt(index);
             boolean download = temporatl>0;
@@ -698,10 +672,6 @@ public class LocalDB{
             index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL);
             String imageURL = cursor.getString(index);
             rally.setImageURL(imageURL);
-
-            index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
-            int points = cursor.getInt(index);
-            rally.setPointsAwarded(points);
 
             index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
             String name = cursor.getString(index);
@@ -739,10 +709,6 @@ public class LocalDB{
                 int rallyId = cursor.getInt(index);
                 rally.setRallyId(rallyId);
 
-                index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE);
-                String memoryUsage = cursor.getString(index);
-                rally.setMemoryUsage(memoryUsage);
-
                 index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD);
                 int temporatl = cursor.getInt(index);
                 boolean download = temporatl>0;
@@ -756,10 +722,6 @@ public class LocalDB{
                 String imageURL = cursor.getString(index);
                 rally.setImageURL(imageURL);
 
-                index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED);
-                int points = cursor.getInt(index);
-                rally.setPointsAwarded(points);
-
                 index = cursor.getColumnIndexOrThrow(DBContract.RallyEntry.COLUMN_NAME_NAME);
                 String name = cursor.getString(index);
                 rally.setName(name);
@@ -769,50 +731,6 @@ public class LocalDB{
         }
 
         return rallyList;
-    }
-
-    public int selectAllRalliesCountFromUser(String id){
-        String rawQuery = "SELECT COUNT(" + DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS + ") FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
-                " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
-                " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
-                " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME + " c " +
-                " ON c." + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
-                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = ?";
-
-        String userId = "" + id;
-        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
-        int rallies = 0;
-        if(cursor.moveToFirst()){
-            // The Cursor is now set to the right position
-            if(cursor.moveToNext()){
-                rallies = cursor.getInt(0);
-            } else {
-                rallies = 0;
-            }
-        }
-        return rallies;
-    }
-
-    public int selectAllRalliesPointsFromUser(String id){
-        String rawQuery = "SELECT SUM(" + DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS + ") FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
-                " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
-                " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
-                " INNER JOIN " + DBContract.User_CompetitionEntry.TABLE_NAME + " c " +
-                " ON c." + DBContract.User_CompetitionEntry.COLUMN_NAME_ID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_COMPETITIONID +
-                " WHERE c." + DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " = ?";
-
-        String userId = "" + id;
-        Cursor cursor = database.rawQuery(rawQuery,new String[]{userId});
-        int points = 0;
-        if(cursor.moveToFirst()){
-                // The Cursor is now set to the right position
-            if(cursor.moveToNext()){
-                points = cursor.getInt(0);
-            } else {
-                points = 0;
-            }
-        }
-        return points;
     }
 
     public User selectUser(String userId){
@@ -980,8 +898,6 @@ public class LocalDB{
     public void updateRally(Rally rally){
         ContentValues values = new ContentValues();
         values.put(DBContract.RallyEntry.COLUMN_NAME_RALLYID,rally.getRallyId());
-        values.put(DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED,rally.getPointsAwarded());
-        values.put(DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE, rally.getMemoryUsage());
         values.put(DBContract.RallyEntry.COLUMN_NAME_IMAGEURL, rally.getImageURL());
         values.put(DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD, rally.getIsDownloaded());
         values.put(DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION, rally.getDescription());
@@ -1011,12 +927,11 @@ public class LocalDB{
     /**
      * Metodo para actualizar el estatus de un sitio en la base de datos local
      * @param siteId identificador del sitio a modificar
-     * @param newStatus nuevo estatus para el sitio seleccionado
      * @return cantidad de filas modificadas, devuelve un -1 si ocurrio un error
      */
-    public int updateSiteVisit(int siteId, int newStatus){
+    public int updateSiteVisit(int siteId){
         ContentValues values = new ContentValues();
-        values.put(DBContract.SiteEntry.COLUMN_NAME_STATUS,newStatus);
+        values.put(DBContract.SiteEntry.COLUMN_NAME_ISVISITED,true);
 
         /**
          *
@@ -1064,14 +979,6 @@ public class LocalDB{
                 String name = cursor.getString(index);
                 site.setSiteName(name);
 
-                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_POINTSAWARDED);
-                int points = cursor.getInt(index);
-                site.setSitePointsAwarded(points);
-
-                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_STATUS);
-                int status = cursor.getInt(index);
-                site.setStatus(status);
-
                 index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_DESCRIPTION);
                 String description = cursor.getString(index);
                 site.setSiteDescription(description);
@@ -1084,9 +991,19 @@ public class LocalDB{
                 String longitud = cursor.getString(index);
                 site.setLongitud(longitud);
 
-                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_VISITEDPOINTS);
-                int visitedPoints = cursor.getInt(index);
-                site.setSiteVisitedPoints(visitedPoints);
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_POINTSFORVISIT);
+                int siteVIsitedPoints = cursor.getInt(index);
+                site.setSiteId(siteVIsitedPoints);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ISVISITED);
+                int temporal2 = cursor.getInt(index);
+                boolean visited = temporal2>0;
+                site.set_visited(visited);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ISEASTEREGG);
+                int temporal1 = cursor.getInt(index);
+                boolean easterEgg = temporal1>0;
+                site.setIs_easter_egg(easterEgg);
 
                 siteList.add(site);
             }
@@ -1123,17 +1040,26 @@ public class LocalDB{
                 int activityId = cursor.getInt(index);
                 activity.setActivityId(activityId);
 
+                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_NAME);
+                String name = cursor.getString(index);
+                activity.setActivityName(name);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_DESCRIPTION);
+                String description = cursor.getString(index);
+                activity.setActivityDescription(description);
+
                 index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_POINTS);
                 int points = cursor.getInt(index);
                 activity.setActivityPoints(points);
 
-                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_STATUS);
-                int status = cursor.getInt(index);
-                activity.setActivityStatus(status);
-
                 index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_TYPE);
                 int type = cursor.getInt(index);
                 activity.setGetActivityType(type);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_VISITED);
+                int temporal = cursor.getInt(index);
+                boolean visited = temporal>0;
+                activity.setIs_visited(visited);
 
                 activityList.add(activity);
             }
@@ -1217,7 +1143,7 @@ public class LocalDB{
                 int type = cursor.getInt(index);
                 multimedia.setMultimediaType(type);
 
-                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_STATUS);
+                index = cursor.getColumnIndexOrThrow(DBContract.MultimediaEntry.COLUMN_NAME_URL);
                 String url = cursor.getString(index);
                 multimedia.setMultimediaURL(url);
 
@@ -1260,7 +1186,7 @@ public class LocalDB{
                 int type = cursor.getInt(index);
                 multimedia.setMultimediaType(type);
 
-                index = cursor.getColumnIndexOrThrow(DBContract.ActivityEntry.COLUMN_NAME_STATUS);
+                index = cursor.getColumnIndexOrThrow(DBContract.MultimediaEntry.COLUMN_NAME_URL);
                 String url = cursor.getString(index);
                 multimedia.setMultimediaURL(url);
 
@@ -1296,12 +1222,12 @@ public class LocalDB{
         public class CompetitionEntry implements BaseColumns {
             public static final String TABLE_NAME = "COMPETITION";
             public static final String COLUMN_NAME_COMPETITIONID = "competitionId";
-            public static final String COLUMN_NAME_ACTIVE = "active";
+            public static final String COLUMN_NAME_ACTIVE = "is_active";
             public static final String COLUMN_NAME_STARTINGDATE = "startingDate";
             public static final String COLUMN_NAME_FINISHINGDATE = "finishingDate";
-            public static final String COLUMN_NAME_ISPUBLIC = "isPublic";
+            public static final String COLUMN_NAME_ISPUBLIC = "is_Public";
             public static final String COLUMN_NAME_NAME = "name";
-            public static final String COLUMN_NAME_TOTALPOINTS = "totalPoints";
+            public static final String COLUMN_NAME_DESCRIPTION = "description";
             public static final String COLUMN_NAME_RALLYID = "rallyId";
         }
 
@@ -1310,11 +1236,9 @@ public class LocalDB{
             public static final String TABLE_NAME = "RALLY";
             public static final String COLUMN_NAME_RALLYID = "rallyId";
             public static final String COLUMN_NAME_NAME = "rallyName";
-            public static final String COLUMN_NAME_POINTSAWARDED = "pointsAwarded";
             public static final String COLUMN_NAME_IMAGEURL = "imageUrl";
             public static final String COLUMN_NAME_DESCRIPTION = "rallyDescription";
-            public static final String COLUMN_NAME_DOWNLOAD = "download";
-            public static final String COLUMN_NAME_MEMORYUSAGE = "memoryUsage";
+            public static final String COLUMN_NAME_DOWNLOAD = "is_download";
         }
 
         /** Inner class that defines the MULTIMEDIA contents */
@@ -1329,9 +1253,11 @@ public class LocalDB{
         public class ActivityEntry implements BaseColumns {
             public static final String TABLE_NAME = "ACTIVITY";
             public static final String COLUMN_NAME_ID = "activityId";
-            public static final String COLUMN_NAME_TYPE = "activityType";
+            public static final String COLUMN_NAME_NAME = "activityName";
+            public static final String COLUMN_NAME_DESCRIPTION = "activityDescription";
             public static final String COLUMN_NAME_POINTS = "activityPoints";
-            public static final String COLUMN_NAME_STATUS = "activityStatus";
+            public static final String COLUMN_NAME_TYPE = "activityType";
+            public static final String COLUMN_NAME_VISITED = "is_visited";
         }
 
         /** Inner class that defines the SITE contents */
@@ -1339,12 +1265,12 @@ public class LocalDB{
             public static final String TABLE_NAME = "SITE";
             public static final String COLUMN_NAME_ID = "siteId";
             public static final String COLUMN_NAME_NAME = "siteName";
-            public static final String COLUMN_NAME_POINTSAWARDED = "sitePointsAwarded";
-            public static final String COLUMN_NAME_STATUS = "siteStatus";
             public static final String COLUMN_NAME_DESCRIPTION = "siteDescription";
             public static final String COLUMN_NAME_LATITUD = "latitude";
             public static final String COLUMN_NAME_LONGITUD = "longitude";
-            public static final String COLUMN_NAME_VISITEDPOINTS = "visitedPoints";
+            public static final String COLUMN_NAME_POINTSFORVISIT = "pointsForVisit";
+            public static final String COLUMN_NAME_ISVISITED = "is_visited";
+            public static final String COLUMN_NAME_ISEASTEREGG = "is_easter_egg";
         }
 
         /** Inner class that defines the TERM contents */
@@ -1369,28 +1295,28 @@ public class LocalDB{
             public static final String COLUMN_NAME_SITEID = "siteId";
         }
 
-        /** Inner class that defines the Rally_site table contents */
+        /** Inner class that defines the Term_site table contents */
         public class Term_SiteEntry implements BaseColumns {
             public static final String TABLE_NAME = "TERM_SITE";
             public static final String COLUMN_NAME_TermID = "TermId";
             public static final String COLUMN_NAME_SITEID = "siteId";
         }
 
-        /** Inner class that defines the Rally_site table contents */
+        /** Inner class that defines the Activity_Site table contents */
         public class Activity_SiteEntry implements BaseColumns {
             public static final String TABLE_NAME = "ACTIVITY_SITE";
             public static final String COLUMN_NAME_ACTIVITYID = "activityId";
             public static final String COLUMN_NAME_SITEID = "siteId";
         }
 
-        /** Inner class that defines the Rally_site table contents */
+        /** Inner class that defines the Multimedia_Activity table contents */
         public class Multimedia_ActivityEntry implements BaseColumns {
             public static final String TABLE_NAME = "MULTIMEDIA_ACTIVITY";
             public static final String COLUMN_NAME_MULTIMEDIAID = "multimediaId";
             public static final String COLUMN_NAME_ACTIVITYID = "activityId";
         }
 
-        /** Inner class that defines the Rally_site table contents */
+        /** Inner class that defines the Multimedia_TermEntry table contents */
         public class Multimedia_TermEntry implements BaseColumns {
             public static final String TABLE_NAME = "MULTIMEDIA_ACTIVITY";
             public static final String COLUMN_NAME_TermID = "TermId";
@@ -1424,8 +1350,8 @@ public class LocalDB{
                         DBContract.CompetitionEntry.COLUMN_NAME_STARTINGDATE +" DATETIME DEFAULT CURRENT_TIMESTAMP," +
                         DBContract.CompetitionEntry.COLUMN_NAME_FINISHINGDATE +" DATETIME," +
                         DBContract.CompetitionEntry.COLUMN_NAME_ISPUBLIC +" BIT DEFAULT 1," +
+                        DBContract.CompetitionEntry.COLUMN_NAME_DESCRIPTION +" TEXT NOT NULL," +
                         DBContract.CompetitionEntry.COLUMN_NAME_NAME +" TEXT NOT NULL," +
-                        DBContract.CompetitionEntry.COLUMN_NAME_TOTALPOINTS +" INTEGER," +
                         DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +" INTEGER NOT NULL," +
                         "FOREIGN KEY ("+DBContract.CompetitionEntry.COLUMN_NAME_RALLYID+") REFERENCES "+DBContract.RallyEntry.TABLE_NAME+"("+DBContract.RallyEntry.COLUMN_NAME_RALLYID+")" +
                         ");";
@@ -1434,11 +1360,9 @@ public class LocalDB{
                 "CREATE TABLE IF NOT EXISTS "+DBContract.RallyEntry.TABLE_NAME+"(" +
                         DBContract.RallyEntry.COLUMN_NAME_RALLYID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                         DBContract.RallyEntry.COLUMN_NAME_NAME + " TEXT NOT NULL," +
-                        DBContract.RallyEntry.COLUMN_NAME_POINTSAWARDED + " INTEGER NOT NULL," +
                         DBContract.RallyEntry.COLUMN_NAME_IMAGEURL + " TEXT," +
                         DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION + " TEXT," +
                         DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD + " BIT DEFAULT 0," +
-                        DBContract.RallyEntry.COLUMN_NAME_MEMORYUSAGE + " INTEGER" +
                         ");";
 
         private static final String MULTIMEDIA_TABLE_CREATE =
@@ -1451,21 +1375,22 @@ public class LocalDB{
         private static final String ACTIVITY_TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS "+ DBContract.ActivityEntry.TABLE_NAME +"(" +
                         DBContract.ActivityEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                        DBContract.ActivityEntry.COLUMN_NAME_NAME + " TEXT NOT NULL," +
+                        DBContract.ActivityEntry.COLUMN_NAME_DESCRIPTION +" TEXT NOT NULL," +
                         DBContract.ActivityEntry.COLUMN_NAME_POINTS + " INTEGER NOT NULL," +
                         DBContract.ActivityEntry.COLUMN_NAME_TYPE + " INTEGER NOT NULL," +
-                        DBContract.ActivityEntry.COLUMN_NAME_STATUS + " INTEGER NOT NULL" +
                         ");";
 
         private static final String SITE_TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS "+DBContract.SiteEntry.TABLE_NAME+" (" +
                         DBContract.SiteEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                         DBContract.SiteEntry.COLUMN_NAME_NAME + " TEXT NOT NULL," +
-                        DBContract.SiteEntry.COLUMN_NAME_POINTSAWARDED + " INTEGER NOT NULL," +
                         DBContract.SiteEntry.COLUMN_NAME_DESCRIPTION + " TEXT," +
                         DBContract.SiteEntry.COLUMN_NAME_LATITUD + " TEXT NOT NULL," +
                         DBContract.SiteEntry.COLUMN_NAME_LONGITUD + " TEXT NOT NULL," +
-                        DBContract.SiteEntry.COLUMN_NAME_STATUS + " INTEGER NOT NULL," +
-                        DBContract.SiteEntry.COLUMN_NAME_VISITEDPOINTS + " INTEGER" +
+                        DBContract.SiteEntry.COLUMN_NAME_POINTSFORVISIT + " INTEGER NOT NULL," +
+                        DBContract.SiteEntry.COLUMN_NAME_ISVISITED + " BIT DEFAULT 0," +
+                        DBContract.SiteEntry.COLUMN_NAME_ISEASTEREGG + " BIT DEFAULT 0," +
                         ");";
 
         private static final String TERM_TABLE_CREATE =
