@@ -63,10 +63,10 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     String siteId = params[1];
                     login_url = "http://www.rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
                             "activity/getActivitiesBySite/"+ siteId +".json";
-                } else if (id_consulta.equals("3")) { // web service terminos
+                } else if (id_consulta.equals("4")) { // web service terminos
                     String siteId = params[1];
                     login_url = "http://www.rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
-                            "term/getTermsBySite/1.json"+ siteId +".json";
+                            "term/getTermsBySite/"+ siteId +".json";
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
