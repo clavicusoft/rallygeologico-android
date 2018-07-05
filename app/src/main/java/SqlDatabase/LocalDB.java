@@ -53,7 +53,11 @@ public class LocalDB{
         values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
         values.put(DBContract.UserEntry.COLUMN_NAME_PASSWORD, user.getPassword());
         values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
-        values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
+        if(user.isLogged()){
+            values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, 1);
+        } else {
+            values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, 0);
+        }
         values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
         values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
         values.put(DBContract.UserEntry.COLUMN_NAME_USERID, user.getUserId());
@@ -66,6 +70,18 @@ public class LocalDB{
                 null,
                 values
         );
+
+        if(user.getCompetitions().size()>0){
+            for(int i = 0; i < user.getCompetitions().size(); i++) {
+                try {
+                    newRowId+=this.insertCompetition(user.getCompetitions().get(i));
+                } catch (android.database.sqlite.SQLiteException e) {}
+                try {
+                    newRowId+=this.insertUser_Competition(user.getUserId(),user.getCompetitions().get(i).getCompetitionId());
+                } catch (android.database.sqlite.SQLiteException e) {}
+            }
+        }
+
         return newRowId;
     }
 
@@ -158,7 +174,6 @@ public class LocalDB{
         values.put(DBContract.MultimediaEntry.COLUMN_NAME_ID, multimedia.getMultimediaId());
         values.put(DBContract.MultimediaEntry.COLUMN_NAME_TYPE, multimedia.getMultimediaType());
         values.put(DBContract.MultimediaEntry.COLUMN_NAME_URL, multimedia.getMultimediaURL());
-        values.put(DBContract.MultimediaEntry.COLUMN_NAME_NAME, multimedia.getMultimediaName());
 
         /**
          * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
@@ -1007,7 +1022,11 @@ public class LocalDB{
         values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
         values.put(DBContract.UserEntry.COLUMN_NAME_PASSWORD, user.getPassword());
         values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
-        values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
+        if (user.isLogged()){
+            values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, 1);
+        } else {
+            values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, 0);
+        }
         values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
         values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
         values.put(DBContract.UserEntry.COLUMN_NAME_USERID, user.getUserId());
@@ -1051,6 +1070,12 @@ public class LocalDB{
                 } catch (android.database.sqlite.SQLiteException e) {}
             }
         }
+    }
+
+    /*Contador de puntos*/
+    public void updatePointsAwarded(int siteID)
+    {
+
     }
 
     /**

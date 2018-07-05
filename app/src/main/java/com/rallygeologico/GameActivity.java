@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import FileManager.FileManager;
 import SqlDatabase.LocalDB;
 import SqlEntities.Rally;
 import SqlEntities.Site;
@@ -50,6 +51,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 public class GameActivity extends AppCompatActivity implements OnItemSelectedListener {
 
     private static final int SOLICITUD_TODOS=100;
+    FileManager fm;
     LocalDB db;
     DrawerLayout drawerLayout;
     NavigationView navView;
@@ -82,6 +84,7 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         db = new LocalDB(this);
+        fm = new FileManager();
 
         //Inicia las misma variables que en el login para controlar si el usuario desea salir de la sesion
         /*gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
@@ -217,6 +220,9 @@ public class GameActivity extends AppCompatActivity implements OnItemSelectedLis
             sitesList = sitesList + sitio.getSiteName() + "\n";
         }
         sitesRally.setText(sitesList);
+        if (fm.hayAlmacenamientoExterno()) {
+            fm.cargarImagenAlmacenamientoExterno(item.getName(), imgRally);
+        }
     }
 
     /**

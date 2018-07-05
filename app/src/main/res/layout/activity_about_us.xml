@@ -7,17 +7,111 @@
     android:orientation="vertical"
     tools:context=".AboutUsActivity">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sobre nosotros"
-        android:textSize="40sp"/>
+        android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Descripción"
-        android:textSize="20sp"
-        android:layout_marginTop="10dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sobre nosotros"
+                android:textColor="@color/colorPrimary"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="El Centro de Investigación en Ciencias Geológicas (CICG) de la Universidad de Costa Rica mediante esta propuesta se enfoca en realzar las maravillas geológicas de Costa Rica. Con la geodiversificación de la oferta turística en el noroeste de Costa Rica, específicamente en los cantones de Liberia y La Cruz."
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Créditos Rally GeoAventura"
+                android:textColor="@color/colorPrimary"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/cicg_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Centro de Investigación en Ciencias Geológicas (CICG)"
+                android:textSize="22sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:clickable="true"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Unidad de investigación de la Universidad de Costa Rica dedicada al estudio de los procesos geológicos.\n
+\n\t\u2022 Percy Denyer Chavarría
+\n\t\u2022 Juan Pablo Solano Monge"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/ecci_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Escuela de Ciencias de la Computación e Informática (ECCI)"
+                android:textSize="22sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Escuela de la Universidad de Costa Rica encargada de la formación profesional de alta calidad en Computación e Informática bajo una perspectiva integral y humanista.\n
+\n\t\u2022 Alan Calderón Castro
+\n\t\u2022 Jhosua Arias Quintero
+\n\t\u2022 Benjamín Blanco Rojas
+\n\t\u2022 Carlos Gamboa Vargas
+\n\t\u2022 Pablo Madrigal Quesada
+\n\t\u2022 Jorge Remón Montealegre
+\n\t\u2022 Fernando Rojas Meléndez
+\n\t\u2022 Ana Laura Vargas Ramírez
+\n\t\u2022 Daniel Varela Serrano"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/acg_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Área de Conservación Guanacaste (ACG)"
+                android:textSize="22sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:clickable="true"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Institución encargada de restaurar y conservar hasta la perpetuidad un ecosistema completo de bosque seco tropical y sus ecosistemas adyacentes en parte de las provincias de Guanacaste y Alajuela.\n
+\n\t\u2022 Róger Blanco Segura
+\n\t\u2022 María Marta Chavarría Díaz
+\n\t\u2022 Felipe Chavarría Díaz
+\n\t\u2022 Alejandro Masís Cuevillas"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"/>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>
