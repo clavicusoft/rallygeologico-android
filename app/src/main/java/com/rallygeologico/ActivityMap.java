@@ -493,15 +493,18 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 /*Contador de puntos*/
                 localDB.updatePointsAwarded(sites.get(ite).getSiteId());
 
-                localDB.updateSiteVisit(sites.get(ite).getSiteId(),3);
+                //localDB.updateSiteVisit(sites.get(ite).getSiteId(),3);
+
+                localDB.updateSiteVisit(sites.get(ite).getSiteId());
+
                 verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getPointsForVisit()));
                 activosonido=1;
             }
-            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=1000.0) {
+            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=500.0) {
                 /*Contador de puntos*/
                 localDB.updatePointsAwarded(sites.get(ite).getSiteId());
 
-                localDB.updateSiteVisit(sites.get(ite).getSiteId(),2);
+                localDB.updateSiteVisit(sites.get(ite).getSiteId());
 
                 /*Actualizo la vista*/
                 Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -512,6 +515,9 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 --numeroNoVisitados;
                 removeMarker(esp);
                 addMarker(esp,2,"2"); //Visitado
+
+                /*Descomentar*/
+                numeroNoVisitados=0;
 
                 /*Muestro la notificacion o termino*/
                 if(numeroNoVisitados==0) {
@@ -676,6 +682,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * */
     public void visiteTodos() {
         Intent intent = new Intent(this, finishRallyActivity.class);
+        intent.putExtra("rallyId",rallyId);
         startActivity(intent);
     }
 
