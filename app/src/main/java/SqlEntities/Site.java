@@ -3,6 +3,8 @@ package SqlEntities;
 import java.util.ArrayList;
 import java.util.List;
 
+import SqlDatabase.LocalDB;
+
 /**
  * Clase que describe un Sitio
  * Created by Pablo Madrigal on 10/05/2018.
@@ -19,6 +21,42 @@ public class Site {
     private boolean is_easter_egg;
     private List<Term> termList;
     private List<Activity> activityList;
+    private int status;
+
+    public int getStatus() {
+        if(!is_visited && !is_easter_egg)
+            status = 1;
+        else if(is_visited && !is_easter_egg)
+            status = 2;
+        else if(is_visited && is_easter_egg)
+            status = 3;
+        else if(!is_visited && is_easter_egg)
+            status = 4;
+
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+        switch (status){
+            case 1:
+                is_visited = false;
+                is_easter_egg = false;
+                break;
+            case 2:
+                is_visited = true;
+                is_easter_egg = false;
+                break;
+            case 3:
+                is_visited = true;
+                is_easter_egg = true;
+                break;
+            case 4:
+                is_visited = false;
+                is_easter_egg = true;
+                break;
+        }
+    }
 
     public int getPointsForVisit() {
         return pointsForVisit;
