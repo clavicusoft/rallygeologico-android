@@ -48,7 +48,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     LocalDB localDB;
     LocationManager locationManager; //Escuchador de la ubicacion actual
     GeoPoint center;
-
+    int point;
     Dialog especialDialog;
     int numeroEspeciales;
     int numeroNoVisitados;
@@ -111,6 +111,8 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         numeroEspeciales=0;
         numeroNoVisitados=0;
         numeroVisitados=0;
+
+        point=1;
 
         /*Ubicacion*/
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -200,6 +202,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
     public void setInformacionActivity() {
         Intent intent = new Intent(this, media_activity.class);
+        intent.putExtra("SITE_ID", point);
         startActivity(intent);
     }
 
@@ -323,6 +326,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
                 botonInformacion.setVisibility(View.VISIBLE);
                 botonInformacion.setClickable(true);
                 noEncontre=false;
+                point=sites.get(ite).getSiteId();
             }
             ite++;
         }
@@ -330,7 +334,8 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             /*Descomentar*/
            // botonInformacion.setVisibility(View.GONE);
             //botonInformacion.setClickable(false);
-         }
+            //point=0;
+        }
     }
 
     /**

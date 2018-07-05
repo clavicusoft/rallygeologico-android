@@ -63,8 +63,9 @@ public class SensorsActivity extends Fragment implements SensorEventListener {
             System.arraycopy(event.values, 0, mAccelerometerReading,
                     0, mAccelerometerReading.length);
 
-            int x = (int)event.values[0];
-            int y = (int)event.values[1];
+            // valores invertidos
+            int y = (int)event.values[0];
+            int x = (int)event.values[1];
             if(y>=0 && x<=0) angle = x*10;
             if(x<=0 && y<=0) angle = (y*10)-90;
             if(x>=0 && y<=0) angle = (-x*10)-180;
@@ -75,8 +76,8 @@ public class SensorsActivity extends Fragment implements SensorEventListener {
         txt_pitch.setText(Integer.toString(angle));
         // create a rotation animation (reverse turn degree degrees)
         RotateAnimation ra = new RotateAnimation(
-                currentDegree,
                 degree,
+                currentDegree,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF,
                 0.5f);
