@@ -25,9 +25,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.Overlay;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 import SqlDatabase.LocalDB;
@@ -197,7 +195,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 finalizarRally();
             }
         });
-
         /*Anade puntos*/
         insertarPuntos();
         try{
@@ -208,8 +205,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         catch(SecurityException e){
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     /**
@@ -371,7 +366,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 }
                 verificarPuntos();
             }
-
         }
     }
 
@@ -446,7 +440,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 i.putExtra("Nombre",interes.getSiteName());
                 i.putExtra("Numero","Punto #"+interes.getSiteId());
                 i.putExtra("Distancia",Distancia);
-                i.putExtra("Geopuntos","Valor: "+interes.getSiteTotalPoints()+ " Petrocoins");
+                i.putExtra("Geopuntos","Valor: "+interes.getSiteVisitedPoints()+ " Petrocoins");
                 i.putExtra("Informacion",interes.getSiteDescription());
                 break;
             case 3:
@@ -455,7 +449,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 i.putExtra("Nombre",interes.getSiteName());
                 i.putExtra("Numero","Punto #"+interes.getSiteId());
                 i.putExtra("Distancia",Distancia);
-                i.putExtra("Geopuntos","Valor: "+interes.getSiteTotalPoints()+ " Petrocoins");
+                i.putExtra("Geopuntos","Valor: "+interes.getSiteVisitedPoints()+ " Petrocoins");
                 i.putExtra("Informacion",interes.getSiteDescription());
                 break;
         }
@@ -524,7 +518,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                     visiteTodos();
                 } else {
                     activosonido=2;
-                    verificarNoVisitados(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
+                    verificarNoVisitados(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteVisitedPoints()));
                 }
             }
         }
@@ -677,7 +671,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         }
     }
 
-
     /**
      * Indica al usuario cuando ya ha visitado todos los sitios de un rally
      * */
@@ -708,8 +701,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
        }
 
    }
-
-
 
     @Override
     protected void onStop()

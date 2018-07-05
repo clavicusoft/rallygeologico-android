@@ -43,7 +43,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             String login_url = "";
             String post_data = "";
             try {
-                if (id_consulta.equals("0")) {
+                if (id_consulta.equals("0")) { // web service para login
                     login_url = "http://rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/login.json";
                     String username = params[1];
                     String password = params[2];
@@ -51,16 +51,22 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     post_data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8") + "&"
                             + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8") + "&"
                             + URLEncoder.encode("login_api", "UTF-8") + "=" + URLEncoder.encode(login_api, "UTF-8");
-                } else if (id_consulta.equals("1")) {
+                } else if (id_consulta.equals("1")) { // web service competencias
                     String userId = params[1];
-                    //login_url = "http://rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
-                    //        "competitionStatistics/currentCompetitions/" + userId + ".json";
                     login_url = "http://www.rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
                             "competition/getUserActiveCompetitions/"+ userId +".json";
-                } else if (id_consulta.equals("2")) {
+                } else if (id_consulta.equals("2")) { // web service rally y sitios
                     String rallyId = params[1];
                     login_url = "http://www.rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
                             "rally/view/"+ rallyId +".json";
+                } else if (id_consulta.equals("3")) { // web service actividades
+                    String siteId = params[1];
+                    login_url = "http://www.rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
+                            "activity/getActivitiesBySite/"+ siteId +".json";
+                } else if (id_consulta.equals("3")) { // web service terminos
+                    String siteId = params[1];
+                    login_url = "http://www.rallygeologico.ucr.ac.cr/rallygeologico/rallygeologico-ws/"+
+                            "term/getTermsBySite/1.json"+ siteId +".json";
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

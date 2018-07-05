@@ -29,12 +29,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import FileManager.DownloadTask;
 import SqlDatabase.LocalDB;
+import SqlEntities.Activity;
+import SqlEntities.Competition;
 import SqlEntities.Rally;
 import SqlEntities.Site;
+import SqlEntities.Term;
 import SqlEntities.User;
 
 
@@ -151,7 +155,9 @@ public class RallyList extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if(jsonObject != null){
-                    Rally rally = JSONParser.getRally(jsonObject);
+                    Competition competition = JSONParser.getCompetition(jsonObject);
+                    //Rally rally = JSONParser.getRally(jsonObject);
+                    Rally rally = competition.getRally();
                     String url = "http://www.rallygeologico.ucr.ac.cr" + rally.getImageURL();
                     new DownloadTask(this, 1, rally.getName(), url);
                     long id = db.insertRally(rally);
@@ -200,20 +206,84 @@ public class RallyList extends AppCompatActivity {
                 }
                 if(jsonObject != null){
                     List<Site> listaSitios = JSONParser.getSitesFromRally(jsonObject);
+                    List<Site> listaSitiosNuevos = new LinkedList<>();
+                    for(Site site : listaSitios){
+                        site = descargarActividadesYTerminosSitio(site);
+                        listaSitiosNuevos.add(site);
+                    }
                     String id = "" + rallyId;
                     Rally rally = db.selectRallyFromId(id);
-                    rally.setSites(listaSitios);
+                    rally.setSites(listaSitiosNuevos);
                     db.updateRally(rally);
                 }
             }
         } else {
             new android.support.v7.app.AlertDialog.Builder(this)
                     .setTitle("Error")
-                    .setMessage("Debe conectarse a internet para descargar el rally.")
+                    .setMessage("Debe conectarse a internet para descargar los sitios.")
                     .setPositiveButton("Ok", null)
                     .show();
         }
-        mDynamicListAdapter.notifyDataSetChanged();
+    }
+
+    public Site descargarActividadesYTerminosSitio(Site sitio){
+        Site site = sitio;
+        if(tieneConexionInternet()){
+            String resultado = obtenerActividades(site.getSiteId());
+            if (resultado.equalsIgnoreCase("null")) {
+                new android.support.v7.app.AlertDialog.Builder(this)
+                        .setTitle("Atención")
+                        .setMessage("Este rally aún no tiene sitios asignados.")
+                        .setPositiveButton("Ok", null)
+                        .show();
+            } else {
+                String toParse = "";
+                for (int i = 0; i < resultado.length(); i++){
+                    toParse += resultado.charAt(i);
+                }
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(toParse);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(jsonObject != null){
+                    List<Activity> listaActividades = JSONParser.getActivitiesFromSite(jsonObject);
+                    site.setActivityList(listaActividades);
+                }
+            }
+
+            resultado = obtenerTerminos(site.getSiteId());
+            if (resultado.equalsIgnoreCase("null")) {
+                new android.support.v7.app.AlertDialog.Builder(this)
+                        .setTitle("Atención")
+                        .setMessage("Este rally aún no tiene sitios asignados.")
+                        .setPositiveButton("Ok", null)
+                        .show();
+            } else {
+                String toParse = "";
+                for (int i = 0; i < resultado.length(); i++){
+                    toParse += resultado.charAt(i);
+                }
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(toParse);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(jsonObject != null){
+                    List<Term> listaTerminos = JSONParser.getTermsFromSite(jsonObject);
+                    site.setTermList(listaTerminos);
+                }
+            }
+        } else {
+            new android.support.v7.app.AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage("Debe conectarse a internet para descargar las actividades.")
+                    .setPositiveButton("Ok", null)
+                    .show();
+        }
+        return site;
     }
 
     /**
@@ -255,6 +325,24 @@ public class RallyList extends AppCompatActivity {
         String idConsultaValor = "2";
         BackgroundWorker backgroundWorker = new BackgroundWorker(this);
         resultado = backgroundWorker.doInBackground(idConsultaValor, rallyId);
+        return resultado;
+    }
+
+    public String obtenerActividades(int id) {
+        String resultado = "JORGE";
+        String siteId = "" + id;
+        String idConsultaValor = "3";
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        resultado = backgroundWorker.doInBackground(idConsultaValor, siteId);
+        return resultado;
+    }
+
+    public String obtenerTerminos(int id) {
+        String resultado = "JORGE";
+        String siteId = "" + id;
+        String idConsultaValor = "4";
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        resultado = backgroundWorker.doInBackground(idConsultaValor, siteId);
         return resultado;
     }
 

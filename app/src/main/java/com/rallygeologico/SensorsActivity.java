@@ -36,21 +36,24 @@ public class SensorsActivity extends Fragment implements SensorEventListener {
         txt_pitch = (TextView) v.findViewById(R.id.tvHeading);
         return v;
     }
+
+    /**
+     * Get updates from the accelerometer and magnetometer at a constant rate.
+     * To make batch operations more efficient and reduce power consumption, provide support for delaying updates to the application.
+     */
     public void onResume() {
         super.onResume();
-        // Get updates from the accelerometer and magnetometer at a constant rate.
-        // To make batch operations more efficient and reduce power consumption,
-        // provide support for delaying updates to the application.
-        // In this example, the sensor reporting delay is small enough such that
-        // the application receives an update before the system checks the sensor
-        // readings again.
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
     }
+
+    /**
+     * Don't receive any more updates from either sensor.
+     */
     public void onPause() {
         super.onPause();
-        // Don't receive any more updates from either sensor.
         mSensorManager.unregisterListener(this, mAccelerometer);
     }
+
     // Get readings from accelerometer and magnetometer. To simplify calculations,
     // consider storing these readings as unit vectors.
     @Override

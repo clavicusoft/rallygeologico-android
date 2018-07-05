@@ -14,9 +14,7 @@ public class Rally {
     private int rallyId;
     private String name;
     private String description;
-    private int pointsAwarded;
     private String imageURL;
-    private String memoryUsage;
     private boolean isDownloaded;
     private List<Site> sites;
 
@@ -70,22 +68,6 @@ public class Rally {
     }
 
     /**
-     * Devuelve los puntos que se pueden obtener con el rally
-     * @return Puntos que se pueden obtener con el rally
-     */
-    public int getPointsAwarded() {
-        return pointsAwarded;
-    }
-
-    /**
-     * Asigna los puntos que se pueden obtener con el rally
-     * @param pointsAwarded Puntos que se pueden obtener con el rally
-     */
-    public void setPointsAwarded(int pointsAwarded) {
-        this.pointsAwarded = pointsAwarded;
-    }
-
-    /**
      * Devuelve el URL que direcciona a donde esta guardada la imagen de portada del rally
      * @return URL que direcciona a donde esta guardada la imagen de portada del rally
      */
@@ -99,22 +81,6 @@ public class Rally {
      */
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
-    }
-
-    /**
-     * Devuelve el tamano total que ocupa el rally descargado
-                     * @return Tamano total que ocupa el rally descargado
-     */
-    public String getMemoryUsage() {
-        return memoryUsage;
-    }
-
-    /**
-     * permite asignar la memoria total que esta ocupando el rally
-     * @param memoryUsage actualiza la memoria total que esta ocupando el rally
-     */
-    public void setMemoryUsage(String memoryUsage) {
-        this.memoryUsage = memoryUsage;
     }
 
     /**
@@ -171,9 +137,7 @@ public class Rally {
         this.rallyId = rallyId;
         this.name = name;
         this.description = description;
-        this.pointsAwarded = pointsAwarded;
         this.imageURL = imageURL;
-        this.memoryUsage = memoryUsage;
         this.isDownloaded = isDownloaded;
         this.sites = new ArrayList<Site>();
     }
