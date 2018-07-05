@@ -1098,6 +1098,24 @@ public class LocalDB{
     }
 
     /**
+     * Metodo para actualizar el estatus de un sitio en la base de datos local
+     * @param siteId identificador del sitio a modificar
+     * @return cantidad de filas modificadas, devuelve un -1 si ocurrio un error
+     */
+    public int updateSiteVisit(int siteId, int status){
+        ContentValues values = new ContentValues();
+        String selection = DBContract.SiteEntry.COLUMN_NAME_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(siteId)};
+        int count = database.update(
+                DBContract.SiteEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs
+        );
+        return count;
+    }
+
+    /**
      * Metodo para devolver todos los sitios asociados a un rally
      * @param siteId Identificador del sitio
      * @return un sitio
@@ -1418,15 +1436,15 @@ public class LocalDB{
 
         /** Inner class that defines the USER table contents */
         public class UserEntry implements BaseColumns {
-            public static final String TABLE_NAME = "USERS";
-            public static final String COLUMN_NAME_USERID = "userId";
-            public static final String COLUMN_NAME_PASSWORD = "password";
-            public static final String COLUMN_NAME_USERNAME = "username";
-            public static final String COLUMN_NAME_FIRSTNAME = "firstName";
-            public static final String COLUMN_NAME_LASTNAME = "lastName";
-            public static final String COLUMN_NAME_EMAIL = "email";
-            public static final String COLUMN_NAME_PHOTOURL = "photoURL";
-            public static final String COLUMN_NAME_ISLOGGED = "isLogged";
+            private static final String TABLE_NAME = "USERS";
+            private static final String COLUMN_NAME_USERID = "userId";
+            private static final String COLUMN_NAME_PASSWORD = "password";
+            private static final String COLUMN_NAME_USERNAME = "username";
+            private static final String COLUMN_NAME_FIRSTNAME = "firstName";
+            private static final String COLUMN_NAME_LASTNAME = "lastName";
+            private static final String COLUMN_NAME_EMAIL = "email";
+            private static final String COLUMN_NAME_PHOTOURL = "photoURL";
+            private static final String COLUMN_NAME_ISLOGGED = "isLogged";
         }
 
         /** Inner class that defines the COMPETITION table contents */
@@ -1568,9 +1586,9 @@ public class LocalDB{
 
         /** Inner class that defines the Multimedia_TermEntry table contents */
         public class Multimedia_TermEntry implements BaseColumns {
-            public static final String TABLE_NAME = "MULTIMEDIA_ACTIVITY";
-            public static final String COLUMN_NAME_TermID = "TermId";
-            public static final String COLUMN_NAME_MULTIMEDIAID = "multimediaId";
+            private static final String TABLE_NAME = "MULTIMEDIA_ACTIVITY";
+            private static final String COLUMN_NAME_TermID = "TermId";
+            private static final String COLUMN_NAME_MULTIMEDIAID = "multimediaId";
         }
     }
 
@@ -1578,8 +1596,8 @@ public class LocalDB{
      * Clase que permite manejar facilmente la base de datos y lo que se hace con ella
      */
     public static class LocalDBHelper extends SQLiteOpenHelper {
-        public static final String dbName = "RallyDB";
-        public static final int DATABASE_VERSION = 1;
+        private static final String dbName = "RallyDB";
+        private static final int DATABASE_VERSION = 1;
 
         private static final String USER_TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS " + DBContract.UserEntry.TABLE_NAME + "(" +
@@ -1749,7 +1767,7 @@ public class LocalDB{
                         "PRIMARY KEY ("+DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONSTATISTICSID+", "+DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_USERID+", "+DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONID+")" +
                         ");";
 
-        public LocalDBHelper(Context context) {
+        private LocalDBHelper(Context context) {
             super(context, dbName, null, DATABASE_VERSION);
         }
 
