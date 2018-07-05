@@ -97,7 +97,6 @@ public class RallyAdapter extends RecyclerView.Adapter<RallyAdapter.ViewHolder> 
         public void bindTo(Rally currentRally) {
             //Populate the textviews with data
             mNameRally.setText(currentRally.getName());
-            mMemoryUsageRally.setText(currentRally.getMemoryUsage());
         }
 
     }

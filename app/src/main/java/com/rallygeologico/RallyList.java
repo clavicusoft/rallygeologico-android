@@ -131,7 +131,8 @@ public class RallyList extends AppCompatActivity {
     public void actualizarRallies(){
         User user = db.selectLoggedUser();
         if(tieneConexionInternet()){
-            String resultado = obtenerRallies(user.getUserId());
+            String userId = "" + user.getUserId();
+            String resultado = obtenerRallies(userId);
             if (resultado.equalsIgnoreCase("null")) {
                 new android.support.v7.app.AlertDialog.Builder(this)
                         .setTitle("Atención")
@@ -442,11 +443,9 @@ public class RallyList extends AppCompatActivity {
                 pos = pos - 1;
 
                 final String nombre_rally = rallies_descargados.get(pos).getName();
-                final String memoria_rally = rallies_descargados.get(pos).getMemoryUsage();
                 final String id_rally = "" + rallies_descargados.get(pos).getRallyId();
 
                 nombre_rally_descargado.setText(nombre_rally);
-                memoria_rally_descargado.setText(memoria_rally);
                 id_rally_descargado.setText(id_rally);
                 boton_menu_rally.setOnClickListener(new View.OnClickListener() {
                     /**

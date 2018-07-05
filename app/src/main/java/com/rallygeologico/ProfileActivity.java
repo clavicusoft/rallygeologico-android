@@ -79,10 +79,10 @@ public class ProfileActivity extends AppCompatActivity {
             nombreUsuario.setText(name);
             String email = user.getEmail();
             lugar.setText(email);
-            String points = "" + db.selectAllRalliesPointsFromUser(user.getUserId());
+            /*String points = "" + db.selectAllRalliesPointsFromUser(user.getUserId());
             puntosTotal.setText(points);
             String rallies = "" + db.selectAllRalliesCountFromUser(user.getUserId());
-            recorridosTotal.setText(rallies);
+            recorridosTotal.setText(rallies);*/
         }
 
         //Si hay almacenamiento externo carga la imagen de perfil

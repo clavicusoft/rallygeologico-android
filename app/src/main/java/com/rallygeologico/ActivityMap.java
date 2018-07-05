@@ -440,7 +440,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 i.putExtra("Nombre",interes.getSiteName());
                 i.putExtra("Numero","Punto #"+interes.getSiteId());
                 i.putExtra("Distancia",Distancia);
-                i.putExtra("Geopuntos","Valor: "+interes.getSiteVisitedPoints()+ " Petrocoins");
+                i.putExtra("Geopuntos","Valor: "+interes.getPointsForVisit()+ " Petrocoins");
                 i.putExtra("Informacion",interes.getSiteDescription());
                 break;
             case 3:
@@ -449,7 +449,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 i.putExtra("Nombre",interes.getSiteName());
                 i.putExtra("Numero","Punto #"+interes.getSiteId());
                 i.putExtra("Distancia",Distancia);
-                i.putExtra("Geopuntos","Valor: "+interes.getSiteVisitedPoints()+ " Petrocoins");
+                i.putExtra("Geopuntos","Valor: "+interes.getPointsForVisit()+ " Petrocoins");
                 i.putExtra("Informacion",interes.getSiteDescription());
                 break;
         }
@@ -494,7 +494,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 localDB.updatePointsAwarded(sites.get(ite).getSiteId());
 
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),3);
-                verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
+                verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getPointsForVisit()));
                 activosonido=1;
             }
             if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=1000.0) {
@@ -518,7 +518,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                     visiteTodos();
                 } else {
                     activosonido=2;
-                    verificarNoVisitados(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteVisitedPoints()));
+                    verificarNoVisitados(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getPointsForVisit()));
                 }
             }
         }

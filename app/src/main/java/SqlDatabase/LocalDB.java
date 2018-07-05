@@ -831,7 +831,7 @@ public class LocalDB{
      * @param id Identificador del usuario del cual deseo obtener los rallies
      * @return una lista con los rallies asociados al usuario
      */
-    public ArrayList<Rally> selectAllRalliesFromUser(String id){
+    public ArrayList<Rally> selectAllRalliesFromUser(int id){
         String rawQuery = "Select * FROM " + DBContract.RallyEntry.TABLE_NAME + " a " +
                 " INNER JOIN " + DBContract.CompetitionEntry.TABLE_NAME + " b " +
                 " ON a." + DBContract.RallyEntry.COLUMN_NAME_RALLYID + " = b." + DBContract.CompetitionEntry.COLUMN_NAME_RALLYID +
@@ -1630,14 +1630,14 @@ public class LocalDB{
                         DBContract.RallyEntry.COLUMN_NAME_NAME + " TEXT NOT NULL," +
                         DBContract.RallyEntry.COLUMN_NAME_IMAGEURL + " TEXT," +
                         DBContract.RallyEntry.COLUMN_NAME_DESCRIPTION + " TEXT," +
-                        DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD + " BIT DEFAULT 0," +
+                        DBContract.RallyEntry.COLUMN_NAME_DOWNLOAD + " BIT DEFAULT 0" +
                         ");";
 
         private static final String MULTIMEDIA_TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS "+DBContract.MultimediaEntry.TABLE_NAME+"(" +
                         DBContract.MultimediaEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                         DBContract.MultimediaEntry.COLUMN_NAME_TYPE + " INTEGER NOT NULL," +
-                        DBContract.MultimediaEntry.COLUMN_NAME_URL + " TEXT NOT NULL" +
+                        DBContract.MultimediaEntry.COLUMN_NAME_URL + " TEXT NOT NULL, " +
                         DBContract.MultimediaEntry.COLUMN_NAME_NAME + " TEXT NOT NULL" +
                         ");";
 
@@ -1647,7 +1647,7 @@ public class LocalDB{
                         DBContract.ActivityEntry.COLUMN_NAME_NAME + " TEXT NOT NULL," +
                         DBContract.ActivityEntry.COLUMN_NAME_DESCRIPTION +" TEXT NOT NULL," +
                         DBContract.ActivityEntry.COLUMN_NAME_POINTS + " INTEGER NOT NULL," +
-                        DBContract.ActivityEntry.COLUMN_NAME_TYPE + " INTEGER NOT NULL," +
+                        DBContract.ActivityEntry.COLUMN_NAME_TYPE + " INTEGER NOT NULL" +
                         ");";
 
         private static final String SITE_TABLE_CREATE =
@@ -1659,7 +1659,7 @@ public class LocalDB{
                         DBContract.SiteEntry.COLUMN_NAME_LONGITUD + " TEXT NOT NULL," +
                         DBContract.SiteEntry.COLUMN_NAME_POINTSFORVISIT + " INTEGER NOT NULL," +
                         DBContract.SiteEntry.COLUMN_NAME_ISVISITED + " BIT DEFAULT 0," +
-                        DBContract.SiteEntry.COLUMN_NAME_ISEASTEREGG + " BIT DEFAULT 0," +
+                        DBContract.SiteEntry.COLUMN_NAME_ISEASTEREGG + " BIT DEFAULT 0" +
                         ");";
 
         private static final String TERM_TABLE_CREATE =
@@ -1672,7 +1672,7 @@ public class LocalDB{
         private static final String COMPETITIONSTATISTICS_TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS "+ DBContract.CompetitionStatisticsEntry.TABLE_NAME +" (" +
                         DBContract.CompetitionStatisticsEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                        DBContract.CompetitionStatisticsEntry.COLUMN_NAME_POINTS + " INTEGER NOT NULL," +
+                        DBContract.CompetitionStatisticsEntry.COLUMN_NAME_POINTS + " INTEGER NOT NULL" +
                         ");";
 
         private static final String OPTION_TABLE_CREATE =
@@ -1681,7 +1681,7 @@ public class LocalDB{
                         DBContract.OptionEntry.COLUMN_NAME_TEXT + " TEXT NOT NULL," +
                         DBContract.OptionEntry.COLUMN_NAME_ISCORRECT + " BIT DEFAULT 0," +
                         DBContract.OptionEntry.COLUMN_NAME_ACTIVITYID + " INTEGER NOT NULL," +
-                        "FOREIGN KEY ("+DBContract.OptionEntry.COLUMN_NAME_ACTIVITYID+") REFERENCES "+DBContract.ActivityEntry.TABLE_NAME+"("+DBContract.ActivityEntry.COLUMN_NAME_ID+")," +
+                        "FOREIGN KEY ("+DBContract.OptionEntry.COLUMN_NAME_ACTIVITYID+") REFERENCES "+DBContract.ActivityEntry.TABLE_NAME+"("+DBContract.ActivityEntry.COLUMN_NAME_ID+")" +
                         ");";
 
         private static final String USER_COMPETITION_TABLE_CREATE =
