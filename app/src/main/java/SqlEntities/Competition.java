@@ -8,7 +8,7 @@ import java.util.Date;
  */
 
 public class Competition {
-    private String competitionId;
+    private int competitionId;
     private String name;
     private boolean is_active;
     private boolean is_public;
@@ -30,7 +30,7 @@ public class Competition {
      * Devuelve el identificador de la competencia
      * @return el identificador de la competencia
      */
-    public String getCompetitionId() {
+    public int getCompetitionId() {
         return competitionId;
     }
 
@@ -38,7 +38,7 @@ public class Competition {
      *  Asigna el identificador de la competencia
      * @param competitionId el identificador de la competencia
      */
-    public void setCompetitionId(String competitionId) {
+    public void setCompetitionId(int competitionId) {
         this.competitionId = competitionId;
     }
 
@@ -164,7 +164,7 @@ public class Competition {
      * @param finichingDate la fecha de final de la competencia
      * @param totalPoints el total de puntos de la competencia
      */
-    public Competition(String competitionId, String name, boolean active, boolean isPublic, Date startingDate, Date finichingDate, int totalPoints) {
+    public Competition(int competitionId, String name, boolean active, boolean isPublic, Date startingDate, Date finichingDate, int totalPoints) {
         this.competitionId = competitionId;
         this.name = name;
         this.is_active = active;

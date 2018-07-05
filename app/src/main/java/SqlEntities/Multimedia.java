@@ -9,6 +9,7 @@ public class Multimedia {
     private int multimediaType;
     private int multimediaId;
     private String multimediaURL;
+    private String multimediaName;
 
     /**
      * Devuelve el tipo de multimedia
@@ -58,16 +59,25 @@ public class Multimedia {
         this.multimediaURL = multimediaURL;
     }
 
+    public String getMultimediaName() {
+        return multimediaName;
+    }
+
+    public void setMultimediaName(String multimediaName) {
+        this.multimediaName = multimediaName;
+    }
+
     /**
      * Constructor de la clase con parametros
      * @param multimediaType tipo de multimedia
      * @param multimediaId identificador del multimedia
      * @param multimediaURL URL con el archivo multimedia
      */
-    public Multimedia(int multimediaType, int multimediaId, String multimediaURL) {
+    public Multimedia(int multimediaType, int multimediaId, String multimediaURL, String multimediaName) {
         this.multimediaType = multimediaType;
         this.multimediaId = multimediaId;
         this.multimediaURL = multimediaURL;
+        this.multimediaName = multimediaName;
     }
 
     /**
