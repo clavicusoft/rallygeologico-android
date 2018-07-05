@@ -12,7 +12,9 @@ import java.util.List;
 
 import SqlEntities.Activity;
 import SqlEntities.Competition;
+import SqlEntities.CompetitionStatistics;
 import SqlEntities.Multimedia;
+import SqlEntities.OpcionesDB;
 import SqlEntities.Rally;
 import SqlEntities.Site;
 import SqlEntities.Term;
@@ -293,6 +295,56 @@ public class LocalDB{
     }
 
     /**
+     * Metodo para ingresar una opcion a la base de datos local
+     * @param opciones que desea ser ingresado
+     */
+    public long insertOption(OpcionesDB opciones){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.OptionEntry.COLUMN_NAME_ID, opciones.getOptionsId() );
+        values.put(DBContract.OptionEntry.COLUMN_NAME_ISCORRECT, opciones.is_correct());
+        values.put(DBContract.OptionEntry.COLUMN_NAME_TEXT, opciones.getOptionsText());
+        values.put(DBContract.OptionEntry.COLUMN_NAME_ACTIVITYID, opciones.getActivitiId());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.TermEntry.TABLE_NAME,
+                null,
+                values
+        );
+
+        return newRowId;
+    }
+
+    /**
+     * Metodo para ingresar una CompetitionStatitics a la base de datos local
+     * @param competitionStatistics que desea ser ingresado
+     */
+    public long insertCompetitionStatistics(CompetitionStatistics competitionStatistics){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.CompetitionStatisticsEntry.COLUMN_NAME_ID, competitionStatistics.getCompetitionStatisticsId());
+        values.put(DBContract.CompetitionStatisticsEntry.COLUMN_NAME_POINTS, competitionStatistics.getPoints());
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.TermEntry.TABLE_NAME,
+                null,
+                values
+        );
+
+        return newRowId;
+    }
+
+    /**
      * Crea la relacion entre una actividad y el sitio relacionado
      * @param userId identificador del usuario
      * @param competitionId identificador de la competencia
@@ -436,6 +488,82 @@ public class LocalDB{
         values.put(DBContract.Multimedia_TermEntry.COLUMN_NAME_MULTIMEDIAID, multimediaId);
         values.put(DBContract.Multimedia_TermEntry.COLUMN_NAME_TermID, termId);
 
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.Multimedia_TermEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Crea la relacion entre una actividad y la estadisticas de competencias relacionado
+     * @param competitionStatisticId identificador de la estadistica de la competencia
+     * @param activityId identificador de la actividad
+     * @return filas modificadas
+     */
+    public long insertCompetitionStatistics_Activity(int competitionStatisticId, int activityId){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.CompetitionStatistics_ActivityEntry.COLUMN_NAME_ACTIVITYID, activityId);
+        values.put(DBContract.CompetitionStatistics_ActivityEntry.COLUMN_NAME_CompetitionStatisticsID, competitionStatisticId);
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.Multimedia_TermEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Crea la relacion entre una actividad y la estadisticas de competencias relacionado
+     * @param competitionStatisticId identificador de la estadistica de la competencia
+     * @param siteId identificador del sitio
+     * @return filas modificadas
+     */
+    public long insertCompetitionStatistics_Site(int competitionStatisticId, int siteId){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.CompetitionStatistics_SiteEntry.COLUMN_NAME_SITEID, siteId);
+        values.put(DBContract.CompetitionStatistics_SiteEntry.COLUMN_NAME_CompetitionStatisticsID, competitionStatisticId);
+
+        /**
+         * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
+         */
+        long newRowId = database.insert(
+                DBContract.Multimedia_TermEntry.TABLE_NAME,
+                null,
+                values
+        );
+        return newRowId;
+    }
+
+    /**
+     * Crea la relacion entre una actividad y la estadisticas de competencias relacionado
+     * @param competitionStatisticId identificador de la estadistica de la competencia
+     * @param userId identificador del usuario
+     * @return filas modificadas
+     */
+    public long insertCompetitionStatistics_User_Competition(int competitionStatisticId, int userId, int competitionId){
+        /**
+         * Crea un mapa de valores donde los nombres de las columnas es el Key
+         */
+        ContentValues values = new ContentValues();
+        values.put(DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_USERID, userId);
+        values.put(DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONSTATISTICSID, competitionStatisticId);
+        values.put(DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONID, competitionId);
 
         /**
          * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
@@ -1281,6 +1409,22 @@ public class LocalDB{
             public static final String COLUMN_NAME_DESCRIPTION = "termDescription";
         }
 
+        /** Inner class that defines the OPTIONS contents */
+        public class OptionEntry implements BaseColumns {
+            public static final String TABLE_NAME = "OPTION";
+            public static final String COLUMN_NAME_ID = "optionID";
+            public static final String COLUMN_NAME_TEXT = "OptionText";
+            public static final String COLUMN_NAME_ISCORRECT = "is_correct";
+            public static final String COLUMN_NAME_ACTIVITYID = "ActivityId";
+        }
+
+        /** Inner class that defines the COMPETITIONSTATISTICS contents */
+        public class CompetitionStatisticsEntry implements BaseColumns {
+            public static final String TABLE_NAME = "COMPETITIONSTATISTICS";
+            public static final String COLUMN_NAME_ID = "CompetitionStatisticsID";
+            public static final String COLUMN_NAME_POINTS = "points";
+        }
+
         /** Inner class that defines the User_Competition table contents */
         public class User_CompetitionEntry implements BaseColumns {
             public static final String TABLE_NAME = "USER_COMPETITION";
@@ -1302,11 +1446,33 @@ public class LocalDB{
             public static final String COLUMN_NAME_SITEID = "siteId";
         }
 
+        /** Inner class that defines the CompetitionStatistics_site table contents */
+        public class CompetitionStatistics_SiteEntry implements BaseColumns {
+            public static final String TABLE_NAME = "COMPETITIONSTATISTICS_SITE";
+            public static final String COLUMN_NAME_CompetitionStatisticsID = "CompetitionStatisticsId";
+            public static final String COLUMN_NAME_SITEID = "siteId";
+        }
+
         /** Inner class that defines the Activity_Site table contents */
         public class Activity_SiteEntry implements BaseColumns {
             public static final String TABLE_NAME = "ACTIVITY_SITE";
             public static final String COLUMN_NAME_ACTIVITYID = "activityId";
             public static final String COLUMN_NAME_SITEID = "siteId";
+        }
+
+        /** Inner class that defines the CompetitionStatistics_Activity table contents */
+        public class CompetitionStatistics_ActivityEntry implements BaseColumns {
+            public static final String TABLE_NAME = "COMPETITIONSTATISTICS_ACTIVITY";
+            public static final String COLUMN_NAME_ACTIVITYID = "activityId";
+            public static final String COLUMN_NAME_CompetitionStatisticsID = "CompetitionStatisticsId";
+        }
+
+        /** Inner class that defines the CompetitionStatistics_Activity table contents */
+        public class CompetitionStatistics_User_CompetitionEntry implements BaseColumns {
+            public static final String TABLE_NAME = "COMPETITIONSTATISTICS_USER_COMPETITION";
+            public static final String COLUMN_NAME_USERID = "userId";
+            public static final String COLUMN_NAME_COMPETITIONID = "competitionId";
+            public static final String COLUMN_NAME_COMPETITIONSTATISTICSID = "CompetitionStatisticsId";
         }
 
         /** Inner class that defines the Multimedia_Activity table contents */
@@ -1400,6 +1566,21 @@ public class LocalDB{
                         DBContract.TermEntry.COLUMN_NAME_DESCRIPTION + " TEXT" +
                         ");";
 
+        private static final String COMPETITIONSTATISTICS_TABLE_CREATE =
+                "CREATE TABLE IF NOT EXISTS "+ DBContract.CompetitionStatisticsEntry.TABLE_NAME +" (" +
+                        DBContract.CompetitionStatisticsEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                        DBContract.CompetitionStatisticsEntry.COLUMN_NAME_POINTS + " INTEGER NOT NULL," +
+                        ");";
+
+        private static final String OPTION_TABLE_CREATE =
+                "CREATE TABLE IF NOT EXISTS "+ DBContract.OptionEntry.TABLE_NAME +" (" +
+                        DBContract.OptionEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                        DBContract.OptionEntry.COLUMN_NAME_TEXT + " TEXT NOT NULL," +
+                        DBContract.OptionEntry.COLUMN_NAME_ISCORRECT + " BIT DEFAULT 0," +
+                        DBContract.OptionEntry.COLUMN_NAME_ACTIVITYID + " INTEGER NOT NULL," +
+                        "FOREIGN KEY ("+DBContract.OptionEntry.COLUMN_NAME_ACTIVITYID+") REFERENCES "+DBContract.ActivityEntry.TABLE_NAME+"("+DBContract.ActivityEntry.COLUMN_NAME_ID+")," +
+                        ");";
+
         private static final String USER_COMPETITION_TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS " + DBContract.User_CompetitionEntry.TABLE_NAME + "(" +
                         DBContract.User_CompetitionEntry.COLUMN_NAME_USERID + " INTEGER NOT NULL," +
@@ -1454,6 +1635,35 @@ public class LocalDB{
                         "PRIMARY KEY ("+DBContract.Multimedia_TermEntry.COLUMN_NAME_MULTIMEDIAID+", "+DBContract.Multimedia_TermEntry.COLUMN_NAME_TermID+")" +
                         ");";
 
+        private static final String COMPETITIONSTATISTICS_SITE_TABLE_CREATE =
+                "CREATE TABLE IF NOT EXISTS  "+DBContract.CompetitionStatistics_SiteEntry.TABLE_NAME+"(" +
+                        DBContract.CompetitionStatistics_SiteEntry.COLUMN_NAME_CompetitionStatisticsID + " INTEGER NOT NULL," +
+                        DBContract.CompetitionStatistics_SiteEntry.COLUMN_NAME_SITEID + " INTEGER NOT NULL," +
+                        "FOREIGN KEY ("+DBContract.CompetitionStatistics_SiteEntry.COLUMN_NAME_CompetitionStatisticsID+") REFERENCES "+DBContract.CompetitionStatisticsEntry.TABLE_NAME+"("+DBContract.CompetitionStatisticsEntry.COLUMN_NAME_ID+")," +
+                        "FOREIGN KEY ("+DBContract.CompetitionStatistics_SiteEntry.COLUMN_NAME_SITEID+") REFERENCES "+DBContract.SiteEntry.TABLE_NAME+"("+DBContract.SiteEntry.COLUMN_NAME_ID+")," +
+                        "PRIMARY KEY ("+DBContract.CompetitionStatistics_SiteEntry.COLUMN_NAME_CompetitionStatisticsID+", "+DBContract.CompetitionStatistics_SiteEntry.COLUMN_NAME_SITEID+")" +
+                        ");";
+
+        private static final String COMPETITIONSTATISTICS_ACTIVITY_TABLE_CREATE =
+                "CREATE TABLE IF NOT EXISTS  "+DBContract.CompetitionStatistics_ActivityEntry.TABLE_NAME+"(" +
+                        DBContract.CompetitionStatistics_ActivityEntry.COLUMN_NAME_CompetitionStatisticsID + " INTEGER NOT NULL," +
+                        DBContract.CompetitionStatistics_ActivityEntry.COLUMN_NAME_ACTIVITYID + " INTEGER NOT NULL," +
+                        "FOREIGN KEY ("+DBContract.CompetitionStatistics_ActivityEntry.COLUMN_NAME_CompetitionStatisticsID+") REFERENCES "+DBContract.CompetitionStatisticsEntry.TABLE_NAME+"("+DBContract.CompetitionStatisticsEntry.COLUMN_NAME_ID+")," +
+                        "FOREIGN KEY ("+DBContract.CompetitionStatistics_ActivityEntry.COLUMN_NAME_ACTIVITYID+") REFERENCES "+DBContract.ActivityEntry.TABLE_NAME+"("+DBContract.SiteEntry.COLUMN_NAME_ID+")," +
+                        "PRIMARY KEY ("+DBContract.CompetitionStatistics_ActivityEntry.COLUMN_NAME_CompetitionStatisticsID+", "+DBContract.CompetitionStatistics_ActivityEntry.COLUMN_NAME_ACTIVITYID+")" +
+                        ");";
+
+        private static final String COMPETITIONSTATISTICS_USER_COMPETITION_TABLE_CREATE =
+                "CREATE TABLE IF NOT EXISTS  "+DBContract.CompetitionStatistics_User_CompetitionEntry.TABLE_NAME+"(" +
+                        DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONSTATISTICSID + " INTEGER NOT NULL," +
+                        DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_USERID + " INTEGER NOT NULL," +
+                        DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONID + " INTEGER NOT NULL," +
+                        "FOREIGN KEY ("+DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONSTATISTICSID+") REFERENCES "+DBContract.CompetitionStatisticsEntry.TABLE_NAME+"("+DBContract.CompetitionStatisticsEntry.COLUMN_NAME_ID+")," +
+                        "FOREIGN KEY ("+DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_USERID+") REFERENCES "+DBContract.UserEntry.TABLE_NAME+"("+DBContract.SiteEntry.COLUMN_NAME_ID+")," +
+                        "FOREIGN KEY ("+DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONID+") REFERENCES "+DBContract.CompetitionEntry.TABLE_NAME+"("+DBContract.SiteEntry.COLUMN_NAME_ID+")," +
+                        "PRIMARY KEY ("+DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONSTATISTICSID+", "+DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_USERID+", "+DBContract.CompetitionStatistics_User_CompetitionEntry.COLUMN_NAME_COMPETITIONID+")" +
+                        ");";
+
         public LocalDBHelper(Context context) {
             super(context, dbName, null, DATABASE_VERSION);
         }
@@ -1467,6 +1677,8 @@ public class LocalDB{
             sqLiteDatabase.execSQL(ACTIVITY_TABLE_CREATE);
             sqLiteDatabase.execSQL(SITE_TABLE_CREATE);
             sqLiteDatabase.execSQL(TERM_TABLE_CREATE);
+            sqLiteDatabase.execSQL(OPTION_TABLE_CREATE);
+            sqLiteDatabase.execSQL(COMPETITIONSTATISTICS_TABLE_CREATE);
 
             sqLiteDatabase.execSQL(USER_COMPETITION_TABLE_CREATE);
             sqLiteDatabase.execSQL(RALLY_SITE_TABLE_CREATE);
@@ -1474,6 +1686,9 @@ public class LocalDB{
             sqLiteDatabase.execSQL(ACTIVITY_SITE_TABLE_CREATE);
             sqLiteDatabase.execSQL(MULTIMEDIA_ACTIVITY_TABLE_CREATE);
             sqLiteDatabase.execSQL(MULTIMEDIA_TERM_TABLE_CREATE);
+            sqLiteDatabase.execSQL(COMPETITIONSTATISTICS_ACTIVITY_TABLE_CREATE);
+            sqLiteDatabase.execSQL(COMPETITIONSTATISTICS_SITE_TABLE_CREATE);
+            sqLiteDatabase.execSQL(COMPETITIONSTATISTICS_USER_COMPETITION_TABLE_CREATE);
         }
 
         @Override

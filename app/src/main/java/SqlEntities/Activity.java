@@ -16,6 +16,7 @@ public class Activity {
     private int getActivityType;
     private boolean is_visited;
     private List<Multimedia> activityMultimediaList;
+    private List<OpcionesDB> activityOptionsList;
 
     /**
      * Retorna el Id de la actividad
@@ -129,6 +130,18 @@ public class Activity {
         this.activityMultimediaList.add(multimediaTemp);
     }
 
+    public List<OpcionesDB> getActivityOptionsList() {
+        return activityOptionsList;
+    }
+
+    public void setActivityOptionsList(List<OpcionesDB> activityOptionsList) {
+        this.activityOptionsList = activityOptionsList;
+    }
+
+    public void addOption(OpcionesDB optionTemp){
+        this.activityOptionsList.add(optionTemp);
+    }
+
     public boolean isIs_visited() {
         return is_visited;
     }
@@ -144,6 +157,7 @@ public class Activity {
         this.activityPoints = activityPoints;
         this.getActivityType = getActivityType;
         this.activityMultimediaList = new ArrayList<Multimedia>();
+        this.activityOptionsList = new ArrayList<OpcionesDB>();
     }
 
     /**
@@ -151,5 +165,6 @@ public class Activity {
      */
     public Activity() {
         this.activityMultimediaList = new ArrayList<Multimedia>();
+        this.activityOptionsList = new ArrayList<OpcionesDB>();
     }
 }
