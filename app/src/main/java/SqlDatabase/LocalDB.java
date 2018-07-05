@@ -158,6 +158,7 @@ public class LocalDB{
         values.put(DBContract.MultimediaEntry.COLUMN_NAME_ID, multimedia.getMultimediaId());
         values.put(DBContract.MultimediaEntry.COLUMN_NAME_TYPE, multimedia.getMultimediaType());
         values.put(DBContract.MultimediaEntry.COLUMN_NAME_URL, multimedia.getMultimediaURL());
+        values.put(DBContract.MultimediaEntry.COLUMN_NAME_NAME, multimedia.getMultimediaName());
 
         /**
          * Inserta la nueva linea en la base de datos y devuelve la llave primaria de la nueva linea
@@ -1060,10 +1061,6 @@ public class LocalDB{
     public int updateSiteVisit(int siteId){
         ContentValues values = new ContentValues();
         values.put(DBContract.SiteEntry.COLUMN_NAME_ISVISITED,true);
-
-        /**
-         *
-         */
         String selection = DBContract.SiteEntry.COLUMN_NAME_ID + " = ?";
         String[] selectionArgs = {String.valueOf(siteId)};
         int count = database.update(
@@ -1073,6 +1070,63 @@ public class LocalDB{
                 selectionArgs
         );
         return count;
+    }
+
+    /**
+     * Metodo para devolver todos los sitios asociados a un rally
+     * @param siteId Identificador del sitio
+     * @return un sitio
+     */
+    public Site selectSiteFromId(int siteId){
+        String rawQuery = "Select * FROM " + DBContract.SiteEntry.TABLE_NAME + " a " +
+                " WHERE a." + DBContract.SiteEntry.COLUMN_NAME_ID + " = " + siteId;
+
+        Cursor cursor = database.rawQuery(
+                rawQuery,
+                null
+        );
+
+        Site site = new Site();
+
+        if(cursor != null){
+            for(cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                // The Cursor is now set to the right position
+                int index;
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_NAME);
+                String name = cursor.getString(index);
+                site.setSiteName(name);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_DESCRIPTION);
+                String description = cursor.getString(index);
+                site.setSiteDescription(description);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_LATITUD);
+                String latitud = cursor.getString(index);
+                site.setLatitud(latitud);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_LONGITUD);
+                String longitud = cursor.getString(index);
+                site.setLongitud(longitud);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_POINTSFORVISIT);
+                int siteVIsitedPoints = cursor.getInt(index);
+                site.setSiteId(siteVIsitedPoints);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ISVISITED);
+                int temporal2 = cursor.getInt(index);
+                boolean visited = temporal2>0;
+                site.set_visited(visited);
+
+                index = cursor.getColumnIndexOrThrow(DBContract.SiteEntry.COLUMN_NAME_ISEASTEREGG);
+                int temporal1 = cursor.getInt(index);
+                boolean easterEgg = temporal1>0;
+                site.setIs_easter_egg(easterEgg);
+
+            }
+        }
+
+        return site;
     }
 
     /**
@@ -1275,6 +1329,10 @@ public class LocalDB{
                 String url = cursor.getString(index);
                 multimedia.setMultimediaURL(url);
 
+                index = cursor.getColumnIndexOrThrow(DBContract.MultimediaEntry.COLUMN_NAME_NAME);
+                String name = cursor.getString(index);
+                multimedia.setMultimediaName(name);
+
                 multimediaList.add(multimedia);
             }
         }
@@ -1375,6 +1433,7 @@ public class LocalDB{
             public static final String COLUMN_NAME_ID = "multimediaId";
             public static final String COLUMN_NAME_TYPE = "multimediaType";
             public static final String COLUMN_NAME_URL = "multimediaURL";
+            public static final String COLUMN_NAME_NAME = "multimediaName";
         }
 
         /** Inner class that defines the ACTIVITY contents */
@@ -1536,6 +1595,7 @@ public class LocalDB{
                         DBContract.MultimediaEntry.COLUMN_NAME_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                         DBContract.MultimediaEntry.COLUMN_NAME_TYPE + " INTEGER NOT NULL," +
                         DBContract.MultimediaEntry.COLUMN_NAME_URL + " TEXT NOT NULL" +
+                        DBContract.MultimediaEntry.COLUMN_NAME_NAME + " TEXT NOT NULL" +
                         ");";
 
         private static final String ACTIVITY_TABLE_CREATE =
