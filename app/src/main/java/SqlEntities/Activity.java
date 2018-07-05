@@ -10,10 +10,13 @@ import java.util.List;
 
 public class Activity {
     private int activityId;
+    private String activityName;
+    private String activityDescription;
     private int activityPoints;
     private int getActivityType;
-    private int activityStatus;
+    private boolean is_visited;
     private List<Multimedia> activityMultimediaList;
+    private List<OpcionesDB> activityOptionsList;
 
     /**
      * Retorna el Id de la actividad
@@ -29,6 +32,38 @@ public class Activity {
      */
     public void setActivityId(int activityId) {
         this.activityId = activityId;
+    }
+
+    /**
+     * Retorna el nombre de la actividad
+     * @return el nombre de la actividad
+     */
+    public String getActivityName() {
+        return activityName;
+    }
+
+    /**
+     * Se le asigan un nombre a la actividad
+     * @param activityName nombre de la actividad
+     */
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getActivityDescription() {
+        return activityDescription;
+    }
+
+    /**
+     *
+     * @param activityDescription
+     */
+    public void setActivityDescription(String activityDescription) {
+        this.activityDescription = activityDescription;
     }
 
     /**
@@ -63,20 +98,12 @@ public class Activity {
         this.getActivityType = getActivityType;
     }
 
-    /**
-     * Retorna el status de la actividad
-     * @return el status de la actividad
-     */
-    public int getActivityStatus() {
-        return activityStatus;
+    public boolean is_visited() {
+        return is_visited;
     }
 
-    /**
-     *Asigna el status de la actividad
-     * @param activityStatus el status de la actividad
-     */
-    public void setActivityStatus(int activityStatus) {
-        this.activityStatus = activityStatus;
+    public void setIs_visited(boolean is_visited) {
+        this.is_visited = is_visited;
     }
 
     /**
@@ -103,6 +130,22 @@ public class Activity {
         this.activityMultimediaList.add(multimediaTemp);
     }
 
+    public List<OpcionesDB> getActivityOptionsList() {
+        return activityOptionsList;
+    }
+
+    public void setActivityOptionsList(List<OpcionesDB> activityOptionsList) {
+        this.activityOptionsList = activityOptionsList;
+    }
+
+    public void addOption(OpcionesDB optionTemp){
+        this.activityOptionsList.add(optionTemp);
+    }
+
+    public boolean isIs_visited() {
+        return is_visited;
+    }
+
     /**
      * Constructor de la clase con parametros
      * @param activityId Identificador de la actividad
@@ -114,6 +157,7 @@ public class Activity {
         this.activityPoints = activityPoints;
         this.getActivityType = getActivityType;
         this.activityMultimediaList = new ArrayList<Multimedia>();
+        this.activityOptionsList = new ArrayList<OpcionesDB>();
     }
 
     /**
@@ -121,5 +165,6 @@ public class Activity {
      */
     public Activity() {
         this.activityMultimediaList = new ArrayList<Multimedia>();
+        this.activityOptionsList = new ArrayList<OpcionesDB>();
     }
 }

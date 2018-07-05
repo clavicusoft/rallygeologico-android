@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.List;
 
 import SqlEntities.Competition;
 import SqlEntities.Rally;
@@ -153,8 +152,9 @@ public class JSONParser {
                 sitio.setLatitud(specificSiteJson.getString("latitude"));
                 sitio.setLongitud(specificSiteJson.getString("longitude"));
                 valor = Integer.parseInt(specificSiteJson.getString("points"));
-                sitio.setSiteTotalPoints(valor);
+                sitio.setSiteVisitedPoints(valor);
                 sitio.setSitePointsAwarded(0);
+
                 especial = specificSiteJson.getString("is_easter_egg");
                 if (especial.equalsIgnoreCase("0")) {
                     sitio.setStatus(1);

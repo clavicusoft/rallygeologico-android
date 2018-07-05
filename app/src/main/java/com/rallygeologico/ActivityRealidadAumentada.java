@@ -13,7 +13,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,11 +22,9 @@ import android.widget.Toast;
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.world.BeyondarObject;
-import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-import org.osmdroid.util.Distance;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
@@ -149,7 +146,6 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
                 setMapActivity();
             }
         });
-
         botonQR= findViewById( R.id.qr_realidadaumentada);
         botonQR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -349,7 +345,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             double lon = Double.parseDouble(sites.get(ite).getLongitud());
             if (sites.get(ite).getStatus() == 4 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 50.0) {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(), 3);
-                verificarEspecial(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteTotalPoints()));
+                verificarEspecial(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteVisitedPoints()));
             activoSonido=1;
             }
             if (sites.get(ite).getStatus() == 1 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 20.0) {
@@ -369,7 +365,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
                 }
                 else {
                     activoSonido=2;
-                    verificarNoVisitados(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteTotalPoints()));
+                    verificarNoVisitados(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteVisitedPoints()));
                 }
             }
         }

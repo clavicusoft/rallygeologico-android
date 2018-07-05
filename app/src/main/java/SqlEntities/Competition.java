@@ -10,12 +10,21 @@ import java.util.Date;
 public class Competition {
     private String competitionId;
     private String name;
-    private boolean active;
-    private boolean isPublic;
+    private boolean is_active;
+    private boolean is_public;
     private Date startingDate;
-    private Date finichingDate;
+    private Date finishingDate;
     private int totalPoints;
+    private String description;
     private Rally rally;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     /**
      * Devuelve el identificador de la competencia
@@ -54,7 +63,7 @@ public class Competition {
      * @return si la conmpetencia esta activa
      */
     public boolean isActive() {
-        return active;
+        return is_active;
     }
 
     /**
@@ -62,7 +71,7 @@ public class Competition {
      * @param active si la conmpetencia esta activa
      */
     public void setActive(boolean active) {
-        this.active = active;
+        this.is_active = active;
     }
 
     /**
@@ -70,7 +79,7 @@ public class Competition {
      * @return si la competencia es publica
      */
     public boolean isPublic() {
-        return isPublic;
+        return is_public;
     }
 
     /**
@@ -78,7 +87,7 @@ public class Competition {
      * @param aPublic valor de la variable que marca si la competencia es publica
      */
     public void setPublic(boolean aPublic) {
-        isPublic = aPublic;
+        is_public = aPublic;
     }
 
     /**
@@ -102,7 +111,7 @@ public class Competition {
      * @return la fecha de final de la competencia
      */
     public Date getFinichingDate() {
-        return finichingDate;
+        return finishingDate;
     }
 
     /**
@@ -110,7 +119,7 @@ public class Competition {
      * @param finichingDate la fecha de final de la competencia
      */
     public void setFinichingDate(Date finichingDate) {
-        this.finichingDate = finichingDate;
+        this.finishingDate = finichingDate;
     }
 
     /**
@@ -158,10 +167,10 @@ public class Competition {
     public Competition(String competitionId, String name, boolean active, boolean isPublic, Date startingDate, Date finichingDate, int totalPoints) {
         this.competitionId = competitionId;
         this.name = name;
-        this.active = active;
-        this.isPublic = isPublic;
+        this.is_active = active;
+        this.is_public = isPublic;
         this.startingDate = startingDate;
-        this.finichingDate = finichingDate;
+        this.finishingDate = finichingDate;
         this.totalPoints = totalPoints;
     }
 
