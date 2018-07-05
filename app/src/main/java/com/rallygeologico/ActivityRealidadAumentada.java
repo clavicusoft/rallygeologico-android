@@ -345,7 +345,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             double lon = Double.parseDouble(sites.get(ite).getLongitud());
             if (sites.get(ite).getStatus() == 4 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 50.0) {
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(), 3);
-                verificarEspecial(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteVisitedPoints()));
+                verificarEspecial(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getPointsForVisit()));
             activoSonido=1;
             }
             if (sites.get(ite).getStatus() == 1 && center.distanceToAsDouble(new GeoPoint(lat, lon)) <= 20.0) {
@@ -365,7 +365,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
                 }
                 else {
                     activoSonido=2;
-                    verificarNoVisitados(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getSiteVisitedPoints()));
+                    verificarNoVisitados(lat, lon, sites.get(ite).getSiteName(), Integer.toString(sites.get(ite).getPointsForVisit()));
                 }
             }
         }

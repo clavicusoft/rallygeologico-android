@@ -44,9 +44,11 @@ public class JSONParser {
      */
     public static User getUser(JSONObject obj) {
         User user = new User();
+        int valor;
         try {
             user.setLogged(true);
-            user.setUserId(obj.getString("id"));
+            valor = Integer.parseInt(obj.getString("id"));
+            user.setUserId(valor);
             user.setUsername(obj.getString("username"));
             user.setFirstName(obj.getString("first_name"));
             user.setLastName(obj.getString("last_name"));
@@ -74,8 +76,6 @@ public class JSONParser {
             rally.setDescription(rallyJson.getString("description"));
             rally.setDownloaded(false);
             rally.setImageURL(rallyJson.getString("image_url"));
-            valor = Integer.parseInt(rallyJson.getString("points_awarded"));
-            rally.setPointsAwarded(valor);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -88,7 +88,8 @@ public class JSONParser {
         int valor;
         try {
             // Obtener la informacion de la competencia del usuario
-            competition.setCompetitionId(obj.getString("id"));
+            valor = Integer.parseInt(obj.getString("id"));
+            competition.setCompetitionId(valor);
             String active = obj.getString("is_active");
             if (active.equalsIgnoreCase("1")) {
                 competition.setActive(true);
@@ -123,7 +124,6 @@ public class JSONParser {
             rally.setDownloaded(false);
             rally.setImageURL(rallyJson.getString("image_url"));
             valor = Integer.parseInt(rallyJson.getString("points_awarded"));
-            rally.setPointsAwarded(valor);
             competition.setRally(rally);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -155,16 +155,15 @@ public class JSONParser {
                 sitio.setLatitud(specificSiteJson.getString("latitude"));
                 sitio.setLongitud(specificSiteJson.getString("longitude"));
                 valor = Integer.parseInt(specificSiteJson.getString("points"));
-                sitio.setSiteVisitedPoints(valor);
-                sitio.setSitePointsAwarded(0);
+                sitio.setPointsForVisit(valor);
 
                 especial = specificSiteJson.getString("is_easter_egg");
                 if (especial.equalsIgnoreCase("0")) {
-                    sitio.setStatus(1);
+                    sitio.setIs_easter_egg(false);
                 } else {
-                    sitio.setStatus(4);
+                    sitio.setIs_easter_egg(true);
                 }
-                sitio.setStatus(1);
+                sitio.set_visited(false);
                 listaSitios.add(sitio);
 
                 cantidad++;
@@ -193,7 +192,8 @@ public class JSONParser {
                 activity.setGetActivityType(valor);
                 valor = Integer.parseInt(activityJson.getString("points_awarded"));
                 activity.setActivityPoints(valor);
-                activity.setActivityStatus(0);
+                activity.setActivityName(activityJson.getString("name"));
+                activity.setActivityDescription(activityJson.getString("description"));
                 listaActividades.add(activity);
                 
                 cantidad++;
@@ -236,6 +236,7 @@ public class JSONParser {
                     valor = Integer.parseInt(specificMultimediaJson.getString("media_type"));
                     multi.setMultimediaType(valor);
                     multi.setMultimediaURL(specificMultimediaJson.getString("media_url"));
+                    multi.setMultimediaName(specificMultimediaJson.getString("name"));
 
                     multimediaList.add(multi);
 

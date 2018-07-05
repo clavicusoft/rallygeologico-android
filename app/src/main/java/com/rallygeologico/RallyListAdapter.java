@@ -46,7 +46,6 @@ public class RallyListAdapter extends ArrayAdapter<Rally> {
         TextView tv_estado = (TextView) convertView.findViewById(R.id.estado_rally_usuario);
         // Carga los datos usando el tipo d e objeto correspondiete
         tv_nombre.setText(rally.getName());
-        tv_puntos.setText(String.valueOf(rally.getPointsAwarded()));
         tv_estado.setText(String.valueOf(rally.getRallyId()));
 
         return convertView;
