@@ -1,5 +1,6 @@
 package com.rallygeologico;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 
@@ -13,6 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import SqlDatabase.LocalDB;
+import SqlEntities.Term;
 
 public class media_activity extends AppCompatActivity implements termino.OnFragmentInteractionListener {
 
@@ -25,7 +33,9 @@ public class media_activity extends AppCompatActivity implements termino.OnFragm
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
+    public int siteId;
+    LocalDB db;
+    List<Term> terminos;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -35,10 +45,15 @@ public class media_activity extends AppCompatActivity implements termino.OnFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_activity);
+        db = new LocalDB(this);
+        Intent i = getIntent();
+        siteId = i.getIntExtra("SITE_ID",0);
+
+        terminos = db.selectAllTermsFromSite(siteId);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(),terminos.size(),terminos);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -69,30 +84,18 @@ public class media_activity extends AppCompatActivity implements termino.OnFragm
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static Fragment newInstance(int sectionNumber) {
+        public static Fragment newInstance(int sectionNumber,List<Term> terminos) {
 
             Fragment fragment = null;
             Bundle args = new Bundle();
-            switch (sectionNumber) {
-                case 1:
-                    fragment = new termino();
-                    args = new Bundle();
-                    args.putString("IMAGE_NAME", "Rally 3");
-                    fragment.setArguments(args);
-                    break;
-                case 2:
-                    fragment = new termino();
-                    args = new Bundle();
-                    args.putString("IMAGE_NAME", "Rally 1");
-                    fragment.setArguments(args);
-                    break;
-                case 3:
-                    fragment = new termino();
-                    args = new Bundle();
-                    args.putString("IMAGE_NAME", "Rally 3");
-                    fragment.setArguments(args);
-                    break;
-            }
+
+            fragment = new termino();
+            args = new Bundle();
+            args.putString("IMAGE_NAME", "termino" + terminos.get(sectionNumber).getTermName());
+            args.putString("TERM_NAME", terminos.get(sectionNumber).getTermName());
+            args.putString("TERM_DESC", terminos.get(sectionNumber).getTermDescription());
+            fragment.setArguments(args);
+
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             return fragment;
         }
@@ -113,22 +116,26 @@ public class media_activity extends AppCompatActivity implements termino.OnFragm
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
+        public int cantidad;
+        public List<Term> list;
 
+        public SectionsPagerAdapter(FragmentManager fm,int c,List<Term> l ) {
+            super(fm);
+            this.cantidad=c;
+            this.list=l;
+        }
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position,list);
         }
 
         /*Mostrar el size de terminos*/
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return cantidad;
         }
     }
 }

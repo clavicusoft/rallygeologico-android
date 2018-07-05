@@ -25,102 +25,48 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/media_nombre_termino"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#666666"
+                    android:textSize="26sp"
+                    android:gravity="center"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="#CCCCCC" />
+
                 <ImageView
                     android:id="@+id/media_imagenPunto"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:scaleType="fitXY"
-                    />
-
-                <TextView
-                    android:id="@+id/media_nombrePunto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="28dp"
-                    android:textColor="#666666"
-                    android:textSize="22dp"
-                    android:gravity="center"/>
-
-
-                <TextView
-                    android:id="@+id/media_numeroPunto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:textColor="#999999"
-                    android:textSize="18dp"
-                    android:gravity="center"/>
-
-
-                <TextView
-                    android:id="@+id/media_distanciaPunto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="20dp"
-                    android:textColor="#666666"
-                    android:textSize="18dp"
-                    android:gravity="center"/>
-
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:background="#CCCCCC"
-
-                    />
-
-                <TextView
-                    android:id="@+id/media_secretoPunto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:textColor="#609000"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:id="@+id/media_geopuntosPunto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:textColor="#E46305"
-                    android:textSize="18dp"
-
-                    />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="5dp"
-                    android:background="#CCCCCC"
-
-                    />
-
-
-                <TextView
-                    android:id="@+id/media_informacionPunto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="#666666"
-                    android:textSize="18dp"
-
-                    />
-
-
-                <ImageView
-                    android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:background="#CCCCCC"
+                    android:layout_margin="10dp"
+                    android:scaleType="fitXY" />
 
-                    />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="#CCCCCC" />
+
+                <TextView
+                    android:id="@+id/media_descripcion_termino"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="#666666"
+                    android:textSize="18dp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="#CCCCCC" />
 
             </LinearLayout>
 

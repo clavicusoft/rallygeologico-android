@@ -275,6 +275,17 @@ public class RallyList extends AppCompatActivity {
                 }
                 if(jsonObject != null){
                     List<Term> listaTerminos = JSONParser.getTermsFromSite(jsonObject);
+                    for (Term t : listaTerminos) {
+                        String termURL = t.getTermMultimediaList().get(0).getMultimediaURL();
+                        String[] tokens = termURL.split("/");
+
+                        String url = "http://www.rallygeologico.ucr.ac.cr" + t.getTermMultimediaList().get(0).getMultimediaURL();
+                        if (tokens[0].equalsIgnoreCase("assets")) {
+                            new DownloadTask(this, 1, "termino" + t.getTermName(), url);
+                        } else {
+                            new DownloadTask(this, 1, "termino" + t.getTermName(), termURL);
+                        }
+                    }
                     site.setTermList(listaTerminos);
                 }
             }

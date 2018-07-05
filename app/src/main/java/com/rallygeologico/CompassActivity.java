@@ -139,7 +139,7 @@ public class CompassActivity extends Fragment implements SensorEventListener {
             // Se obtiene la orientacion del sensor en radianes y se pasa a grados
             SensorManager.getOrientation(mR, mOrientation);
             float azimuthInRadians = mOrientation[0];
-            float azimuthInDegress = (float)(Math.toDegrees(azimuthInRadians)+90)%360;
+            float azimuthInDegress = (float)(Math.toDegrees(azimuthInRadians)+360)%360;
             // Se hace una animacion que gire la aguja con respecto a la orientacion actual
             RotateAnimation ra = new RotateAnimation(mCurrentDegree, -azimuthInDegress, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             ra.setDuration(250);
