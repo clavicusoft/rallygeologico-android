@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -54,6 +55,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     Button botonCam;
     Button botonQR;
     Button botonPausa;
+    Button botonFinalizar;
 
     Marker me;
 
@@ -99,8 +101,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         //Actualiza el cuadrado del mapa para generar un rango de validas
         //arribaDerecha=new GeoPoint(10.57,-85.3);
         //abajoIzquierda=new GeoPoint(  10.50,-85.5);
-        arribaDerecha=new GeoPoint(11.15, -85.1);
-        abajoIzquierda=new GeoPoint(  10.42, -85.7);
+        arribaDerecha=new GeoPoint(11.1,-85.5);
+        abajoIzquierda=new GeoPoint(  10.75,-85.8);
 
         lastKnown=false;
 
@@ -174,8 +176,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         botonQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(),"Codigo QR en Trabajo",Toast.LENGTH_SHORT).show();
-
+                irQR();
             }
         });
 
@@ -187,9 +188,18 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             }
         });
 
+        botonFinalizar = findViewById(R.id.btn_stop);
+        botonFinalizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finalizarRally();
+            }
+        });
         /*Anade puntos*/
         insertarPuntos();
         try{
+            if(center!=null)
+            {verificarPuntos();}
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
         }
         catch(SecurityException e){
@@ -197,10 +207,14 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         }
     }
 
+    /**
+     * Se encarga de pausar el juego cuando el usuario lo desee
+     * */
     public void metodoPausa() {
+
         new AlertDialog.Builder(this)
                 .setTitle("Pausar rally")
-                .setMessage("Seguro que desea pausar el rally? Posteriormente puede reanudarlo conservando su progreso.")
+                .setMessage("¿Seguro que desea pausar el rally? Posteriormente puede reanudarlo conservando su progreso.")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -209,12 +223,36 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 .setNegativeButton(android.R.string.no, null).show();
     }
 
+    public void finalizarRally() {
+        new AlertDialog.Builder(this)
+                .setTitle("Finalizar rally")
+                .setMessage("¿Seguro que desea finalizar el rally sin haber visitado todos los puntos?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        guardarCompetencia();
+                        volveraListaRallies();
+                    }})
+                .setNegativeButton(android.R.string.no, null).show();
+
+    }
+
+    public void guardarCompetencia(){
+
+    }
+
+    /**
+     * Vuelve al activity de juego, donde se selecciona el rally
+     * */
 
     public void volveraListaRallies(){
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Inicia la realidad aumentada, envia el id del rally seleccionado por el usuario
+     * */
     public void irRealidadAumentada() {
         Intent intent = new Intent(this,ActivityRealidadAumentada.class);
         String id = "" + rallyId;
@@ -222,6 +260,12 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         startActivity(intent);
     }
 
+    public void irQR()
+    {
+
+        Intent intent = new Intent(this,ActivityQR.class);
+        startActivity(intent);
+    }
 
     /**
      * Remueve un marcador del mapa
@@ -322,8 +366,6 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 }
                 verificarPuntos();
             }
-            else
-            {Toast.makeText(this,"Te saliste del mapa",Toast.LENGTH_LONG).show();}
         }
     }
 
@@ -432,7 +474,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * */
     public void crearBorde() {
         boundingBox=new BoundingBox(arribaDerecha.getLatitude(),arribaDerecha.getLongitude(),abajoIzquierda.getLatitude(),abajoIzquierda.getLongitude());
-        mapView.setMinZoomLevel(13.0);
+        mapView.setMinZoomLevel(13.5);
         mapView.setMaxZoomLevel(20.0);
         mapView.setScrollableAreaLimitDouble(boundingBox);
     }
@@ -442,17 +484,23 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
      * */
     public void verificarPuntos() {
         /*Recorro los markers*/
-        List <Site> sites= localDB.selectAllSitesFromRally(1);
+        List <Site> sites= localDB.selectAllSitesFromRally(rallyId);
         int activosonido=0;
         for (int ite=0;ite<sites.size();ite++) {
             double lat=Double.parseDouble(sites.get(ite).getLatitud());
             double lon=Double.parseDouble(sites.get(ite).getLongitud());
             if (sites.get(ite).getStatus()==4 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=50.0) {
+                /*Contador de puntos*/
+                localDB.updatePointsAwarded(sites.get(ite).getSiteId());
+
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),3);
-                verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteVisitedPoints()));
+                verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getSiteTotalPoints()));
                 activosonido=1;
             }
-            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0) {
+            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=1000.0) {
+                /*Contador de puntos*/
+                localDB.updatePointsAwarded(sites.get(ite).getSiteId());
+
                 localDB.updateSiteVisit(sites.get(ite).getSiteId(),2);
 
                 /*Actualizo la vista*/
@@ -604,6 +652,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         List <Site> sites= localDB.selectAllSitesFromRally(rallyId);
 
         for (int i=0; i<sites.size();i++) {
+
             Location nuevo = new Location("dummyprovider");
             nuevo.setLatitude(Double.parseDouble(sites.get(i).getLatitud()));
             nuevo.setLongitude(Double.parseDouble(sites.get(i).getLongitud()));
@@ -622,28 +671,40 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         }
     }
 
+    /**
+     * Indica al usuario cuando ya ha visitado todos los sitios de un rally
+     * */
     public void visiteTodos() {
-        Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, finishRallyActivity.class);
+        startActivity(intent);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mapView.getOverlays().clear();
-        numeroNoVisitados=0;
-        numeroVisitados=0;
-        numeroEspeciales=0;
-        insertarPuntos();
-        try{
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
-        }
-        catch(SecurityException e){
-            Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
-        }
-    }
+
+   /**
+    * Cuando viene de otro activity se actualiza los sitios segun la base de datos
+    * */
+
+   @Override
+   protected void  onStart()
+   {
+       super.onStart();
+       mapView.getOverlays().clear();
+       numeroNoVisitados=0;
+       numeroVisitados=0;
+       numeroEspeciales=0;
+       insertarPuntos();
+       try{
+           locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
+       }
+       catch(SecurityException e){
+           Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
+       }
+
+   }
 
     @Override
-    protected void onStop() {
+    protected void onStop()
+    {
         super.onStop();
         try{
             locationManager.removeUpdates(this);
@@ -652,4 +713,5 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
         }
     }
+
 }

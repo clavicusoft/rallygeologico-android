@@ -33,6 +33,12 @@ import java.util.List;
 import SqlDatabase.LocalDB;
 import SqlEntities.Site;
 
+
+/**
+ * Clase que se encarga de desplegar la camara y crea objetos de la realidad aumentada segun la base de datos
+ * Actualiza la ubicacion actual del jugador por medio de GPS y verifica si esta cerca para notificarle la visita de un punto
+ */
+
 public class ActivityRealidadAumentada extends FragmentActivity implements OnClickBeyondarObjectListener, LocationListener {
 
     private BeyondarFragmentSupport mBeyondarFragment;
@@ -61,6 +67,16 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
     Fragment fragmentBrujula;
     Fragment fragmentInclinometro;
 
+
+    /**
+     * Recibe el id del rally selecccionado por el jugador
+     * Muestra la vista la camara
+     * Crea el mundo de realidad aumentada segun la base de datos
+     * Inicializa el escuchador de la ubicacion actual
+     * @param savedInstanceState Estado actual de la aplicacion
+     */
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent myIntent = getIntent(); // gets the previously created intent
@@ -71,8 +87,10 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
 
         /*Esconda el boton de informacion desde el inicio*/
         botonInformacion= findViewById(R.id.informacion_realidadaumentada);
-        botonInformacion.setVisibility(View.GONE);
-        botonInformacion.setClickable(false);
+
+        /*Descomentar*/
+        //botonInformacion.setVisibility(View.GONE);
+        //botonInformacion.setClickable(false);
 
         /*Inicializar fragment de brujula*/
         fragmentBrujula = fragmentManager.findFragmentById(R.id.fragmentCompass);
@@ -82,8 +100,8 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         ft.hide(fragmentBrujula);
         ft.hide(fragmentInclinometro);
         ft.commit();
-        addShowHideListener(R.id.inclinometro_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentSensors));
-        addShowHideListener(R.id.brujula_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentCompass));
+        addShowHideListener(R.id.inclinometro_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentSensors), fragmentManager.findFragmentById(R.id.fragmentCompass));
+        addShowHideListener(R.id.brujula_realidadaumentada,fragmentManager.findFragmentById(R.id.fragmentCompass), fragmentManager.findFragmentById(R.id.fragmentSensors));
 
         especialDialog=new Dialog(this);
         especialDialog.setContentView(R.layout.alertarealidadaumentada);
@@ -97,12 +115,14 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         /*Ubicacion*/
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         try {
+            if(center!=null)
+            {verificarPuntos();}
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
         } catch (SecurityException e) {
             Toast.makeText(this, "No pedi el permiso bien", Toast.LENGTH_SHORT).show();
         }
 
-        /*Fin de ubicación*/
+        /*Fin de ubicacion*/
         mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(R.id.beyondarFragment);
         mWorld = new World(this);
         mBeyondarFragment.setOnClickBeyondarObjectListener(this);
@@ -126,19 +146,42 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
                 setMapActivity();
             }
         });
+        botonQR= findViewById( R.id.qr_realidadaumentada);
+        botonQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                irQR();
+            }
+        });
     }
 
+    public void irQR() {
+        Intent intent = new Intent(this,ActivityQR.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Vuelve a la actividad del mapa
+     * */
     public void setMapActivity() {
        onBackPressed();
     }
 
-    void addShowHideListener(int buttonId, final Fragment fragment) {
+    /**
+     * Muestra y esconde la brujula y el inclinometro
+     * @param buttonId boton victima que se debe esconde o mostrar
+     * @param fragment fragmento utilizado
+     * */
+   public void addShowHideListener(int buttonId, final Fragment fragment, final Fragment fragment2) {
         final Button button = (Button) findViewById(buttonId);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
                 if (fragment.isHidden()) {
+                    if(!fragment2.isHidden()){
+                        ft.hide(fragment2);
+                    }
                     ft.show(fragment);
                 } else {
                     ft.hide(fragment);
@@ -148,20 +191,31 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         });
     }
 
+    /**
+     * Llama a la actividad del QR
+     * */
     public void setQRActivity() {
         Toast.makeText(this,"Llamar al activity QR",Toast.LENGTH_SHORT).show();
     }
 
     public void setInformacionActivity() {
-        Toast.makeText(this,"Multimedia en proceso",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, media_activity.class);
+        startActivity(intent);
     }
 
+    /**
+    *Llama al metodo que crea los objetos y despues setea el mundo
+     * */
     private void crearmundo() {
         crearGeobjetos();
         // Finally we add the Wold data in to the fragment
         mBeyondarFragment.setWorld(mWorld);
     }
-
+    /**
+     * Metodo que se dispara al tocar un objeto de la realidad aumentada
+     * Muestra el nombre del sitio y la distancia a la que se encuentra
+     * @param beyondarObjects lista de lo objetos de la realidad aumentada creados
+     */
     @Override
     public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
         // The first element in the array belongs to the closest BeyondarObject
@@ -172,6 +226,10 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         }
     }
 
+    /**
+     *  Consulta la base de datos y crea los objetos de la realidad aumentada
+     * Segun el rally id recibido en el activity
+     * */
     public void crearGeobjetos() {
         List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
         if (sites.size() == 0) {
@@ -185,6 +243,13 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         }
     }
 
+    /**
+     * Crea un objeto de la realidad aumentada
+     * Segun el estado de este, se muestra una imagen diferente y el nombre que lo identifica
+     * @param lat latitud del sitio
+     * @param lon Longitud del sitio
+     * @param tipo Status del sitio (visitado, no visitado, especial no visitado, especial visitado)
+     * */
     public void crearObjeto(double lat, double lon, int tipo, String Name) {
         if (tipo != 4) {//Si no es el especial
             ++ID;
@@ -207,6 +272,11 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         }
     }
 
+
+    /**
+    * Metodo que se dispara al tener una nueva localizacion del jugador
+     * Verifica si se esta cerca de un punto para notificarlo y posteriormente muestra el boton para obtener mas informacion del sitio
+     * */
     @Override
     public void onLocationChanged(Location location) {
         center = new GeoPoint(location.getLatitude(), location.getLongitude());
@@ -215,18 +285,33 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         verificarInformacion();
     }
 
+    /**
+     * Se dispara cuando hay un cambio de estado del proveedor
+     * @param s Proveedor
+     * @param i Estado en el que se encuentra
+     * @param bundle Estado de la aplicacion
+     * */
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
     }
-
+    /**
+     * Se dispara cuando se activa el proveedor
+     * @param s Proveedor
+     * */
     @Override
     public void onProviderEnabled(String s) {
     }
-
+    /**
+     * Se dispara cuando se desactiva el proveedor
+     * @param s Proveedor
+     * */
     @Override
     public void onProviderDisabled(String s) {
     }
 
+    /**
+     * Consulta la base de datos los sitios y verifica si esta en el rango para mostrar el boton que despliega la informacion
+     * */
     public void verificarInformacion(){
         boolean noEncontre=true;
         List<Site> sites = localDB.selectAllSitesFromRally(Integer.parseInt(rallyID));
@@ -242,11 +327,15 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             ite++;
         }
         if (noEncontre) {
-            botonInformacion.setVisibility(View.GONE);
-            botonInformacion.setClickable(false);
+            /*Descomentar*/
+           // botonInformacion.setVisibility(View.GONE);
+            //botonInformacion.setClickable(false);
          }
     }
 
+    /**
+     * Este metodo se encarga agarrar todos los sitios de la base de datos y chequear si estamos cerca de un no visitado o uno especial
+     * */
     public void verificarPuntos() {
         int activoSonido=0;
         /*Recorro los markers*/
@@ -290,6 +379,14 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         }
     }
 
+    /**
+     * Despliega un mensaje al usuario indicando que encontro un punto especial
+     * @param lat latitud del punto encontrado
+     * @param lon Longitud del punto encontrado
+     * @param nombre Nombre del punto encontrado
+     * @param petrocoins valor del punto en petrocoins para el usuario
+     *
+     * */
     public void verificarEspecial(double lat, double lon, String nombre, String petrocoins) {
         final GeoPoint esp = new GeoPoint(lat, lon);
         Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -326,6 +423,15 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         especialDialog.show();
     }
 
+
+    /**
+     * Despliega un mensaje al usuario indicando que visito un punto
+     * @param lat latitud del punto encontrado
+     * @param lon Longitud del punto encontrado
+     * @param nombre Nombre del punto encontrado
+     * @param petrocoins valor del punto en petrocoins
+     *
+     * */
     public void verificarNoVisitados( double lat, double lon,String nombre, String petrocoins) {
         final GeoPoint esp=new GeoPoint(lat, lon);
 
@@ -359,10 +465,17 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         especialDialog.show();
     }
 
+    /**
+     * Indica al usuario cuando ya ha visitado todos los sitios de un rally
+     * */
     public void visiteTodos() {
-        Toast.makeText(this,"Visite todos los puntos",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, finishRallyActivity.class);
+        startActivity(intent);
     }
 
+    /**
+     * Cuando viene de otro activity se actualiza los sitios segun la base de datos
+     * */
     @Override
     protected void onStart() {
         super.onStart();
@@ -372,13 +485,16 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         numeroEspeciales=0;
         crearGeobjetos();
         try{
+
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2, 5, this);
         }
         catch(SecurityException e){
             Toast.makeText(this,"No pedi el permiso bien",Toast.LENGTH_SHORT).show();
         }
     }
-
+    /**
+     * Cuando me paso de activity se deja de escuchar la ubicacion
+     * */
     @Override
     protected void onStop() {
         super.onStop();

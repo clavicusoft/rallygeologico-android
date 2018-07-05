@@ -53,7 +53,11 @@ public class LocalDB{
         values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
         values.put(DBContract.UserEntry.COLUMN_NAME_PASSWORD, user.getPassword());
         values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
-        values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
+        if(user.isLogged()){
+            values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, 1);
+        } else {
+            values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, 0);
+        }
         values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
         values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
         values.put(DBContract.UserEntry.COLUMN_NAME_USERID, user.getUserId());
@@ -66,6 +70,18 @@ public class LocalDB{
                 null,
                 values
         );
+
+        if(user.getCompetitions().size()>0){
+            for(int i = 0; i < user.getCompetitions().size(); i++) {
+                try {
+                    newRowId+=this.insertCompetition(user.getCompetitions().get(i));
+                } catch (android.database.sqlite.SQLiteException e) {}
+                try {
+                    newRowId+=this.insertUser_Competition(user.getUserId(),user.getCompetitions().get(i).getCompetitionId());
+                } catch (android.database.sqlite.SQLiteException e) {}
+            }
+        }
+
         return newRowId;
     }
 
@@ -350,7 +366,7 @@ public class LocalDB{
      * @param competitionId identificador de la competencia
      * @return filas modificadas
      */
-    public long insertUser_Competition(int userId, int competitionId){
+    public long insertUser_Competition(String userId, String competitionId){
         /**
          * Crea un mapa de valores donde los nombres de las columnas es el Key
          */
@@ -1006,7 +1022,11 @@ public class LocalDB{
         values.put(DBContract.UserEntry.COLUMN_NAME_EMAIL, user.getEmail());
         values.put(DBContract.UserEntry.COLUMN_NAME_PASSWORD, user.getPassword());
         values.put(DBContract.UserEntry.COLUMN_NAME_FIRSTNAME, user.getFirstName());
-        values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, user.isLogged());
+        if (user.isLogged()){
+            values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, 1);
+        } else {
+            values.put(DBContract.UserEntry.COLUMN_NAME_ISLOGGED, 0);
+        }
         values.put(DBContract.UserEntry.COLUMN_NAME_LASTNAME, user.getLastName());
         values.put(DBContract.UserEntry.COLUMN_NAME_PHOTOURL, user.getPhotoUrl());
         values.put(DBContract.UserEntry.COLUMN_NAME_USERID, user.getUserId());
@@ -1052,6 +1072,12 @@ public class LocalDB{
         }
     }
 
+    /*Contador de puntos*/
+    public void updatePointsAwarded(int siteID)
+    {
+
+    }
+
     /**
      * Metodo para actualizar el estatus de un sitio en la base de datos local
      * @param siteId identificador del sitio a modificar
@@ -1061,9 +1087,11 @@ public class LocalDB{
         ContentValues values = new ContentValues();
         values.put(DBContract.SiteEntry.COLUMN_NAME_ISVISITED,true);
 
-        /**
-         *
+        /*
+            Asocia los puntos
          */
+
+
         String selection = DBContract.SiteEntry.COLUMN_NAME_ID + " = ?";
         String[] selectionArgs = {String.valueOf(siteId)};
         int count = database.update(
