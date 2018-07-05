@@ -283,8 +283,8 @@ public class LoginActivity extends AppCompatActivity {
 
             credentials.setVisibility(GONE);
             progressBar.setVisibility(View.VISIBLE);
-            usuario = "jorgeremon";
-            contrasena = "jorgeremon123";
+            usuario = "benja";
+            contrasena = "Benjamin123";
             user = db.selectUserByUsername(usuario, contrasena);
             // Si no encuentra al usuario localmente, consulta en la base remota
             if (user == null) {

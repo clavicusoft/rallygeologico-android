@@ -9,9 +9,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 
+import SqlEntities.Activity;
 import SqlEntities.Competition;
+import SqlEntities.Multimedia;
 import SqlEntities.Rally;
 import SqlEntities.Site;
+import SqlEntities.Term;
 import SqlEntities.User;
 
 /**
@@ -172,6 +175,84 @@ public class JSONParser {
             e.printStackTrace();
         }
         return listaSitios;
+    }
+
+    public static LinkedList<Activity> getActivitiesFromSite(JSONObject obj) {
+        LinkedList<Activity> listaActividades = new LinkedList<Activity>();
+        Activity activity;
+        int valor;
+        int cantidad = 0;
+        String pos = "" + cantidad;
+        try {
+            JSONObject activityJson = (JSONObject) obj.get(pos);
+            while(activityJson != null){
+                activity = new Activity();
+                valor = Integer.parseInt(activityJson.getString("id"));
+                activity.setActivityId(valor);
+                valor = Integer.parseInt(activityJson.getString("activity_type"));
+                activity.setGetActivityType(valor);
+                valor = Integer.parseInt(activityJson.getString("points_awarded"));
+                activity.setActivityPoints(valor);
+                activity.setActivityStatus(0);
+                listaActividades.add(activity);
+                
+                cantidad++;
+                pos = "" + cantidad;
+                activityJson = (JSONObject) obj.get(pos);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return listaActividades;
+    }
+
+    public static LinkedList<Term> getTermsFromSite(JSONObject obj) {
+        LinkedList<Term> listaTerminos = new LinkedList<Term>();
+        Term term;
+        Multimedia multi;
+        int valor;
+        int numTerm = 0;
+        int numMultimedia;
+        String pos = "" + numTerm;
+        try {
+            JSONObject termJson = obj.getJSONObject(pos);
+            while(termJson != null) {
+                term = new Term();
+                valor = Integer.parseInt(termJson.getString("id"));
+                term.setTermId(valor);
+                term.setTermName(termJson.getString("name"));
+                term.setTermDescription(termJson.getString("description"));
+
+                numMultimedia = 0;
+                JSONArray multimediasJson = (JSONArray) termJson.getJSONArray("multimedia");
+                JSONObject specificMultimediaJson = (JSONObject) multimediasJson.get(numMultimedia);
+                String especial;
+
+                LinkedList<Multimedia> multimediaList = new LinkedList<>();
+                while (specificMultimediaJson != null) {
+                    multi = new Multimedia();
+                    valor = Integer.parseInt(specificMultimediaJson.getString("id"));
+                    multi.setMultimediaId(valor);
+                    valor = Integer.parseInt(specificMultimediaJson.getString("media_type"));
+                    multi.setMultimediaType(valor);
+                    multi.setMultimediaURL(specificMultimediaJson.getString("media_url"));
+
+                    multimediaList.add(multi);
+
+                    numMultimedia++;
+                    specificMultimediaJson = (JSONObject) multimediasJson.get(numMultimedia);
+                }
+                term.setTermMultimediaList(multimediaList);
+                listaTerminos.add(term);
+
+                numTerm++;
+                pos = "" + numTerm;
+                termJson = (JSONObject) obj.get(pos);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return listaTerminos;
     }
 
     /**
