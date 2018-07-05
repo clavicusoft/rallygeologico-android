@@ -176,14 +176,14 @@ public class JSONParser {
         return listaSitios;
     }
 
-    public static LinkedList<Activity> getActivitiesFromSite(JSONObject obj) {
+    public static LinkedList<Activity> getActivitiesFromSite(JSONArray obj) {
         LinkedList<Activity> listaActividades = new LinkedList<Activity>();
         Activity activity;
         int valor;
         int cantidad = 0;
         String pos = "" + cantidad;
         try {
-            JSONObject activityJson = (JSONObject) obj.get(pos);
+            JSONObject activityJson = (JSONObject) obj.get(cantidad);
             while(activityJson != null){
                 activity = new Activity();
                 valor = Integer.parseInt(activityJson.getString("id"));
@@ -198,7 +198,7 @@ public class JSONParser {
                 
                 cantidad++;
                 pos = "" + cantidad;
-                activityJson = (JSONObject) obj.get(pos);
+                activityJson = (JSONObject) obj.get(cantidad);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -206,30 +206,25 @@ public class JSONParser {
         return listaActividades;
     }
 
-    public static LinkedList<Term> getTermsFromSite(JSONObject obj) {
+    public static LinkedList<Term> getTermsFromSite(JSONArray obj) {
         LinkedList<Term> listaTerminos = new LinkedList<Term>();
         Term term;
         Multimedia multi;
         int valor;
-        int numTerm = 0;
-        int numMultimedia;
-        String pos = "" + numTerm;
         try {
-            JSONObject termJson = obj.getJSONObject(pos);
-            while(termJson != null) {
+            for(int i = 0; i<obj.length(); i++) {
+                JSONObject termJson = obj.getJSONObject(i);
                 term = new Term();
                 valor = Integer.parseInt(termJson.getString("id"));
                 term.setTermId(valor);
                 term.setTermName(termJson.getString("name"));
                 term.setTermDescription(termJson.getString("description"));
 
-                numMultimedia = 0;
                 JSONArray multimediasJson = (JSONArray) termJson.getJSONArray("multimedia");
-                JSONObject specificMultimediaJson = (JSONObject) multimediasJson.get(numMultimedia);
-                String especial;
 
                 LinkedList<Multimedia> multimediaList = new LinkedList<>();
-                while (specificMultimediaJson != null) {
+                for(int j = 0; j<multimediasJson.length(); j++) {
+                    JSONObject specificMultimediaJson = (JSONObject) multimediasJson.get(j);
                     multi = new Multimedia();
                     valor = Integer.parseInt(specificMultimediaJson.getString("id"));
                     multi.setMultimediaId(valor);
@@ -239,16 +234,9 @@ public class JSONParser {
                     multi.setMultimediaName(specificMultimediaJson.getString("name"));
 
                     multimediaList.add(multi);
-
-                    numMultimedia++;
-                    specificMultimediaJson = (JSONObject) multimediasJson.get(numMultimedia);
                 }
                 term.setTermMultimediaList(multimediaList);
                 listaTerminos.add(term);
-
-                numTerm++;
-                pos = "" + numTerm;
-                termJson = (JSONObject) obj.get(pos);
             }
         } catch (JSONException e) {
             e.printStackTrace();
