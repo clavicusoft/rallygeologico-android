@@ -83,6 +83,11 @@ public class JSONParser {
         return rally;
     }
 
+    /**
+     * Obtiene las competencias de un usuario
+     * @param obj Objeto JSON con la informacion de una competencia
+     * @return El objeto de la competencia creada
+     */
     public static Competition getCompetition(JSONObject obj) {
         Competition competition = new Competition();
         Rally rally = new Rally();
@@ -177,6 +182,11 @@ public class JSONParser {
         return listaSitios;
     }
 
+    /**
+     * Obtiene las actividades de un sitio
+     * @param obj Objeto JSON con la informacion de un sitio
+     * @return Lista con los objetos de las actividades
+     */
     public static LinkedList<Activity> getActivitiesFromSite(JSONArray obj) {
         LinkedList<Activity> listaActividades = new LinkedList<Activity>();
         Activity activity;
@@ -198,7 +208,6 @@ public class JSONParser {
                 listaActividades.add(activity);
                 
                 cantidad++;
-                pos = "" + cantidad;
                 activityJson = (JSONObject) obj.get(cantidad);
             }
         } catch (JSONException e) {
@@ -207,6 +216,11 @@ public class JSONParser {
         return listaActividades;
     }
 
+    /**
+     * Obtiene los terminos de un sitio
+     * @param obj Objeto JSON con la informacion de un sitio
+     * @return Lista con los objetos de los terminos
+     */
     public static LinkedList<Term> getTermsFromSite(JSONArray obj) {
         LinkedList<Term> listaTerminos = new LinkedList<Term>();
         Term term;
