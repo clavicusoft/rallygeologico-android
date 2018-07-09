@@ -156,6 +156,9 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         });
     }
 
+    /**
+     * Se dirige a la actividad que maneja el QR
+     * */
     public void irQR() {
         Intent intent = new Intent(this,ActivityQR.class);
         startActivity(intent);
@@ -199,6 +202,9 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         Toast.makeText(this,"Llamar al activity QR",Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Se dirige al activity que maneja la multimedia sobre un punto.
+     * */
     public void setInformacionActivity() {
         Intent intent = new Intent(this, media_activity.class);
         intent.putExtra("SITE_ID", point);

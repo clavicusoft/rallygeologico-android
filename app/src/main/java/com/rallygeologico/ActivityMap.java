@@ -223,6 +223,10 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 .setNegativeButton(android.R.string.no, null).show();
     }
 
+    /**
+     * Muestra el Dialogo para finalizar el rally.
+     * Guarda la competencia y vuelve al menu de rallies
+     * */
     public void finalizarRally() {
         new AlertDialog.Builder(this)
                 .setTitle("Finalizar rally")
@@ -260,6 +264,9 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
         startActivity(intent);
     }
 
+    /**
+     * Inicia la actividad del QR
+     * */
     public void irQR()
     {
 
@@ -675,7 +682,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
     }
 
     /**
-     * Indica al usuario cuando ya ha visitado todos los sitios de un rally
+     * Inicia la actividad cuando ya ha visitado todos los sitios de un rally
      * */
     public void visiteTodos() {
         Intent intent = new Intent(this, finishRallyActivity.class);
@@ -706,6 +713,9 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
 
    }
 
+   /**
+    * Cuando se dirige a otra activity se deja de escuchar la localizacion para ahorrarbateria
+    * */
     @Override
     protected void onStop()
     {

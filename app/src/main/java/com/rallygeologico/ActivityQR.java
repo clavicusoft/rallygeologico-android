@@ -16,13 +16,23 @@ import com.google.zxing.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-
+/**
+ * Clase que se encarga del lector qr de la aplicacion
+ * */
 public class ActivityQR extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
     private ZXingScannerView mScannerView;
     private Dialog qrDialog;
     Button botonobservar;
     TextView botoncerrar;
+
+    /**
+     * Se ejecuta cuando se crea la vista
+     * Inicializa el controlador del escaner
+     * Muestra la camara en conjunto con el controlador del lector qr
+     * @param savedInstanceState Estado actual de la aplicacion
+     *
+     * */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +51,12 @@ public class ActivityQR extends AppCompatActivity implements ZXingScannerView.Re
         mScannerView.startCamera();
     }
 
-    @Override
-    public void onResume()
-    {
-        super.onResume();
 
-    }
-
-
-    /*Logia de cifrado del QR*/
+    /*
+    * Se dispara al leer correctamente un qr
+    * Se encarga de la logica del cifrado del qr
+    * Inicia a vibrar y despliega el una alerta que contiene el valor de los petrocoins y el nombre del sitio
+    * */
     @Override
     public void handleResult(Result result) {
 
