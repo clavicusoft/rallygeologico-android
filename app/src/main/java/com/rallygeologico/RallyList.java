@@ -209,7 +209,7 @@ public class RallyList extends AppCompatActivity {
                 if(jsonObject != null){
                     List<Site> listaSitios = JSONParser.getSitesFromRally(jsonObject);
                     List<Site> listaSitiosNuevos = new LinkedList<>();
-                    for(Site site : listaSitios){
+                    for(Site site : listaSitios){ // Obtiene las actividades y terminos de un sitio
                         site = descargarActividadesYTerminosSitio(site);
                         listaSitiosNuevos.add(site);
                     }
@@ -228,6 +228,11 @@ public class RallyList extends AppCompatActivity {
         }
     }
 
+    /**
+     * Descarga las actividades y terminos de un sitio, con la clase Background worker para llamar a la base remota
+     * @param sitio Objeo del sitio al que le agrega las actividades y terminos.
+     * @return El sitio con las actividades y terminos actualizadas
+     */
     public Site descargarActividadesYTerminosSitio(Site sitio){
         Site site = sitio;
         if(tieneConexionInternet()){
@@ -301,7 +306,6 @@ public class RallyList extends AppCompatActivity {
 
     /**
      * Revisa si el dispositivo tiene acceso a internet
-     *
      * @return Verdadero si esta conectado, sino falso
      */
     public boolean tieneConexionInternet() {

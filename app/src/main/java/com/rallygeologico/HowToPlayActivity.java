@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 /**
- * Actividad que explica a l usuario como utilizar la aplicacion
+ * Actividad que explica al usuario como utilizar la aplicacion
  */
 public class HowToPlayActivity extends AppCompatActivity {
 

@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 /**
- * Clase que contiene la informacion de las instituciones asociadas
+ * Clase que contiene la informacion de las instituciones y personal asociado
  */
 public class AboutUsActivity extends AppCompatActivity {
 
@@ -49,6 +49,10 @@ public class AboutUsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Carga una pantalla con la pagina web
+     * @param url Direccion url que desea cargar en la vista web
+     */
     public void setWebActivity(String url) {
         Intent intent = new Intent(this, WebActivity.class);
         intent.putExtra("URL", url);

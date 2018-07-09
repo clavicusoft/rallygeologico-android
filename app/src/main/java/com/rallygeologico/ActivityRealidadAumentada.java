@@ -88,9 +88,8 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         /*Esconda el boton de informacion desde el inicio*/
         botonInformacion= findViewById(R.id.informacion_realidadaumentada);
 
-        /*Descomentar*/
-        //botonInformacion.setVisibility(View.GONE);
-        //botonInformacion.setClickable(false);
+        botonInformacion.setVisibility(View.GONE);
+        botonInformacion.setClickable(false);
 
         /*Inicializar fragment de brujula*/
         fragmentBrujula = fragmentManager.findFragmentById(R.id.fragmentCompass);
@@ -112,7 +111,7 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
         numeroNoVisitados=0;
         numeroVisitados=0;
 
-        point=1;
+        point=0;
 
         /*Ubicacion*/
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -331,10 +330,9 @@ public class ActivityRealidadAumentada extends FragmentActivity implements OnCli
             ite++;
         }
         if (noEncontre) {
-            /*Descomentar*/
-           // botonInformacion.setVisibility(View.GONE);
-            //botonInformacion.setClickable(false);
-            //point=0;
+           botonInformacion.setVisibility(View.GONE);
+            botonInformacion.setClickable(false);
+            point=0;
         }
     }
 
