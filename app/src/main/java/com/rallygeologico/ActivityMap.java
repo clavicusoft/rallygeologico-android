@@ -507,7 +507,7 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
                 verificarEspecial(lat,lon,sites.get(ite).getSiteName(),Integer.toString(sites.get(ite).getPointsForVisit()));
                 activosonido=1;
             }
-            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=5000.0) {
+            if (sites.get(ite).getStatus()==1 && center.distanceToAsDouble(new GeoPoint(lat,lon))<=20.0) {
                 /*Contador de puntos*/
                 localDB.updatePointsAwarded(sites.get(ite).getSiteId());
 
@@ -670,6 +670,8 @@ public class ActivityMap extends AppCompatActivity implements LocationListener {
             if (estaAdentro(nuevo)) {
                 if (sites.get(i).getStatus() == 1) {
                     addMarker(new GeoPoint(nuevo.getLatitude(), nuevo.getLongitude()), 1, "1");
+                   // localDB.updateSiteVisit(sites.get(i).getSiteId());
+                    //addMarker(new GeoPoint(nuevo.getLatitude(), nuevo.getLongitude()), 2, "2");
                 }
                 if (sites.get(i).getStatus() == 2) {
                     addMarker(new GeoPoint(nuevo.getLatitude(), nuevo.getLongitude()), 2, "2");
